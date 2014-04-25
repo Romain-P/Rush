@@ -1,0 +1,7 @@
+main_server: false
+database:
+   ip: localhost
+   port: 3306
+   database_name: server
+   username: root
+   password: pass
