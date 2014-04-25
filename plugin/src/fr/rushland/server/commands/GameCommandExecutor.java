@@ -1,8 +1,13 @@
-package fr.rushland.core;
+package fr.rushland.server.commands;
 
 import java.util.List;
 
+import com.google.inject.Inject;
+import fr.rushland.server.Server;
+import fr.rushland.server.games.Game;
+import fr.rushland.core.Main;
 import fr.rushland.enums.LangValues;
+import fr.rushland.utils.DatabaseUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,22 +15,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class GameCommandExecutor implements CommandExecutor 
-{
-
-	Plugin plugin;
-
-	public GameCommandExecutor(Plugin plugin) 
-	{
-		this.plugin = plugin;
-	}
+public class GameCommandExecutor implements CommandExecutor {
+    @Inject JavaPlugin plugin;
+    @Inject Server server;
+    @Inject DatabaseUtils databaseUtils;
 
 	void forceStartWid(String[] args, CommandSender sender)
 	{
 		if(args.length >= 2)
 		{
-			Game game = Main.getGame(args[0], args[1]);
+			Game game = server.getGame(args[0], args[1]);
 
 			if(game != null)
 			{
@@ -36,7 +37,7 @@ public class GameCommandExecutor implements CommandExecutor
 			else
 			{
 				sender.sendMessage(ChatColor.RED + "'" + args[0] + "' does not exist!");
-				if(Main.getGameType(args[1]) == null)
+				if(server.getGameType(args[1]) == null)
 				{
 					sender.sendMessage(ChatColor.RED + "GameType '" + args[1] + "' does not exist!");
 				}
@@ -61,7 +62,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 					else
 					{
-						Game game = Main.getPlayerGame(name);
+						Game game = server.getPlayerGame(name);
 
 						if(game != null)
 						{
@@ -90,7 +91,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				else
 				{
-					sender.sendMessage(ChatColor.RED + "Usage: /start <game>");
+					sender.sendMessage(ChatColor.RED + "Usage: /start <games>");
 				}
 			}
 		}
@@ -104,7 +105,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				if(player.hasPermission("rushy2.join"))
 				{
-					Game game = Main.getPlayerGame(name);
+					Game game = server.getPlayerGame(name);
 
 					if(game != null)
 					{
@@ -177,7 +178,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				if(player.hasPermission("rushy2.vote"))
 				{
-					Game game = Main.getPlayerGame(name);
+					Game game = server.getPlayerGame(name);
 
 					if(game != null)
 					{
@@ -222,7 +223,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				if(player.hasPermission("rushy2.join"))
 				{
-					Game game = Main.getPlayerGame(name);
+					Game game = server.getPlayerGame(name);
 
 					if(game != null)
 					{
@@ -295,7 +296,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				if(player.hasPermission("rushy2.leave"))
 				{
-					Game game = Main.getPlayerGame(name);
+					Game game = server.getPlayerGame(name);
 
 					if(game != null)
 					{
@@ -330,7 +331,7 @@ public class GameCommandExecutor implements CommandExecutor
 
 				if(player.hasPermission("rushy2.t"))
 				{
-					Game game = Main.getPlayerGame(name);
+					Game game = server.getPlayerGame(name);
 
 					if(game != null)
 					{

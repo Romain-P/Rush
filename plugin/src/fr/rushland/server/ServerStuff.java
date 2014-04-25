@@ -1,7 +1,9 @@
-package fr.rushland.core;
+package fr.rushland.server;
 
 import java.util.ArrayList;
 
+import fr.rushland.utils.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,22 +15,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-public class ServerStuff 
-{
-	static final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
-	static Inventory kitInv = null;
+public class ServerStuff {
+    @Getter public final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
+    @Getter private Inventory kitInv = null;
 	
 	//icons
 	//normal
-    static ItemStack warriorIcon;
-    static ItemStack hunterIcon;
+	@Getter private ItemStack warriorIcon;
+    @Getter private ItemStack hunterIcon;
     //vip
-    static ItemStack trollIcon;
-    static ItemStack ninjaIcon;
-    static ItemStack mageIcon;
+    @Getter private ItemStack trollIcon;
+    @Getter private ItemStack ninjaIcon;
+    @Getter private ItemStack mageIcon;
     
-    static void initializeStuff()
-    {
+    public void initializeStuff() {
     	kitInv = Bukkit.createInventory(null, 9, "Kits");
     	intializeIcons();
     	kitInv.setItem(2, warriorIcon);
@@ -38,8 +38,7 @@ public class ServerStuff
     	kitInv.setItem(6, mageIcon);
     }
     
-    static void intializeIcons()
-    {
+    private void intializeIcons() {
     	warriorIcon = new ItemStack(Material.IRON_SWORD);
     	ItemMeta meta = warriorIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.GRAY + "Warrior");
@@ -92,8 +91,7 @@ public class ServerStuff
     }
     
     
-    void giveWarriorStuff(Player player)
-    {
+    public void giveWarriorStuff(Player player) {
     	Utils.goNaked(player);
     	player.getInventory();
     }

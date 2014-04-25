@@ -3,6 +3,7 @@ package fr.rushland.database;
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,9 +12,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Manager {
     @Inject Database database;
 	@Inject ReentrantLock locker;
-    @Inject Plugin plugin;
+    @Inject JavaPlugin plugin;
 
-	protected void execute(String query) {
+	public void execute(String query) {
 		locker.lock();
 	    try {
             database.getConnection().setAutoCommit(false);
@@ -41,7 +42,7 @@ public abstract class Manager {
 	    }
 	}
 	
-	protected void execute(PreparedStatement statement) {
+	public void execute(PreparedStatement statement) {
 		locker.lock();
 	    try {
             database.getConnection().setAutoCommit(false);
@@ -70,7 +71,7 @@ public abstract class Manager {
 	    }
 	}
 	
-	protected ResultSet getData(String query) {
+	public ResultSet getData(String query) {
 		locker.lock();
 	    try {
             database.getConnection().setAutoCommit(false);
@@ -101,7 +102,7 @@ public abstract class Manager {
 	    }
 	}
 
-    protected PreparedStatement createStatement(String query) {
+    public PreparedStatement createStatement(String query) {
         try {
             return database.getConnection().prepareStatement(query);
         } catch(Exception e) {
@@ -109,7 +110,7 @@ public abstract class Manager {
         } finally {return null;}
     }
 
-	protected void closeResultSet(ResultSet result) {
+	public void closeResultSet(ResultSet result) {
 		try {
 			result.getStatement().close();
 			result.close();
@@ -118,7 +119,7 @@ public abstract class Manager {
 		}
 	}
 	
-	protected void closeStatement(PreparedStatement statement) {
+	public void closeStatement(PreparedStatement statement) {
 		try {
 			statement.clearParameters();
 	        statement.close();

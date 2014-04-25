@@ -1,5 +1,11 @@
-package fr.rushland.core;
+package fr.rushland.listeners;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import fr.rushland.server.Server;
+import fr.rushland.server.games.Game;
+import fr.rushland.server.games.GameType;
+import fr.rushland.core.Main;
 import fr.rushland.enums.LangValues;
 import fr.rushland.enums.PluginValues;
 import fr.rushland.enums.SignValues;
@@ -25,14 +31,11 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class GamePlayerListener implements Listener
-{
-	Plugin plugin;
-
-	public GamePlayerListener(JavaPlugin plugin) 
-	{
-		this.plugin = plugin;
-	}
+public class GamePlayerListener implements Listener {
+	@Inject
+    JavaPlugin plugin;
+    @Inject Injector injector;
+    @Inject Server server;
 
 	@EventHandler
 	public void OnPlayerDeath(PlayerDeathEvent event)
@@ -41,7 +44,7 @@ public class GamePlayerListener implements Listener
 		final String name = player.getName();
 		if (player instanceof Player)
 		{
-			final Game game = Main.getPlayerGame(name);
+			final Game game = server.getPlayerGame(name);
 
 			if(game != null)
 			{
@@ -64,7 +67,7 @@ public class GamePlayerListener implements Listener
 	{
 		final Player player = event.getPlayer();
 		final String name = player.getName();
-		final Game game = Main.getPlayerGame(name);
+		final Game game = server.getPlayerGame(name);
 
 		if(game != null)
 		{
@@ -91,7 +94,7 @@ public class GamePlayerListener implements Listener
 		Player player = event.getPlayer();
 		String name = player.getName();
 
-		final Game game = Main.getPlayerGame(name);
+		final Game game = server.getPlayerGame(name);
 		if(game != null)
 		{
 			game.remove(player);
@@ -111,7 +114,7 @@ public class GamePlayerListener implements Listener
 		{
 			Player damager = (Player) event.getDamager();
 			String damagerName = damager.getName();
-			Game game = Main.getPlayerGame(damagerName);
+			Game game = server.getPlayerGame(damagerName);
 
 			if(game != null)
 			{
@@ -128,7 +131,7 @@ public class GamePlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		String name = player.getName();
-		Game game = Main.getPlayerGame(name);
+		Game game = server.getPlayerGame(name);
 
 		if(game != null)
 		{
@@ -148,7 +151,7 @@ public class GamePlayerListener implements Listener
 		Block block = event.getBlock();
 		if(!player.isOp())
 		{
-			Game game = Main.getPlayerGame(name);
+			Game game = server.getPlayerGame(name);
 
 			if(game != null)
 			{
@@ -176,7 +179,7 @@ public class GamePlayerListener implements Listener
 		Block block = event.getBlock();
 		if(!player.isOp())
 		{
-			Game game = Main.getPlayerGame(name);
+			Game game = server.getPlayerGame(name);
 
 			if(game != null)
 			{
@@ -218,11 +221,11 @@ public class GamePlayerListener implements Listener
 				if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith(SignValues.SIGN_TITLE_COLOUR.getColor() + "[") && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]"))
 				{
 					String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1 + SignValues.SIGN_TITLE_COLOUR.getColor().toString().length(), sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
-					Game game = Main.getGame(gameKey, gameName);
+					Game game = server.getGame(gameKey, gameName);
 
 					if(game == null)
 					{
-						GameType gameType = Main.getGameType(gameName);
+						GameType gameType = server.getGameType(gameName);
 
 						if(gameType == null)
 						{
@@ -233,9 +236,11 @@ public class GamePlayerListener implements Listener
 						sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + maxPlayersNum);
 						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
-						Main.games.add(new Game(gameKey, gameType.name, plugin, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames, 
-								gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign));
-						game = Main.getGame(gameKey, gameName);
+                        Game g = new Game(gameKey, gameType.name, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames,
+                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign);
+                        injector.injectMembers(g);
+                        server.getGames().add(g);
+						game = server.getGame(gameKey, gameName);
 					}
 
 					if(!game.isStarted())
@@ -243,12 +248,12 @@ public class GamePlayerListener implements Listener
 						if(game.getMaxPlayers() != game.getPlayersNum())
 							game.join(player);
 						else
-							player.sendMessage(ChatColor.RED + "The game is full!");	
+							player.sendMessage(ChatColor.RED + "The games is full!");
 					}
 
 					else
 					{
-						player.sendMessage(ChatColor.RED + "The game is already started!");
+						player.sendMessage(ChatColor.RED + "The games is already started!");
 					}
 				}
 
@@ -257,7 +262,7 @@ public class GamePlayerListener implements Listener
 					if(player.isOp())
 					{
 						String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1, sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
-						GameType gameType = Main.getGameType(gameName);
+						GameType gameType = server.getGameType(gameName);
 						if(gameType == null)
 						{
 							player.sendMessage(LangValues.GAME_TYPE_FAKE.getValue());
@@ -268,8 +273,10 @@ public class GamePlayerListener implements Listener
 						sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + maxPlayersNum);
 						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
-						Main.games.add(new Game(gameKey, gameType.name, plugin, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames, 
-								gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign));
+                        Game game = new Game(gameKey, gameType.name, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames,
+                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign);
+                        injector.injectMembers(game);
+						server.getGames().add(game);
 					}
 				}
 			}
