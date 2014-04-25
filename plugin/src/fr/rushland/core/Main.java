@@ -28,6 +28,7 @@ import fr.rushland.database.Database;
 import fr.rushland.database.injector.DatabaseModule;
 import fr.rushland.enums.PluginValues;
 import fr.rushland.enums.SignValues;
+import fr.rushland.listeners.injector.ListenerModule;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.injector.ServerModule;
@@ -44,12 +45,15 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-        Injector injector = Guice.createInjector(new DefaultModule(this), new DatabaseModule(), new ServerModule());
+        Injector injector = Guice.createInjector(new DefaultModule(this), new ListenerModule(), new DatabaseModule(), new ServerModule());
 
         getLogger().info("loading config..");
         getConfig().options().copyDefaults(true);
         saveConfig();
         injector.getInstance(Config.class).initialize();
+
+        getLogger().info("initializing database..");
+        injector.getInstance(Database.class).initialize();
 
 		getLogger().info("initializing rush plugin");
         injector.getInstance(Server.class).initialize();

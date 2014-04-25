@@ -40,11 +40,11 @@ public class Game {
 	private boolean started = false;
 	private String waitMap;
 	private String map;
-	private JavaPlugin plugin;
 	private String gameType;
 	private List<String> voted = new ArrayList<String>();
 
     @Inject Server server;
+    @Inject JavaPlugin plugin;
 
 	@SuppressWarnings("unchecked")
 	public Game(String name, String gameType, int maxPlayers, String waitMap, String map, List<String> teamNames,
@@ -230,8 +230,10 @@ public class Game {
 			player.teleport(l);
 
 
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-            resetMaps();
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            public void run() {
+                resetMaps();
+            }
 		}, 20 * 1L);
 	}
 
@@ -252,7 +254,11 @@ public class Game {
 			sign.getBlock().getChunk().load();
 			sign.update();
 		} else
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> { resetMaps(); }, 20 * 10L);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                public void run() {
+                    resetMaps();
+                }
+            }, 20 * 10L);
 	}
 
 

@@ -3,14 +3,11 @@ package fr.rushland.database;
 import com.google.inject.Inject;
 import fr.rushland.core.Config;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-@Slf4j
 public class Database extends Manager {
     @Getter Connection connection;
     @Inject Config config;
@@ -18,7 +15,7 @@ public class Database extends Manager {
 
     @Getter private boolean enabled;
 
-    public void initializeConnection() {
+    public void initialize() {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://" +
                     config.getDatabaseHost() + "/" +
