@@ -1,5 +1,8 @@
 package fr.rushland.core;
 
+import fr.rushland.enums.LangValues;
+import fr.rushland.enums.PluginValues;
+import fr.rushland.enums.SignValues;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -78,7 +81,7 @@ public class GamePlayerListener implements Listener
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event) 
 	{
-		if(event.getLocation().getWorld().getName().contains(Main.MAP_LOCS))
+		if(event.getLocation().getWorld().getName().contains(PluginValues.MAP_LOCS.getValue()))
 			event.setCancelled(true);
 	}
 
@@ -94,7 +97,7 @@ public class GamePlayerListener implements Listener
 			game.remove(player);
 		}
 
-		else if(player.getWorld().getName().contains(Main.MAP_LOCS))
+		else if(player.getWorld().getName().contains(PluginValues.MAP_LOCS.getValue()))
 		{
 			Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 			player.teleport(l);
@@ -204,17 +207,17 @@ public class GamePlayerListener implements Listener
 			if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST)
 			{
 				Sign sign = (Sign) block.getState();
-				String gameKey = sign.getLine(Main.KEY_SIGN_LINE);
-				String[] partsPlayerLine = sign.getLine(Main.PLAYERS_SIGN_LINE).split("/");
+				String gameKey = sign.getLine(SignValues.KEY_SIGN_LINE.getValue());
+				String[] partsPlayerLine = sign.getLine(SignValues.PLAYERS_SIGN_LINE.getValue()).split("/");
 				int maxPlayersNum = 0;
 				if(partsPlayerLine.length == 2 && !partsPlayerLine[1].equals(""))
 					maxPlayersNum = Integer.parseInt(partsPlayerLine[1]);
 
 				if(maxPlayersNum < 2)
-					maxPlayersNum = Main.DEFAULT_GAME_SIZE;
-				if(sign.getLine(Main.TITLE_SIGN_LINE).startsWith(Main.SIGN_TITLE_COLOUR + "[") && sign.getLine(Main.TITLE_SIGN_LINE).endsWith("]"))
+					maxPlayersNum = SignValues.DEFAULT_GAME_SIZE.getValue();
+				if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith(SignValues.SIGN_TITLE_COLOUR.getColor() + "[") && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]"))
 				{
-					String gameName = sign.getLine(Main.TITLE_SIGN_LINE).substring(1 + Main.SIGN_TITLE_COLOUR.toString().length(), sign.getLine(Main.TITLE_SIGN_LINE).length()-1);
+					String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1 + SignValues.SIGN_TITLE_COLOUR.getColor().toString().length(), sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
 					Game game = Main.getGame(gameKey, gameName);
 
 					if(game == null)
@@ -223,12 +226,12 @@ public class GamePlayerListener implements Listener
 
 						if(gameType == null)
 						{
-							player.sendMessage(Main.GAME_TYPE_FAKE);
+							player.sendMessage(LangValues.GAME_TYPE_FAKE.getValue());
 							return;
 						}
 
-						sign.setLine(Main.PLAYERS_SIGN_LINE, "0/" + maxPlayersNum);
-						sign.setLine(Main.STATUS_SIGN_LINE, Main.WAITING_SIGN_MSG);
+						sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + maxPlayersNum);
+						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
 						Main.games.add(new Game(gameKey, gameType.name, plugin, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames, 
 								gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign));
@@ -249,21 +252,21 @@ public class GamePlayerListener implements Listener
 					}
 				}
 
-				else if(sign.getLine(Main.TITLE_SIGN_LINE).startsWith("[") && sign.getLine(Main.TITLE_SIGN_LINE).endsWith("]"))
+				else if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith("[") && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]"))
 				{
 					if(player.isOp())
 					{
-						String gameName = sign.getLine(Main.TITLE_SIGN_LINE).substring(1, sign.getLine(Main.TITLE_SIGN_LINE).length()-1);
+						String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1, sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
 						GameType gameType = Main.getGameType(gameName);
 						if(gameType == null)
 						{
-							player.sendMessage(Main.GAME_TYPE_FAKE);
+							player.sendMessage(LangValues.GAME_TYPE_FAKE.getValue());
 							return;
 						}
 
-						sign.setLine(Main.TITLE_SIGN_LINE, Main.SIGN_TITLE_COLOUR + "[" + gameType.name + "]");
-						sign.setLine(Main.PLAYERS_SIGN_LINE, "0/" + maxPlayersNum);
-						sign.setLine(Main.STATUS_SIGN_LINE, Main.WAITING_SIGN_MSG);
+						sign.setLine(SignValues.TITLE_SIGN_LINE.getValue(), SignValues.SIGN_TITLE_COLOUR.getColor() + "[" + gameType.name + "]");
+						sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + maxPlayersNum);
+						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
 						Main.games.add(new Game(gameKey, gameType.name, plugin, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames, 
 								gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign));

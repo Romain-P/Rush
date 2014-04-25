@@ -23,6 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.rushland.enums.LangValues;
+import fr.rushland.enums.PluginValues;
+import fr.rushland.enums.SignValues;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,39 +39,10 @@ import org.bukkit.scoreboard.ScoreboardManager;
 public class Main extends JavaPlugin 
 {
 	static boolean mainServer = false;
-	static final String BACKUP_MAPS_DIR_NAME = "maps";
-	static final String MAPS_DIR_NAME = "temp";
-	static final String GAMES_DIR_NAME = "games";
-	static final String YML_ERROR = ChatColor.RED + "Error with yml ";
 	static List<GameType> gameTypes = new ArrayList<GameType>();
 	static List<Game> games = new ArrayList<Game>();
 	static List<String> vips = new ArrayList<String>();
-	static final ChatColor SIGN_TITLE_COLOUR = ChatColor.DARK_RED;
 	static ScoreboardManager manager;
-	static final int DEFAULT_GAME_SIZE = 8;
-	static final int TITLE_SIGN_LINE = 0;
-	static final int STATUS_SIGN_LINE = 1;
-	static final int PLAYERS_SIGN_LINE = 2;
-	static final int KEY_SIGN_LINE = 3;
-	static final String STARTED_SIGN_MSG =  ChatColor.DARK_GRAY + "Jeu en cours";
-	static final String WAITING_SIGN_MSG = ChatColor.DARK_BLUE + "En Attente";
-	static final String DATA_FOLDER = "plugins" + File.separator + "Rushy2" + File.separator;
-	static final String BACKUP_MAP_LOCS = DATA_FOLDER + BACKUP_MAPS_DIR_NAME + File.separator;
-	static final String MAP_LOCS = DATA_FOLDER + MAPS_DIR_NAME + File.separator;
-	static final String NO_PERM = ChatColor.RED + "you don't have permission to do that!";
-	static final String MUST_BE_IN_GAME = ChatColor.RED + "You must be in a game.";
-	static final String PLAYER_ONLY = ChatColor.RED + "You must be a player!";
-	static final String MUST_NOT_BE_STARTED = ChatColor.RED + "The game must not be started!";
-	static final String PLAYER_NOT_FOUND = ChatColor.RED + "Player not found!";
-	static final String VIP_PREFIX = ChatColor.GREEN + "[VIP] " + ChatColor.RESET;
-	static final String DB_DISABLED = ChatColor.RED + "MySQL must be enabled!";
-	static final String GAME_TYPE_FAKE = ChatColor.RED + "This type of game does not exist";
-	static final String BAN_PREFIX = ChatColor.RED + "Banned : " + ChatColor.RESET;
-	static final String KICKED_VIP = ChatColor.RED + "You where kicked by a joining VIP";
-	static final String SERVER_FULL = ChatColor.RED + "Become a VIP to join a full server!";
-	static final String MUST_BE_VIP = ChatColor.RED + "You must be a vip to do that!";
-
-	static final int ONE_YEAR_SECS = 31536000;
 
 	@Override
 	public void onEnable()
@@ -110,7 +84,7 @@ public class Main extends JavaPlugin
 		for(Player player : Bukkit.getOnlinePlayers())
 		{
 			String name = player.getName();
-			if(player.getWorld().getName().contains(Main.MAP_LOCS))
+			if(player.getWorld().getName().contains(PluginValues.MAP_LOCS.getValue()))
 			{
 				player.teleport(l); 
 			    Utils.goNaked(player);
@@ -126,8 +100,8 @@ public class Main extends JavaPlugin
 		for(Game game : games)
 		{
 			Sign sign = game.getSign();
-			sign.setLine(PLAYERS_SIGN_LINE, "0/" + game.getMaxPlayers());
-			sign.setLine(STATUS_SIGN_LINE, WAITING_SIGN_MSG);
+			sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + game.getMaxPlayers());
+			sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 			sign.update(true);
 		}
 		getLogger().info("rushy2 went to sleep!");
@@ -144,19 +118,19 @@ public class Main extends JavaPlugin
 
 	void loadGames()
 	{
-		File dataDir = new File(DATA_FOLDER);
+		File dataDir = new File(PluginValues.DATA_FOLDER.getValue());
 		if(!dataDir.exists()) 
 			dataDir.mkdir();
 
-		File backupMapsDir = new File(BACKUP_MAP_LOCS);
+		File backupMapsDir = new File(PluginValues.BACKUP_MAP_LOCS.getValue());
 		if(!backupMapsDir.exists()) 
 			backupMapsDir.mkdir();
 
-		File mapsDir = new File(MAP_LOCS);
+		File mapsDir = new File(PluginValues.MAP_LOCS.getValue());
 		if(!mapsDir.exists()) 
 			mapsDir.mkdir();
 
-		File gamesDir = new File(DATA_FOLDER + GAMES_DIR_NAME);
+		File gamesDir = new File(PluginValues.DATA_FOLDER.getValue() + PluginValues.GAMES_DIR_NAME.getValue());
 		if(!gamesDir.exists()) 
 			gamesDir.mkdir();
 
@@ -208,50 +182,50 @@ public class Main extends JavaPlugin
 				boolean errorYml = false;
 				if(name.length() > 14 || name.length() == 0)
 				{
-					getLogger().info(YML_ERROR + fileName + ": name must have a length of > 0 && < 15");
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": name must have a length of > 0 && < 15");
 					errorYml = true;
 				}
 
 				if(teamNames.size() != numTeams)
 				{
-					getLogger().info(YML_ERROR + fileName + ": teamNames" + errorSize);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": teamNames" + errorSize);
 					errorYml = true;
 				}
 
 				if(teamPrefixes.size() != numTeams)
 				{
-					getLogger().info(YML_ERROR + fileName + ": teamPrefixes" + errorSize);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": teamPrefixes" + errorSize);
 					errorYml = true;
 				}
 
 
 				if(teamColours.size() != numTeams)
 				{
-					getLogger().info(YML_ERROR + fileName + ": teamColours" + errorSize);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": teamColours" + errorSize);
 					errorYml = true;
 				}
 
 				if(waitLocs.size() != numTeams)
 				{
-					getLogger().info(YML_ERROR + fileName + ": coordinates.waitingArea" + errorSize);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": coordinates.waitingArea" + errorSize);
 					errorYml = true;
 				}
 
 				if(locs.size() != numTeams)
 				{
-					getLogger().info(YML_ERROR + fileName + ": coordinates.map" + errorSize);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": coordinates.map" + errorSize);
 					errorYml = true;
 				}
 
-				if(!new File(BACKUP_MAP_LOCS + map).exists())
+				if(!new File(PluginValues.BACKUP_MAP_LOCS.getValue() + map).exists())
 				{
-					getLogger().info(YML_ERROR + fileName + ": " + map + errorFileNotExists);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": " + map + errorFileNotExists);
 					errorYml = true;
 				}
 
-				if(!new File(BACKUP_MAP_LOCS + waitMap).exists())
+				if(!new File(PluginValues.BACKUP_MAP_LOCS.getValue() + waitMap).exists())
 				{
-					getLogger().info(YML_ERROR + fileName + ": " + waitMap + errorFileNotExists);
+					getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": " + waitMap + errorFileNotExists);
 					errorYml = true;
 				}
 
@@ -259,7 +233,7 @@ public class Main extends JavaPlugin
 				{
 					if(gameType.name.equals(name))
 					{
-						getLogger().info(YML_ERROR + fileName + ": There is already a game with this name " + name + "!");
+						getLogger().info(PluginValues.YML_ERROR.getValue() + fileName + ": There is already a game with this name " + name + "!");
 						errorYml = true;
 						break;
 					}
@@ -293,7 +267,7 @@ public class Main extends JavaPlugin
 		if(player != null)
 		{
 			vips.add(name);
-			player.setDisplayName(VIP_PREFIX + player.getDisplayName());
+			player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
 		}
 	}
 
@@ -303,7 +277,7 @@ public class Main extends JavaPlugin
 		Player player = Bukkit.getPlayer(name);
 		if(player != null)
 		{
-			player.setDisplayName(player.getDisplayName().replace(VIP_PREFIX, ""));
+			player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
 		}
 	}
 

@@ -3,6 +3,8 @@ package fr.rushland.core;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import fr.rushland.enums.Constants;
+import fr.rushland.enums.LangValues;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -65,7 +67,7 @@ public class ServerPlayerListener implements Listener
 
 				else if(DButils.isBanned(name))
 				{
-					event.disallow(Result.KICK_BANNED, Main.BAN_PREFIX + DButils.getBanMessage(name));
+					event.disallow(Result.KICK_BANNED, LangValues.BAN_PREFIX.getValue() + DButils.getBanMessage(name));
 				}
 
 				if(Bukkit.getOnlinePlayers().length >= Bukkit.getServer().getMaxPlayers())
@@ -77,7 +79,7 @@ public class ServerPlayerListener implements Listener
 						{
 							if(!Main.vips.contains(p))
 							{
-								p.kickPlayer(Main.KICKED_VIP);
+								p.kickPlayer(LangValues.KICKED_VIP.getValue());
 								break;
 							}
 						}
@@ -85,7 +87,7 @@ public class ServerPlayerListener implements Listener
 
 					else
 					{
-						event.disallow(Result.KICK_FULL, Main.SERVER_FULL);
+						event.disallow(Result.KICK_FULL, LangValues.SERVER_FULL.getValue());
 					}
 				}
 			} 
@@ -298,7 +300,7 @@ public class ServerPlayerListener implements Listener
 					if(clicked.getItemMeta().getLore().contains(ServerStuff.VIP_PREFIX) && !Main.vips.contains(name))
 					{
 						player.closeInventory();
-						player.sendMessage(Main.MUST_BE_VIP);
+						player.sendMessage(LangValues.MUST_BE_VIP.getValue());
 						return;
 					}
 
@@ -312,7 +314,7 @@ public class ServerPlayerListener implements Listener
 						playerInv.setBoots(new ItemStack(Material.IRON_BOOTS));
 						playerInv.addItem(new ItemStack(Material.IRON_SWORD));
 						playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 15));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Main.ONE_YEAR_SECS, 0));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Constants.SECONDS_IN_YEAR.getValue(), 0));
 					}
 
 					else if(clicked.equals(ServerStuff.hunterIcon))
@@ -403,7 +405,7 @@ public class ServerPlayerListener implements Listener
 						playerInv.addItem(new ItemStack(Material.BOW, 1));
 						playerInv.addItem(new ItemStack(Material.ARROW, 25));
 						playerInv.addItem(new ItemStack(Material.COOKED_FISH, 23));
-						player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.ONE_YEAR_SECS, 0));
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 0));
 					}
 
 					else if(clicked.equals(ServerStuff.mageIcon))

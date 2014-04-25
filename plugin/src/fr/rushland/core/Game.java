@@ -17,6 +17,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import fr.rushland.enums.PluginValues;
+import fr.rushland.enums.SignValues;
+
 public class Game 
 {
 	private String name;
@@ -56,8 +59,8 @@ public class Game
 		this.sign = sign;
 		this.gameType = gameType;
 
-		mapLoc = Main.MAP_LOCS + map + "_" + gameType + "_" + name;
-		waitMapLoc = Main.MAP_LOCS + waitMap + "_" + gameType + "_" + name;
+		mapLoc = PluginValues.MAP_LOCS.getValue() + map + "_" + gameType + "_" + name;
+		waitMapLoc = PluginValues.MAP_LOCS.getValue() + waitMap + "_" + gameType + "_" + name;
 		teams = new ArrayList[teamNames.size()];
 		for(int i = 0; i < teamNames.size(); i++)
 		{
@@ -84,8 +87,8 @@ public class Game
 	{
 		try 
 		{
-			FileUtils.copyDirectory(new File(Main.BACKUP_MAP_LOCS + waitMap), new File(waitMapLoc));
-			FileUtils.copyDirectory(new File(Main.BACKUP_MAP_LOCS + map), new File(mapLoc));
+			FileUtils.copyDirectory(new File(PluginValues.BACKUP_MAP_LOCS.getValue() + waitMap), new File(waitMapLoc));
+			FileUtils.copyDirectory(new File(PluginValues.BACKUP_MAP_LOCS.getValue() + map), new File(mapLoc));
 		} 
 
 		catch (IOException e) 
@@ -196,7 +199,7 @@ public class Game
 	{
 		String playerName = player.getName();
 		teams[teamIndex].add(playerName);
-		sign.setLine(Main.PLAYERS_SIGN_LINE, getPlayersNum() + "/" + maxPlayers);
+		sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), getPlayersNum() + "/" + maxPlayers);
 		sign.update();
 		teamsSb[teamIndex].addPlayer(player);
 		player.setDisplayName(teamPrefixes.get(teamIndex) + player.getDisplayName());
@@ -239,7 +242,7 @@ public class Game
 		Bukkit.getServer().unloadWorld(waitMapLoc, true);
 
 		started = true;
-		sign.setLine(Main.STATUS_SIGN_LINE, Main.STARTED_SIGN_MSG);
+		sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.STARTED_SIGN_MSG.toString());
 		sign.update();
 
 		msgGame(ChatColor.GREEN + "The game is starting! Good luck!");
@@ -295,8 +298,8 @@ public class Game
 			copyMaps();
 
 			started = false;
-			sign.setLine(Main.PLAYERS_SIGN_LINE, "0/" + maxPlayers);
-			sign.setLine(Main.STATUS_SIGN_LINE, Main.WAITING_SIGN_MSG);
+			sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), "0/" + maxPlayers);
+			sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 			sign.getBlock().getChunk().load();
 			sign.update();
 		}
@@ -323,7 +326,7 @@ public class Game
 		voted.remove(playerName);
 		teamsSb[teamIndex].removePlayer(player);
 		player.setScoreboard(Main.manager.getNewScoreboard());
-		sign.setLine(Main.PLAYERS_SIGN_LINE, getPlayersNum() + "/" + maxPlayers);
+		sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), getPlayersNum() + "/" + maxPlayers);
 		sign.update();
 	}
 

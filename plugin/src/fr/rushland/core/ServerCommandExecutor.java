@@ -2,6 +2,7 @@ package fr.rushland.core;
 
 import java.sql.SQLException;
 
+import fr.rushland.enums.LangValues;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -42,7 +43,7 @@ public class ServerCommandExecutor implements CommandExecutor
 					Player p = Bukkit.getPlayer(victimName);
 					if(p != null)
 					{
-						p.kickPlayer(Main.BAN_PREFIX + message);
+						p.kickPlayer(LangValues.BAN_PREFIX.getValue() + message);
 					}
 
 					Bukkit.broadcastMessage(ChatColor.GREEN + victimName + " was banned by " + bannerName);
@@ -50,7 +51,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 				else
 				{
-					sender.sendMessage(Main.PLAYER_NOT_FOUND);
+					sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 				}
 			}
 
@@ -131,7 +132,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 					else
 					{
-						sender.sendMessage(Main.PLAYER_NOT_FOUND);
+						sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 					}
 				}
 
@@ -166,7 +167,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 					else
 					{
-						sender.sendMessage(Main.PLAYER_NOT_FOUND);
+						sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 					}
 				} 
 
@@ -204,7 +205,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 					else
 					{
-						player.sendMessage(Main.NO_PERM);
+						player.sendMessage(LangValues.NO_PERM.getValue());
 					}
 				}
 
@@ -216,7 +217,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 			else
 			{
-				sender.sendMessage(Main.DB_DISABLED);
+				sender.sendMessage(LangValues.DB_DISABLED.getValue());
 			}
 		}
 
@@ -236,7 +237,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 					else
 					{
-						player.sendMessage(Main.NO_PERM);
+						player.sendMessage(LangValues.NO_PERM.getValue());
 					}
 				}
 
@@ -248,7 +249,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 			else
 			{
-				sender.sendMessage(Main.DB_DISABLED);
+				sender.sendMessage(LangValues.DB_DISABLED.getValue());
 			}
 		}
 
@@ -268,7 +269,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 					else
 					{
-						player.sendMessage(Main.NO_PERM);
+						player.sendMessage(LangValues.NO_PERM.getValue());
 					}
 				}
 
@@ -280,7 +281,7 @@ public class ServerCommandExecutor implements CommandExecutor
 
 			else
 			{
-				sender.sendMessage(Main.DB_DISABLED);
+				sender.sendMessage(LangValues.DB_DISABLED.getValue());
 			}
 		}
 
@@ -321,13 +322,13 @@ public class ServerCommandExecutor implements CommandExecutor
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -362,13 +363,13 @@ public class ServerCommandExecutor implements CommandExecutor
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -388,13 +389,13 @@ public class ServerCommandExecutor implements CommandExecutor
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 		
@@ -415,13 +416,13 @@ public class ServerCommandExecutor implements CommandExecutor
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 		

@@ -2,7 +2,7 @@ name: Rush
 version: 1.0.1
 description: Rushland plugin
 author: Romain-p
-main: fr.rushland.core.Rush
+main: fr.rushland.core.Main
 commands:
    start:
       description: To start the game.

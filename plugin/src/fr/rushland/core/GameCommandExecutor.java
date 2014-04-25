@@ -2,6 +2,7 @@ package fr.rushland.core;
 
 import java.util.List;
 
+import fr.rushland.enums.LangValues;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -69,14 +70,14 @@ public class GameCommandExecutor implements CommandExecutor
 
 						else
 						{
-							sender.sendMessage(Main.MUST_BE_IN_GAME);
+							sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 						}
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
@@ -145,25 +146,25 @@ public class GameCommandExecutor implements CommandExecutor
 
 						else
 						{
-							player.sendMessage(Main.MUST_NOT_BE_STARTED);
+							player.sendMessage(LangValues.MUST_NOT_BE_STARTED.getValue());
 						}
 					}
 
 					else
 					{
-						sender.sendMessage(Main.MUST_BE_IN_GAME);
+						sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else if(sender instanceof ConsoleCommandSender)
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -190,25 +191,25 @@ public class GameCommandExecutor implements CommandExecutor
 
 						else
 						{
-							player.sendMessage(Main.MUST_NOT_BE_STARTED);
+							player.sendMessage(LangValues.MUST_NOT_BE_STARTED.getValue());
 						}
 					}
 
 					else
 					{
-						sender.sendMessage(Main.MUST_BE_IN_GAME);
+						sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else if(sender instanceof ConsoleCommandSender)
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -263,25 +264,25 @@ public class GameCommandExecutor implements CommandExecutor
 
 						else
 						{
-							player.sendMessage(Main.MUST_NOT_BE_STARTED);
+							player.sendMessage(LangValues.MUST_NOT_BE_STARTED.getValue());
 						}
 					}
 
 					else
 					{
-						sender.sendMessage(Main.MUST_BE_IN_GAME);
+						sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else if(sender instanceof ConsoleCommandSender)
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -303,19 +304,19 @@ public class GameCommandExecutor implements CommandExecutor
 
 					else
 					{
-						sender.sendMessage(Main.MUST_BE_IN_GAME);
+						sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else if(sender instanceof ConsoleCommandSender)
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
@@ -355,19 +356,19 @@ public class GameCommandExecutor implements CommandExecutor
 
 					else
 					{
-						sender.sendMessage(Main.MUST_BE_IN_GAME);
+						sender.sendMessage(LangValues.MUST_BE_IN_GAME.getValue());
 					}
 				}
 
 				else
 				{
-					player.sendMessage(Main.NO_PERM);
+					player.sendMessage(LangValues.NO_PERM.getValue());
 				}
 			}
 
 			else if(sender instanceof ConsoleCommandSender)
 			{
-				sender.sendMessage(Main.PLAYER_ONLY);
+				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 			}
 		}
 
