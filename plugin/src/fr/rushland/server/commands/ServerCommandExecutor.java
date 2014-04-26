@@ -71,11 +71,11 @@ public class ServerCommandExecutor implements CommandExecutor {
 
 			if(args[0].equalsIgnoreCase("add")) {
                 if(databaseUtils.isMember(args[1])) {
-                    if(!databaseUtils.isVip(args[1])) {
+                    if(databaseUtils.loadVipGrade(args[1]) == 0) {
                         databaseUtils.addVipMonth(args[1]);
 
                         if(vipPlayer != null) {
-                            server.addVips(args[1]);
+                            server.addVips(args[1], Integer.parseInt(args[2]));
                             vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes maintenant un VIP!");
                         }
                         sender.sendMessage(ChatColor.YELLOW + args[1] + " est devenu VIP!");
@@ -85,7 +85,7 @@ public class ServerCommandExecutor implements CommandExecutor {
                     sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 			} else if(args[0].equalsIgnoreCase("del")) {
                 if(databaseUtils.isMember(args[1]))  {
-                    if(databaseUtils.isVip(args[1])) {
+                    if(databaseUtils.loadVipGrade(args[1]) > 0) {
                         databaseUtils.deleteVip(args[1]);
                         if(vipPlayer != null) {
                             server.removeVips(args[1]);

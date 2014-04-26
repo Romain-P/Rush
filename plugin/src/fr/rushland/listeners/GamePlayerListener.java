@@ -160,6 +160,8 @@ public class GamePlayerListener implements Listener {
 			if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
 				Sign sign = (Sign) block.getState();
 				String gameKey = sign.getLine(SignValues.KEY_SIGN_LINE.getValue());
+                boolean isVip = gameKey.toLowerCase().contains("vip");
+
 				String[] partsPlayerLine = sign.getLine(SignValues.PLAYERS_SIGN_LINE.getValue()).split("/");
 				int maxPlayersNum = 0;
 				if(partsPlayerLine.length == 2 && !partsPlayerLine[1].equals(""))
@@ -167,8 +169,10 @@ public class GamePlayerListener implements Listener {
 
 				if(maxPlayersNum < 2)
 					maxPlayersNum = SignValues.DEFAULT_GAME_SIZE.getValue();
+
 				if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith(SignValues.SIGN_TITLE_COLOUR.getColor() + "[")
                         && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]")) {
+
 					String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1
                             + SignValues.SIGN_TITLE_COLOUR.getColor().toString().length(), sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
 
@@ -186,13 +190,15 @@ public class GamePlayerListener implements Listener {
 						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
                         Game g = new Game(gameKey, gameType.name, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames,
-                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign);
+                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign, isVip);
                         injector.injectMembers(g);
                         server.getGames().add(g);
 						game = server.getGame(gameKey, gameName);
 					}
-
-					if(!game.isStarted()) {
+                    if(isVip && server.getVips().get(player.getName()).getGrade() < 2) {
+                        player.sendMessage(LangValues.MUST_BE_VIP.getValue() +" (grade 2)");
+                        return;
+                    } else if(!game.isStarted()) {
 						if(game.getMaxPlayers() != game.getPlayersNum())
 							game.join(player);
 						else
@@ -218,7 +224,7 @@ public class GamePlayerListener implements Listener {
 						sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.WAITING_SIGN_MSG.toString());
 						sign.update(true);
                         Game game = new Game(gameKey, gameType.name, maxPlayersNum, gameType.waitMap, gameType.map, gameType.teamNames,
-                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign);
+                                gameType.teamPrefixes, gameType.teamColours, gameType.waitLocs, gameType.locs, sign, isVip);
                         injector.injectMembers(game);
 						server.getGames().add(game);
 					}

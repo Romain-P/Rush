@@ -10,6 +10,7 @@ import fr.rushland.server.commands.GameCommandExecutor;
 import fr.rushland.server.commands.ServerCommandExecutor;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
+import fr.rushland.server.objects.VipPlayer;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -24,12 +25,14 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     @Getter private List<GameType> gameTypes;
     @Getter private List<Game> games;
-    @Getter private List<String> vips;
+    @Getter private Map<String, VipPlayer> vips;
 
     @Inject JavaPlugin plugin;
     @Inject Set<Listener> listeners;
@@ -41,7 +44,7 @@ public class Server {
     public Server() {
         this.gameTypes = new ArrayList<>();
         this.games = new ArrayList<>();
-        this.vips = new ArrayList<>();
+        this.vips = new ConcurrentHashMap<>();
     }
 
     public void initialize() {
@@ -114,7 +117,6 @@ public class Server {
                 List<String> teamColours = gameConfig.getStringList("teamColours");
 
                 List<String> teamColoursColour = new ArrayList<>();
-
                 for(String teamPrefix : teamColours)
                     teamColoursColour.add(ChatColor.translateAlternateColorCodes('&', teamPrefix));
 
@@ -214,15 +216,15 @@ public class Server {
             else if (player.getDisplayName().contains("javadevelopper")) //moi aussi jveux mon title :D
                 player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled())
-                if (vips.contains(player.getName()))
+                if (vips.containsKey(player.getName()))
                     player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
         }
     }
 
-    public void addVips(String name) {
+    public void addVips(String name, int grade) {
         Player player = Bukkit.getPlayer(name);
         if(player != null) {
-            vips.add(name);
+            vips.put(name, new VipPlayer(name, grade));
         }
     }
 

@@ -2,6 +2,7 @@ package fr.rushland.utils;
 
 import com.google.inject.Inject;
 import fr.rushland.database.Manager;
+import fr.rushland.server.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 
 public class DataManager extends Manager{
     @Inject JavaPlugin plugin;
+    @Inject Server server;
 
     public boolean isMember(String name) {
         ResultSet result = null;
@@ -23,17 +25,20 @@ public class DataManager extends Manager{
         return false;
     }
 
-    public boolean isVip(String name) {
+    public int loadVipGrade(String name) {
         ResultSet result = null;
         try {
             result = getData("SELECT * FROM vips WHERE memberId = "+getMemberId(name)+";");
-            return result.next();
+            if(result.next())
+                return result.getInt("grade");
+            else
+                return 0;
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);
         } finally {
             closeResultSet(result);
         }
-        return false;
+        return 0;
     }
 
 	public int getMemberId(String name) {
@@ -64,9 +69,10 @@ public class DataManager extends Manager{
 	public void addVipMonth(String name) {
         try {
             PreparedStatement queryStatement = createStatement(
-                    "INSERT INTO vips(memberId, gotten, expires) "
-                            + "VALUES (?, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))");
+                    "INSERT INTO vips(memberId, grade, gotten, expires) "
+                            + "VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))");
             queryStatement.setInt(1, getMemberId(name));
+            queryStatement.setInt(2, server.getVips().get(name).getGrade());
             execute(queryStatement);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);

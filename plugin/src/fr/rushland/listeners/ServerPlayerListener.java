@@ -53,10 +53,10 @@ public class ServerPlayerListener implements Listener {
 
 
             if(Bukkit.getOnlinePlayers().length >= Bukkit.getServer().getMaxPlayers()) {
-                if(server.getVips().contains(name)) {
+                if(server.getVips().containsKey(name)) {
                     event.allow();
                     for(Player p : Bukkit.getServer().getWorlds().get(0).getPlayers()) {
-                        if(!server.getVips().contains(p))  {
+                        if(!server.getVips().containsKey(p.getName()))  {
                             p.kickPlayer(LangValues.KICKED_VIP.getValue());
                             break;
                         }
@@ -74,9 +74,11 @@ public class ServerPlayerListener implements Listener {
         //adding items
         serverStuff.giveStartingItems(player);
 
-		if(database.isEnabled())
-            if(databaseUtils.isVip(name))
-                server.addVips(name);
+		if(database.isEnabled()) {
+            int grade = databaseUtils.loadVipGrade(name);
+            if(grade > 0)
+                server.addVips(name, grade);
+        }
 
         server.attachPrefix(player);
 
@@ -251,7 +253,7 @@ public class ServerPlayerListener implements Listener {
                         && clicked.getItemMeta().getLore() != null) {
 
 					if(clicked.getItemMeta().getLore().contains(serverStuff.VIP_PREFIX)
-                            && !server.getVips().contains(name)) {
+                            && !server.getVips().containsKey(name)) {
 						player.closeInventory();
 						player.sendMessage(LangValues.MUST_BE_VIP.getValue());
 						return;

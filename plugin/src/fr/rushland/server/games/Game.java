@@ -8,6 +8,7 @@ import java.util.List;
 import com.google.inject.Inject;
 import fr.rushland.server.Server;
 import fr.rushland.utils.Utils;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,13 +43,14 @@ public class Game {
 	private String map;
 	private String gameType;
 	private List<String> voted = new ArrayList<String>();
+    @Getter private boolean vip;
 
     @Inject Server server;
     @Inject JavaPlugin plugin;
 
 	@SuppressWarnings("unchecked")
 	public Game(String name, String gameType, int maxPlayers, String waitMap, String map, List<String> teamNames,
-			List<String> teamPrefixes, List<String> teamColours, List<int[]> waitLocs, List<int[]> locs, Sign sign) {
+			List<String> teamPrefixes, List<String> teamColours, List<int[]> waitLocs, List<int[]> locs, Sign sign, boolean vip) {
 		this.name = name;
 		this.maxPlayers = maxPlayers;
 		this.teamNames = teamNames;
@@ -66,7 +68,7 @@ public class Game {
 		this.teams = new ArrayList[teamNames.size()];
 
 		for(int i = 0; i < teamNames.size(); i++)
-			teams[i] = new ArrayList<String>();
+			teams[i] = new ArrayList<>();
 
 		setBoard();
 		copyMaps();
@@ -300,14 +302,14 @@ public class Game {
 								winPlayerList += ", ";
 						}
 					}
-					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + winPlayerList + " won the " + gameType + " " + name + "!");
+					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + winPlayerList + " a gagne le " + gameType + " " + name + "!");
 				} else
 					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Le " + gameType + " " + name + " s'est termine sans aucun vainqueur!");
 
 				reset();
 			}
 		} else
-			msgGame(ChatColor.GREEN + playerName + " left the games");
+			msgGame(ChatColor.GREEN + playerName + " a quitte la partie");
 	}
 
     public int teamsLeft() {
