@@ -29,7 +29,6 @@ public class Server {
     @Getter private List<GameType> gameTypes;
     @Getter private List<Game> games;
     @Getter private List<String> vips;
-    @Getter private ScoreboardManager manager;
 
     @Inject JavaPlugin plugin;
     @Inject Set<Listener> listeners;
@@ -41,7 +40,6 @@ public class Server {
         this.gameTypes = new ArrayList<>();
         this.games = new ArrayList<>();
         this.vips = new ArrayList<>();
-        this.manager = Bukkit.getScoreboardManager();
     }
 
     public void initialize() {
@@ -67,7 +65,7 @@ public class Server {
             plugin.getCommand(command).setExecutor(executor);
         }
 
-        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff", "disg"};
+        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff"};
         for(String command: serverCommands) {
             ServerCommandExecutor executor = new ServerCommandExecutor();
             injector.injectMembers(executor);

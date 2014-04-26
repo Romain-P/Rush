@@ -12,6 +12,7 @@ public class Config {
     @Getter private String databaseName;
     @Getter private String databaseUser;
     @Getter private String databasePass;
+    @Getter private String databaseUrl;
     @Getter private boolean mainServer;
 
     public void initialize() {
@@ -19,6 +20,7 @@ public class Config {
         this.databaseName = plugin.getConfig().getString("database.name");
         this.databaseUser = plugin.getConfig().getString("database.user");
         this.databasePass = plugin.getConfig().getString("database.pass");
+        this.databaseUrl = "jdbc:mysql://"+databaseHost+"/"+databaseUser;
         this.mainServer = plugin.getConfig().getBoolean("mainServer");
     }
 }

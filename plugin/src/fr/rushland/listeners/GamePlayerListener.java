@@ -32,8 +32,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GamePlayerListener implements Listener {
-	@Inject
-    JavaPlugin plugin;
+	@Inject JavaPlugin plugin;
     @Inject Injector injector;
     @Inject Server server;
 

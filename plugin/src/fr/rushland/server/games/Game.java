@@ -73,7 +73,7 @@ public class Game {
 	}
 
 	private void setBoard() {
-		board = server.getManager().getNewScoreboard();
+		board = Bukkit.getScoreboardManager().getNewScoreboard();
 		teamsSb = new Team[teamNames.size()];
 		for(int i = 0; i < teamNames.size(); i++) {
 			Team t = board.registerNewTeam(teamNames.get(i));
@@ -269,7 +269,7 @@ public class Game {
 		teams[teamIndex].remove(playerName);
 		voted.remove(playerName);
 		teamsSb[teamIndex].removePlayer(player);
-		player.setScoreboard(server.getManager().getNewScoreboard());
+		player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		sign.setLine(SignValues.PLAYERS_SIGN_LINE.getValue(), getPlayersNum() + "/" + maxPlayers);
 		sign.update();
 	}

@@ -1,4 +1,4 @@
-main_server: false
+mainServer: false
 database:
    host: localhost
    name: database

@@ -49,7 +49,7 @@ public class Main extends JavaPlugin {
 
         getLogger().info("loading config..");
         getConfig().options().copyDefaults(true);
-        saveConfig();
+        //saveConfig();
         injector.getInstance(Config.class).initialize();
 
         getLogger().info("initializing database..");
