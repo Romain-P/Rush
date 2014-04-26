@@ -15,6 +15,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
@@ -30,6 +32,7 @@ public class ServerStuff {
     @Getter private ItemStack pvpItems;
 
     @Inject Config config;
+    @Inject JavaPlugin plugin;
     
     public void initializeStuff() {
     	kitInv = Bukkit.createInventory(null, 9, "Kits");
@@ -39,30 +42,35 @@ public class ServerStuff {
     	kitInv.setItem(4, trollIcon);
     	kitInv.setItem(5, ninjaIcon);
     	kitInv.setItem(6, mageIcon);
-
-        //loading items
-        intializeItems();
     }
 
-    private void intializeItems() {
+    public void intializeItems() {
         lobbyItems = new ItemStack(Material.COMPASS);
         ItemMeta meta = lobbyItems.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Lobby");
+        meta.setDisplayName(ChatColor.GREEN + "Teleportation au Lobby");
         lobbyItems.setItemMeta(meta);
 
         pvpItems = new ItemStack(Material.WOOD_SWORD);
         meta = pvpItems.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "PVP");
+        meta.setDisplayName(ChatColor.RED + "Lancer le PVP");
         pvpItems.setItemMeta(meta);
     }
 
     public void giveStartingItems(Player player) {
         Utils.goNaked(player);
         PlayerInventory inv = player.getInventory();
-        inv.addItem(new ItemStack[]{lobbyItems});
+        try {
+            inv.addItem(lobbyItems);
+        } catch(Exception e) {
+            plugin.getLogger().warning("error when trying to add lobbyItems");
+        }
 
         if (config.isMainServer())
-            inv.addItem(new ItemStack[]{pvpItems});
+            try {
+                inv.addItem(pvpItems);
+            } catch(Exception e) {
+                plugin.getLogger().warning("error when trying to add pvpItems");
+            }
 
         player.updateInventory();
     }

@@ -29,15 +29,15 @@ public class GameCommandExecutor implements CommandExecutor {
 			if(game != null)
 			{
 				game.start();
-				sender.sendMessage(ChatColor.GREEN + "Forced " + game.getName());
+				sender.sendMessage(ChatColor.GREEN + "Lancement forcé du jeu: " + game.getName());
 			}
 
 			else
 			{
-				sender.sendMessage(ChatColor.RED + "'" + args[0] + "' does not exist!");
+				sender.sendMessage(ChatColor.RED + "'" + args[0] + "' n'existe pas!");
 				if(server.getGameType(args[1]) == null)
 				{
-					sender.sendMessage(ChatColor.RED + "GameType '" + args[1] + "' does not exist!");
+					sender.sendMessage(ChatColor.RED + "Le gameType '" + args[1] + "' n'existe pas! Contactez un administrateur.");
 				}
 			}
 		}
@@ -132,7 +132,7 @@ public class GameCommandExecutor implements CommandExecutor {
 										if(i != teamNames.size()-1)
 											teamList += ", ";
 									}
-									player.sendMessage(ChatColor.RED + args[0] + " is not a valid team. teamNames: " + teamList);
+									player.sendMessage(ChatColor.RED + args[0] + " n'est pas une team valide. Liste: " + teamList);
 								}
 							}
 
@@ -185,7 +185,7 @@ public class GameCommandExecutor implements CommandExecutor {
 							if(!game.hasVoted(name))
 								game.vote(name);
 							else
-								player.sendMessage(ChatColor.RED + "You have already voted!");
+								player.sendMessage(ChatColor.RED + "Tu as deja vote!");
 						}
 
 						else
@@ -250,7 +250,7 @@ public class GameCommandExecutor implements CommandExecutor {
 										if(i != teamNames.size()-1)
 											teamList += ", ";
 									}
-									player.sendMessage(ChatColor.RED + args[0] + " is not a valid team. teamNames: " + teamList);
+									player.sendMessage(ChatColor.RED + args[0] + " n'est pas une team valide! Liste: " + teamList);
 								}
 							}
 

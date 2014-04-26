@@ -58,9 +58,9 @@ public class ServerCommandExecutor implements CommandExecutor {
 			String victimName = args[0];
             if(databaseUtils.isMember(victimName) && databaseUtils.isBanned(victimName)){
                 databaseUtils.deleteBanned(victimName);
-                Bukkit.broadcastMessage(ChatColor.GREEN + victimName + " was pardonned by " + bannerName);
+                Bukkit.broadcastMessage(ChatColor.GREEN + victimName + " a ete debanni " + bannerName);
             } else
-                sender.sendMessage(ChatColor.RED + "This player is not banned!");
+                sender.sendMessage(ChatColor.RED + "Ce joueur n'est pas banni!");
 		} else
 			sender.sendMessage(ChatColor.RED + "Usage: /pardon <criminal>");
 	}
@@ -76,11 +76,11 @@ public class ServerCommandExecutor implements CommandExecutor {
 
                         if(vipPlayer != null) {
                             server.addVips(args[1]);
-                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous �tes maintenant un VIP!");
+                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes maintenant un VIP!");
                         }
-                        sender.sendMessage(ChatColor.YELLOW + args[1] + " has become a VIP!");
+                        sender.sendMessage(ChatColor.YELLOW + args[1] + " est devenu VIP!");
                     } else
-                        sender.sendMessage(ChatColor.RED + args[1] + " is already VIP.");
+                        sender.sendMessage(ChatColor.RED + args[1] + " est deja VIP.");
                 } else
                     sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 			} else if(args[0].equalsIgnoreCase("del")) {
@@ -89,15 +89,15 @@ public class ServerCommandExecutor implements CommandExecutor {
                         databaseUtils.deleteVip(args[1]);
                         if(vipPlayer != null) {
                             server.removeVips(args[1]);
-                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous �tes plus un VIP!");
+                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes plus un VIP!");
                         }
-                        sender.sendMessage(ChatColor.YELLOW + args[1] + " is no longer a VIP!");
+                        sender.sendMessage(ChatColor.YELLOW + args[1] + " n'est plus VIP!");
                     }else
-                        sender.sendMessage(ChatColor.RED + args[1] + " is not a VIP.");
+                        sender.sendMessage(ChatColor.RED + args[1] + " n'est pas un VIP.");
                 } else
                     sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 			} else
-				sender.sendMessage(ChatColor.RED + "The option '" + args[0] + "' means shit bro :3");
+				sender.sendMessage(ChatColor.RED + "L'option '" + args[0] + "' n'est pas reconnue");
 		} else
 			sender.sendMessage(ChatColor.RED + "Usage: /vip <option> [value]");
 	}
@@ -268,9 +268,10 @@ public class ServerCommandExecutor implements CommandExecutor {
 							Utils.goNaked(player);
 							game.remove(player);
 						}
-                        serverStuff.giveStartingItems(player);
 						Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 						player.teleport(l);
+
+                        serverStuff.giveStartingItems(player);
 					}
 				}
 

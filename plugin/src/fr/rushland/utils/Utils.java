@@ -52,6 +52,8 @@ public class Utils {
 		player.setFallDistance(0);
 		player.setGameMode(GameMode.SURVIVAL);
 
+
+
 		for (PotionEffect effect : player.getActivePotionEffects())
 			player.removePotionEffect(effect.getType());
 	}

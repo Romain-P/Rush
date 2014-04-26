@@ -51,6 +51,7 @@ public class Server {
 
         if(config.isMainServer())
             serverStuff.initializeStuff();
+        serverStuff.intializeItems();
 
         plugin.getLogger().info("loading games..");
         loadGames();
@@ -207,12 +208,12 @@ public class Server {
     public void attachPrefix(Player player) {
         if (player != null) {
             if (player.isOp())
-                player.setDisplayName(LangValues.OP_PREFIX + player.getDisplayName());
+                player.setDisplayName(LangValues.OP_PREFIX.getValue() + player.getDisplayName());
             else if (player.hasPermission("rushy2.mPrefix"))
-                player.setDisplayName(LangValues.M_PREFIX + player.getDisplayName());
+                player.setDisplayName(LangValues.M_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled())
                 if (vips.contains(player.getName()))
-                    player.setDisplayName(LangValues.VIP_PREFIX + player.getDisplayName());
+                    player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
         }
     }
 

@@ -72,7 +72,6 @@ public class ServerPlayerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
-
         //adding items
         serverStuff.giveStartingItems(player);
 
@@ -172,7 +171,7 @@ public class ServerPlayerListener implements Listener
 		String[] args = message.split(" ");
 		if(args[0].equalsIgnoreCase("/me") || args[0].equalsIgnoreCase("/bukkit:me"))
 		{
-			player.sendMessage(ChatColor.RED + "Tu te croie important?");
+			player.sendMessage(ChatColor.RED + "Tu te crois important?");
 			event.setCancelled(true);
 		}
 	}
@@ -276,7 +275,7 @@ public class ServerPlayerListener implements Listener
 			if (inventory.getName().equals(serverStuff.getKitInv().getName()))
 			{
 				event.setCancelled(true);
-				if(clicked != null)
+				if(clicked != null && clicked.getItemMeta() != null && clicked.getItemMeta().getLore() != null)
 				{
 					if(clicked.getItemMeta().getLore().contains(serverStuff.VIP_PREFIX) && !server.getVips().contains(name))
 					{

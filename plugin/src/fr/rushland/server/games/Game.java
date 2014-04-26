@@ -179,7 +179,7 @@ public class Game {
 		for(Player p : player.getWorld().getPlayers())
 			p.setScoreboard(board);
 
-		msgGame(ChatColor.YELLOW + playerName + " has joined team " + teamNames.get(teamIndex));
+		msgGame(ChatColor.YELLOW + playerName + " a rejoind la team " + teamNames.get(teamIndex));
 
 		if(getPlayersNum() == maxPlayers)
 			start();
@@ -208,7 +208,7 @@ public class Game {
 		sign.setLine(SignValues.STATUS_SIGN_LINE.getValue(), SignValues.STARTED_SIGN_MSG.toString());
 		sign.update();
 
-		msgGame(ChatColor.GREEN + "The games is starting! Good luck!");
+		msgGame(ChatColor.GREEN + "Le jeu commence! Bonne chance..!");
 	}
 
 	public void reset() {
@@ -282,8 +282,8 @@ public class Game {
 		removeActions(player);
 
 		if(started) {
-			msgGame(ChatColor.RED + playerName + " lost!");
-			player.sendMessage(ChatColor.RED + "You lost!");
+			msgGame(ChatColor.RED + playerName + " a perdu!");
+			player.sendMessage(ChatColor.RED + "Tu as perdu!");
 
 			int teamsLeft = teamsLeft();
 			if(teamsLeft <= 1) {
@@ -301,7 +301,7 @@ public class Game {
 					}
 					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + winPlayerList + " won the " + gameType + " " + name + "!");
 				} else
-					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "The " + gameType + " " + name + " ended with no winners!");
+					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Le " + gameType + " " + name + " s'est termine sans aucun vainqueur!");
 
 				reset();
 			}
@@ -361,7 +361,7 @@ public class Game {
 	}
 
 	public void vote(String playerName) {
-		msgGame(ChatColor.YELLOW + playerName + " has voted to start the games");
+		msgGame(ChatColor.YELLOW + playerName + " a vote pour demarrer le jeu.");
 		voted.add(playerName);
 
 		if(voted.size() == getPlayersNum() && teamsLeft() >= teamNames.size()/2 && teamsLeft() > 1)

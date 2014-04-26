@@ -134,8 +134,8 @@ public class GamePlayerListener implements Listener {
 		{
 			if (player.getBedSpawnLocation() != null && game.isStarted())
 			{
-				player.sendMessage(ChatColor.RED + "You have already slept!");
-				event.setCancelled(true); 
+				player.sendMessage(ChatColor.RED + "Vous dormez deja!");
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -185,7 +185,7 @@ public class GamePlayerListener implements Listener {
 					if(block.getType() == Material.BRICK)
 					{
 						event.setCancelled(true);
-						player.sendMessage(ChatColor.RED + "You can't craft in rush.");
+						player.sendMessage(ChatColor.RED + "Vous ne pouvez pas craft dans un rush!");
 					}
 				}
 
@@ -245,12 +245,12 @@ public class GamePlayerListener implements Listener {
 						if(game.getMaxPlayers() != game.getPlayersNum())
 							game.join(player);
 						else
-							player.sendMessage(ChatColor.RED + "The games is full!");
+							player.sendMessage(ChatColor.RED + "Cette partie est pleine!");
 					}
 
 					else
 					{
-						player.sendMessage(ChatColor.RED + "The games is already started!");
+						player.sendMessage(ChatColor.RED + "Le jeu a deja commence!");
 					}
 				}
 
