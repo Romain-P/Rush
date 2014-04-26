@@ -12,6 +12,7 @@ public enum LangValues {
     VIP_PREFIX(ChatColor.GREEN + "[VIP] " + ChatColor.RESET),
     OP_PREFIX(ChatColor.DARK_RED + "[A] " + ChatColor.RESET),
     M_PREFIX(ChatColor.BLUE + "[M] " + ChatColor.RESET),
+    DEV_PREFIX(ChatColor.BLUE + "[DEV] " + ChatColor.RESET),
     DB_DISABLED(ChatColor.RED + "MySQL doit etre active, contactez l'administrateur!"),
     GAME_TYPE_FAKE(ChatColor.RED + "Ce type de jeu n'existe pas"),
     BAN_PREFIX(ChatColor.RED + "Banni : " + ChatColor.RESET),

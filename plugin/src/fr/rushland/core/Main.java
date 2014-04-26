@@ -1,22 +1,3 @@
-/*
- * -==========-CREDITS-==========-
- *  - Written by me: sanch
- *  - Apache for their awesome libarys
- *  
- * -==========-Thank you to-==========-
- *  - Barnaxx for helping me with bungee and revealing some bugs
- *  - Mlamlu for random shit
- *  - Shormir for his badass map
- *  - My maths teacher when I was 12 for making me a programmer
- *  - Sum41, Hollywood Undead, YTcracker, Weird Al Yankovic for providing me with music
- *  - My stupid school for letting me chill on their computers and write this comment
- *  - Society for being a bitch
- *  - To all my fellow nerds
- *  
- *  
- *  Who else do you know who rhythms in java? 
- */
-
 package fr.rushland.core;
 
 

@@ -35,24 +35,17 @@ public class GamePlayerListener implements Listener {
     @Inject Server server;
 
 	@EventHandler
-	public void OnPlayerDeath(PlayerDeathEvent event)
-	{
+	public void OnPlayerDeath(PlayerDeathEvent event) {
 		final Player player = event.getEntity();
 		final String name = player.getName();
-		if (player instanceof Player)
-		{
+		if (player instanceof Player) {
 			final Game game = server.getPlayerGame(name);
 
-			if(game != null)
-			{
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-				{
-					public void run()
-					{
+			if(game != null) {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					public void run(){
 						if((game.isStarted() && player.getBedSpawnLocation() == null) || !game.isStarted())
-						{
 							game.remove(player);
-						}
 					}
 				}, 1L);
 			}
@@ -60,80 +53,58 @@ public class GamePlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void OnPlayerRespawn(PlayerRespawnEvent event)
-	{
+	public void OnPlayerRespawn(PlayerRespawnEvent event) {
 		final Player player = event.getPlayer();
 		final String name = player.getName();
 		final Game game = server.getPlayerGame(name);
 
 		if(game != null)
-		{
 			if(player.getBedSpawnLocation() == null || !game.isStarted())
-			{
 				if((game.isStarted() && player.getBedSpawnLocation() == null) || !game.isStarted())
-				{
 					game.remove(player);
-				}
-			}
-		}
 	}
 
 	@EventHandler
-	public void onCreatureSpawn(CreatureSpawnEvent event) 
-	{
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		if(event.getLocation().getWorld().getName().contains(PluginValues.MAP_LOCS.getValue()))
 			event.setCancelled(true);
 	}
 
 	@EventHandler
-	public void onLeave(PlayerQuitEvent event)
-	{
+	public void onLeave(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
 
 		final Game game = server.getPlayerGame(name);
 		if(game != null)
-		{
 			game.remove(player);
-		}
-
-		else if(player.getWorld().getName().contains(PluginValues.MAP_LOCS.getValue()))
-		{
+		else if(player.getWorld().getName().contains(PluginValues.MAP_LOCS.getValue())) {
 			Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 			player.teleport(l);
 		}
 	}
 
 	@EventHandler
-	public void entityDamage(EntityDamageByEntityEvent event)
-	{
-		if(event.getDamager() instanceof Player)
-		{
+	public void entityDamage(EntityDamageByEntityEvent event) {
+		if(event.getDamager() instanceof Player) {
 			Player damager = (Player) event.getDamager();
 			String damagerName = damager.getName();
 			Game game = server.getPlayerGame(damagerName);
 
 			if(game != null)
-			{
 				if(!game.isStarted())
-				{
 					event.setCancelled(true);
-				}
-			}
 		}
 	}
 
 	@EventHandler
-	public void onPlayerBedEnter(PlayerBedEnterEvent event) 
-	{
+	public void onPlayerBedEnter(PlayerBedEnterEvent event)  {
 		Player player = event.getPlayer();
 		String name = player.getName();
 		Game game = server.getPlayerGame(name);
 
-		if(game != null)
-		{
-			if (player.getBedSpawnLocation() != null && game.isStarted())
-			{
+		if(game != null) {
+			if (player.getBedSpawnLocation() != null && game.isStarted()) {
 				player.sendMessage(ChatColor.RED + "Vous dormez deja!");
 				event.setCancelled(true);
 			}
@@ -141,71 +112,52 @@ public class GamePlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event) 
-	{
+	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
 		Block block = event.getBlock();
-		if(!player.isOp())
-		{
+		if(!player.isOp()) {
 			Game game = server.getPlayerGame(name);
 
-			if(game != null)
-			{
-				if(game.isStarted())
-				{
+			if(game != null) {
+				if(game.isStarted()) {
 					if(block.getType() == Material.OBSIDIAN)
-					{
-						event.setCancelled(true); 
-					}
-				}
-
-				else
-				{
+						event.setCancelled(true);
+				} else
 					event.setCancelled(true);
-				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event) 
-	{
+	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
 		Block block = event.getBlock();
-		if(!player.isOp())
-		{
+
+		if(!player.isOp()) {
 			Game game = server.getPlayerGame(name);
 
-			if(game != null)
-			{
-				if (game.isStarted())
-				{
-					if(block.getType() == Material.BRICK)
-					{
+			if(game != null) {
+				if (game.isStarted()){
+					if(block.getType() == Material.BRICK) {
 						event.setCancelled(true);
 						player.sendMessage(ChatColor.RED + "Vous ne pouvez pas craft dans un rush!");
 					}
-				}
-
-				else
-				{
+				} else
 					event.setCancelled(true);
-				}
+
 			}
 		}
 	}
 
 	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event)
-	{
+	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
-		{
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block block = event.getClickedBlock();
-			if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST)
-			{
+
+			if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
 				Sign sign = (Sign) block.getState();
 				String gameKey = sign.getLine(SignValues.KEY_SIGN_LINE.getValue());
 				String[] partsPlayerLine = sign.getLine(SignValues.PLAYERS_SIGN_LINE.getValue()).split("/");
@@ -215,17 +167,17 @@ public class GamePlayerListener implements Listener {
 
 				if(maxPlayersNum < 2)
 					maxPlayersNum = SignValues.DEFAULT_GAME_SIZE.getValue();
-				if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith(SignValues.SIGN_TITLE_COLOUR.getColor() + "[") && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]"))
-				{
-					String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1 + SignValues.SIGN_TITLE_COLOUR.getColor().toString().length(), sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
+				if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith(SignValues.SIGN_TITLE_COLOUR.getColor() + "[")
+                        && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]")) {
+					String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1
+                            + SignValues.SIGN_TITLE_COLOUR.getColor().toString().length(), sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
+
 					Game game = server.getGame(gameKey, gameName);
 
-					if(game == null)
-					{
+					if(game == null) {
 						GameType gameType = server.getGameType(gameName);
 
-						if(gameType == null)
-						{
+						if(gameType == null) {
 							player.sendMessage(LangValues.GAME_TYPE_FAKE.getValue());
 							return;
 						}
@@ -240,28 +192,23 @@ public class GamePlayerListener implements Listener {
 						game = server.getGame(gameKey, gameName);
 					}
 
-					if(!game.isStarted())
-					{
+					if(!game.isStarted()) {
 						if(game.getMaxPlayers() != game.getPlayersNum())
 							game.join(player);
 						else
 							player.sendMessage(ChatColor.RED + "Cette partie est pleine!");
-					}
-
-					else
-					{
+					} else
 						player.sendMessage(ChatColor.RED + "Le jeu a deja commence!");
-					}
 				}
 
-				else if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith("[") && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]"))
-				{
-					if(player.isOp())
-					{
+				else if(sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).startsWith("[")
+                        && sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).endsWith("]")) {
+
+					if(player.isOp()) {
 						String gameName = sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).substring(1, sign.getLine(SignValues.TITLE_SIGN_LINE.getValue()).length()-1);
 						GameType gameType = server.getGameType(gameName);
-						if(gameType == null)
-						{
+
+						if(gameType == null) {
 							player.sendMessage(LangValues.GAME_TYPE_FAKE.getValue());
 							return;
 						}

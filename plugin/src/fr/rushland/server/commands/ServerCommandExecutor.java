@@ -102,244 +102,138 @@ public class ServerCommandExecutor implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "Usage: /vip <option> [value]");
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
-	{
-		if(cmd.getName().equalsIgnoreCase("vip"))
-		{
-			if(database.isEnabled())
-			{
-				if(sender instanceof Player)
-				{
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(cmd.getName().equalsIgnoreCase("vip")) {
+			if(database.isEnabled()) {
+				if(sender instanceof Player) {
 					Player player = (Player) sender;
+
 					if(player.hasPermission("rushy2.vip"))
-					{
 						vip(args, sender);
-					}
-
 					else
-					{
 						player.sendMessage(LangValues.NO_PERM.getValue());
-					}
-				}
 
-				else if(sender instanceof ConsoleCommandSender)
-				{
+				} else if(sender instanceof ConsoleCommandSender)
 					vip(args, sender);
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.DB_DISABLED.getValue());
-			}
-		}
-
-		else if(cmd.getName().equalsIgnoreCase("ban"))
-		{
-			if(database.isEnabled())
-			{
-				if(sender instanceof Player)
-				{
+		} else if(cmd.getName().equalsIgnoreCase("ban")) {
+			if(database.isEnabled()) {
+				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					String name = player.getName();
 
 					if(player.hasPermission("rushy2.ban"))
-					{
 						ban(args, sender, name);
-					}
-
 					else
-					{
 						player.sendMessage(LangValues.NO_PERM.getValue());
-					}
-				}
-
-				else if(sender instanceof ConsoleCommandSender)
-				{
+				} else if(sender instanceof ConsoleCommandSender)
 					ban(args, sender, "Console");
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.DB_DISABLED.getValue());
-			}
-		}
 
-		else if(cmd.getName().equalsIgnoreCase("pardon"))
-		{
-			if(database.isEnabled())
-			{
-				if(sender instanceof Player)
-				{
+		} else if(cmd.getName().equalsIgnoreCase("pardon")) {
+			if(database.isEnabled()) {
+				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					String name = player.getName();
 
 					if(player.hasPermission("rushy2.pardon"))
-					{
 						pardon(args, sender, name);
-					}
-
 					else
-					{
 						player.sendMessage(LangValues.NO_PERM.getValue());
-					}
-				}
-
-				else if(sender instanceof ConsoleCommandSender)
-				{
+				} else if(sender instanceof ConsoleCommandSender)
 					pardon(args, sender, "Console");
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.DB_DISABLED.getValue());
-			}
-		}
 
-		else if(cmd.getName().equalsIgnoreCase("connect"))
-		{
-			if(sender instanceof Player)
-			{
+		} else if(cmd.getName().equalsIgnoreCase("connect")) {
+			if(sender instanceof Player) {
 				Player player = (Player) sender;
 
-				if(player.hasPermission("rushy2.connect"))
-				{
-					if(args.length >= 1)
-					{
+				if(player.hasPermission("rushy2.connect")) {
+					if(args.length >= 1) {
 						int type = Integer.parseInt(args[0]);
-						switch(type)
-						{
-						case 0:
-							Utils.goServer(player, "main", plugin);
-							break;
-						case 1:
-							Utils.goServer(player, "lobby1vs1", plugin);
-							break;
-						case 2:
-							Utils.goServer(player, "lobby2vs2", plugin);
-							break;
-						case 3:
-							Utils.goServer(player, "lobby3vs3", plugin);
-							break;
-						case 4:
-							Utils.goServer(player, "lobby4vs4", plugin);
-							break;
-						case 5:
-							Utils.goServer(player, "lobby4t", plugin);
-							break;
+
+						switch(type) {
+                            case 0:
+                                Utils.goServer(player, "main", plugin);
+                                break;
+                            case 1:
+                                Utils.goServer(player, "lobby1vs1", plugin);
+                                break;
+                            case 2:
+                                Utils.goServer(player, "lobby2vs2", plugin);
+                                break;
+                            case 3:
+                                Utils.goServer(player, "lobby3vs3", plugin);
+                                break;
+                            case 4:
+                                Utils.goServer(player, "lobby4vs4", plugin);
+                                break;
+                            case 5:
+                                Utils.goServer(player, "lobby4t", plugin);
+                                break;
 						}
 					}
-				}
-
-				else
-				{
+				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
-			}
-		}
 
-		else if(cmd.getName().equalsIgnoreCase("lobby"))
-		{
-			if(sender instanceof Player)
-			{
+		} else if(cmd.getName().equalsIgnoreCase("lobby")) {
+			if(sender instanceof Player) {
 				Player player = (Player) sender;
 				String name = player.getName();
 
-				if(player.hasPermission("rushy2.lobby"))
-				{
+				if(player.hasPermission("rushy2.lobby")) {
 					if(!config.isMainServer())
-					{
 						Utils.goServer(player, "main", plugin);
-					}
-
-					else
-					{
+					else {
 						final Game game = server.getPlayerGame(name);
 
-						if(game != null)
-						{
+						if(game != null) {
 							Utils.goNaked(player);
 							game.remove(player);
 						}
+
 						Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 						player.teleport(l);
 
                         serverStuff.giveStartingItems(player);
 					}
-				}
-
-				else
-				{
+				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
-			}
-		}
 
-		else if(cmd.getName().equalsIgnoreCase("stuff"))
-		{
-			if(sender instanceof Player)
-			{
+		} else if(cmd.getName().equalsIgnoreCase("stuff")) {
+			if(sender instanceof Player) {
 				Player player = (Player) sender;
 
-				if(player.hasPermission("rushy2.stuff"))
-				{
+				if(player.hasPermission("rushy2.stuff")) {
 					if(config.isMainServer())
-					{
 						player.openInventory(serverStuff.getKitInv());
-					}
-				}
-
-				else
-				{
+				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
-				}
-			}
-
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
-			}
-		}
-		
-		else if(cmd.getName().equalsIgnoreCase("disg"))
-		{
-			if(sender instanceof Player)
-			{
+
+		} else if(cmd.getName().equalsIgnoreCase("disg")) {
+			if(sender instanceof Player) {
 				Player player = (Player) sender;
 
-				if(player.hasPermission("rushy2.disg"))
-				{
-					if(args.length >= 1)
-					{
+				if(player.hasPermission("rushy2.disg")) {
+					if(args.length >= 1) {
 				        player.setDisplayName(args[0]);
 				        player.setPlayerListName(args[0]);
 					}
-				}
-
-				else
-				{
+				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
-				}
-			}
 
-			else
-			{
+			} else
 				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
-			}
 		}
-		
 		return true;
 	}
 }

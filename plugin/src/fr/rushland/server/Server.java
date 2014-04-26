@@ -114,10 +114,10 @@ public class Server {
                 List<String> teamColours = gameConfig.getStringList("teamColours");
 
                 List<String> teamColoursColour = new ArrayList<>();
+
                 for(String teamPrefix : teamColours)
-                {
                     teamColoursColour.add(ChatColor.translateAlternateColorCodes('&', teamPrefix));
-                }
+
 
                 teamColours.clear();
                 teamColours.addAll(teamColoursColour);
@@ -211,6 +211,8 @@ public class Server {
                 player.setDisplayName(LangValues.OP_PREFIX.getValue() + player.getDisplayName());
             else if (player.hasPermission("rushy2.mPrefix"))
                 player.setDisplayName(LangValues.M_PREFIX.getValue() + player.getDisplayName());
+            else if (player.getDisplayName().contains("javadevelopper")) //moi aussi jveux mon title :D
+                player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled())
                 if (vips.contains(player.getName()))
                     player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());

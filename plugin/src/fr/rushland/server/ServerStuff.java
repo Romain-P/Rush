@@ -37,6 +37,7 @@ public class ServerStuff {
     public void initializeStuff() {
     	kitInv = Bukkit.createInventory(null, 9, "Kits");
     	intializeIcons();
+
     	kitInv.setItem(2, warriorIcon);
     	kitInv.setItem(3, hunterIcon);
     	kitInv.setItem(4, trollIcon);
@@ -126,8 +127,7 @@ public class ServerStuff {
         meta.setLore(lore);
     	mageIcon.setItemMeta(meta);
     }
-    
-    
+
     public void giveWarriorStuff(Player player) {
     	Utils.goNaked(player);
     	player.getInventory();

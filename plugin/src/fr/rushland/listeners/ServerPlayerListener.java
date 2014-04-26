@@ -34,8 +34,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
-public class ServerPlayerListener implements Listener
-{
+public class ServerPlayerListener implements Listener {
     @Inject Config config;
     @Inject DataManager databaseUtils;
     @Inject fr.rushland.server.Server server;
@@ -92,20 +91,14 @@ public class ServerPlayerListener implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerTeleport(PlayerTeleportEvent event)
-	{
+	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
 		World w = event.getTo().getWorld();
-		for (Player p : Bukkit.getServer().getOnlinePlayers())
-		{
-			if(p.getWorld() != w)
-			{
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if(p.getWorld() != w) {
 				player.hidePlayer(p);
 				p.hidePlayer(player);
-			}
-
-			else
-			{
+			} else {
 				player.showPlayer(p);
 				p.showPlayer(player);
 			}
@@ -113,26 +106,21 @@ public class ServerPlayerListener implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent event)
-	{
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		Utils.msgWorld(player, "<" + player.getDisplayName() + "> " + event.getMessage());
 		event.setCancelled(true);
 	}
 
 	@EventHandler
-	public void OnPlayerDeath(PlayerDeathEvent event)
-	{
+	public void OnPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		if (player instanceof Player)
-		{
+		if (player instanceof Player) {
 			String name = player.getName();
 			Game game = server.getPlayerGame(name);
 
 			if(game != null)
-			{
 				Utils.msgWorld(player, event.getDeathMessage());
-			}
 
 			event.setDeathMessage("");
 
@@ -153,24 +141,21 @@ public class ServerPlayerListener implements Listener
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onPlayerDropItem(PlayerDropItemEvent event) 
-	{
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		if(config.isMainServer())
-		{
+		if(config.isMainServer()) {
 			event.setCancelled(true);
 			player.updateInventory();
 		}
 	}
 
 	@EventHandler
-	public void preCommand(PlayerCommandPreprocessEvent event)
-	{
+	public void preCommand(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 		String message = event.getMessage();
 		String[] args = message.split(" ");
-		if(args[0].equalsIgnoreCase("/me") || args[0].equalsIgnoreCase("/bukkit:me"))
-		{
+
+		if(args[0].equalsIgnoreCase("/me") || args[0].equalsIgnoreCase("/bukkit:me")) {
 			player.sendMessage(ChatColor.RED + "Tu te crois important?");
 			event.setCancelled(true);
 		}
@@ -191,59 +176,53 @@ public class ServerPlayerListener implements Listener
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (player.getItemInHand().equals(serverStuff.getLobbyItems())) {
+            if (player.getItemInHand().equals(serverStuff.getLobbyItems()))
                 player.chat("/lobby");
-            } else if (player.getItemInHand().equals(serverStuff.getPvpItems())) {
+            else if (player.getItemInHand().equals(serverStuff.getPvpItems()))
                 player.chat("/stuff");
-            }
         }
     }
 
 	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event)
-	{
-		if(config.isMainServer())
-		{
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if(config.isMainServer()) {
 			Player p = event.getPlayer();
 			Location standBlock = p.getWorld().getBlockAt(p.getLocation().add(0.0D, -0.1D, 0.0D)).getLocation();
-			if (standBlock.getBlock().getType() == Material.COAL_BLOCK)
-			{
+
+			if (standBlock.getBlock().getType() == Material.COAL_BLOCK) {
 				int xblock = 0;
 				double xvel = 0.0D;
 				int yblock = -1;
 				double yvel = 0.0D;
 				int zblock = 0;
 				double zvel = 0.0D;
-				while (standBlock.getBlock().getLocation().add(xblock, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK))
-				{
+				while (standBlock.getBlock().getLocation().add(xblock, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK)) {
 					xblock--;
 					xvel += 0.8D;
 				}
-				while (standBlock.getBlock().getLocation().add(0.0D, yblock, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK))
-				{
+				while (standBlock.getBlock().getLocation().add(0.0D, yblock, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK)) {
 					yblock--;
 					yvel += 1.0D;
 				}
-				while (standBlock.getBlock().getLocation().add(0.0D, -1.0D, zblock).getBlock().getType().equals(Material.COAL_BLOCK))
-				{
+				while (standBlock.getBlock().getLocation().add(0.0D, -1.0D, zblock).getBlock().getType().equals(Material.COAL_BLOCK)) {
 					zblock--;
 					zvel += 0.8D;
 				}
+
 				xblock = 0;
 				zblock = 0;
-				while (standBlock.getBlock().getLocation().add(xblock, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK))
-				{
+
+				while (standBlock.getBlock().getLocation().add(xblock, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK)) {
 					xblock++;
 					xvel -= 0.8D;
 				}
-				while (standBlock.getBlock().getLocation().add(0.0D, -1.0D, zblock).getBlock().getType().equals(Material.COAL_BLOCK))
-				{
+				while (standBlock.getBlock().getLocation().add(0.0D, -1.0D, zblock).getBlock().getType().equals(Material.COAL_BLOCK)) {
 					zblock++;
 					zvel -= 0.8D;
 				}
-				if (standBlock.getBlock().getLocation().add(0.0D, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK)) {
+
+				if (standBlock.getBlock().getLocation().add(0.0D, -1.0D, 0.0D).getBlock().getType().equals(Material.COAL_BLOCK))
 					p.setVelocity(new Vector(xvel, yvel, zvel));
-				}
 
 				p.setFallDistance(0);
 			}
@@ -251,34 +230,28 @@ public class ServerPlayerListener implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerDamage(final EntityDamageEvent e)
-	{
+	public void onPlayerDamage(final EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player)
-		{
 			if(e.getCause() == DamageCause.FALL && config.isMainServer())
-			{
 				e.setCancelled(true);
-			}
-		}
 	}
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) 
-	{
-		if(config.isMainServer())
-		{
+	public void onInventoryClick(InventoryClickEvent event) {
+		if(config.isMainServer()) {
 			Player player = (Player) event.getWhoClicked();
 			String name = player.getName();
 			ItemStack clicked = event.getCurrentItem();
 			Inventory inventory = event.getInventory();
-			if (inventory.getName().equals(serverStuff.getKitInv().getName()))
-			{
+
+			if (inventory.getName().equals(serverStuff.getKitInv().getName())) {
 				event.setCancelled(true);
-				if(clicked != null && clicked.getItemMeta() != null && clicked.getItemMeta().getLore() != null)
-				{
-					if(clicked.getItemMeta().getLore().contains(serverStuff.VIP_PREFIX) && !server.getVips().contains(name))
-					{
+				if(clicked != null && clicked.getItemMeta() != null
+                        && clicked.getItemMeta().getLore() != null) {
+
+					if(clicked.getItemMeta().getLore().contains(serverStuff.VIP_PREFIX)
+                            && !server.getVips().contains(name)) {
 						player.closeInventory();
 						player.sendMessage(LangValues.MUST_BE_VIP.getValue());
 						return;
@@ -286,8 +259,8 @@ public class ServerPlayerListener implements Listener
 
 					Utils.goNaked(player);
 					PlayerInventory playerInv = player.getInventory();
-					if (clicked.equals(serverStuff.getWarriorIcon()))
-					{
+
+					if (clicked.equals(serverStuff.getWarriorIcon())) {
 						playerInv.setHelmet(new ItemStack(Material.IRON_HELMET));
 						playerInv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
 						playerInv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
@@ -295,10 +268,8 @@ public class ServerPlayerListener implements Listener
 						playerInv.addItem(new ItemStack(Material.IRON_SWORD));
 						playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 15));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Constants.SECONDS_IN_YEAR.getValue(), 0));
-					}
 
-					else if(clicked.equals(serverStuff.getHunterIcon()))
-					{
+					} else if(clicked.equals(serverStuff.getHunterIcon())) {
 						playerInv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
 						playerInv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
 						playerInv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
@@ -318,10 +289,8 @@ public class ServerPlayerListener implements Listener
 						playerInv.addItem(new ItemStack(Material.STONE_SWORD));
 						playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 17));
 						playerInv.addItem(new ItemStack(Material.ARROW));
-					}
 
-					else if(clicked.equals(serverStuff.getTrollIcon()))
-					{
+					} else if(clicked.equals(serverStuff.getTrollIcon())) {
 						playerInv.setHelmet(new ItemStack(397, 1, (short) 2));
 						playerInv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
 						playerInv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
@@ -340,10 +309,8 @@ public class ServerPlayerListener implements Listener
 						playerInv.addItem(trollsClub);
 						playerInv.addItem(new ItemStack(Material.STONE_SWORD));
 						playerInv.addItem(new ItemStack(Material.ROTTEN_FLESH, 21));
-					}
 
-					else if(clicked.equals(serverStuff.getNinjaIcon()))
-					{
+					} else if(clicked.equals(serverStuff.getNinjaIcon())) {
 						ItemStack ninjaMask = new ItemStack(Material.LEATHER_HELMET);
 						LeatherArmorMeta im = (LeatherArmorMeta) ninjaMask.getItemMeta();
 						im.setColor(Color.BLACK);
@@ -386,10 +353,7 @@ public class ServerPlayerListener implements Listener
 						playerInv.addItem(new ItemStack(Material.ARROW, 25));
 						playerInv.addItem(new ItemStack(Material.COOKED_FISH, 23));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 0));
-					}
-
-					else if(clicked.equals(serverStuff.getMageIcon()))
-					{
+					} else if(clicked.equals(serverStuff.getMageIcon())) {
 						ItemStack mageHelmet = new ItemStack(Material.LEATHER_HELMET);
 						LeatherArmorMeta im = (LeatherArmorMeta) mageHelmet.getItemMeta();
 						im.setColor(Color.PURPLE);

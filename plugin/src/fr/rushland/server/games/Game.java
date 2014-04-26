@@ -75,6 +75,7 @@ public class Game {
 	private void setBoard() {
 		board = Bukkit.getScoreboardManager().getNewScoreboard();
 		teamsSb = new Team[teamNames.size()];
+
 		for(int i = 0; i < teamNames.size(); i++) {
 			Team t = board.registerNewTeam(teamNames.get(i));
 			t.setPrefix(teamColours.get(i));
