@@ -9,33 +9,25 @@ import fr.rushland.enums.Constants;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.utils.DatabaseUtils;
+import fr.rushland.utils.DataManager;
 import fr.rushland.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,7 +37,7 @@ import org.bukkit.util.Vector;
 public class ServerPlayerListener implements Listener
 {
     @Inject Config config;
-    @Inject DatabaseUtils databaseUtils;
+    @Inject DataManager databaseUtils;
     @Inject fr.rushland.server.Server server;
     @Inject Database database;
     @Inject ServerStuff serverStuff;
@@ -80,9 +72,15 @@ public class ServerPlayerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		String name = player.getName();
+
+        //adding items
+        serverStuff.giveStartingItems(player);
+
 		if(database.isEnabled())
             if(databaseUtils.isVip(name))
                 server.addVips(name);
+
+        server.attachPrefix(player);
 
 		Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 		player.teleport(l);
@@ -144,6 +142,16 @@ public class ServerPlayerListener implements Listener
 		}
 	}
 
+    @EventHandler
+    public void OnPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        String name = player.getName();
+        Game game = server.getPlayerGame(name);
+
+        if (game == null)
+            serverStuff.giveStartingItems(player);
+    }
+
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) 
@@ -180,7 +188,17 @@ public class ServerPlayerListener implements Listener
 		event.setQuitMessage("");
 	}
 
-	//kits
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (player.getItemInHand().equals(serverStuff.getLobbyItems())) {
+                player.chat("/lobby");
+            } else if (player.getItemInHand().equals(serverStuff.getPvpItems())) {
+                player.chat("/stuff");
+            }
+        }
+    }
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event)

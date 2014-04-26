@@ -10,20 +10,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class Database extends Manager {
+public class Database {
     @Getter private Connection connection;
     @Inject Config config;
     @Inject JavaPlugin plugin;
 
-    @Getter private boolean enabled = true;
+    @Getter private boolean enabled;
 
     public void initialize() {
         try {
-            connection = (Connection) DriverManager.getConnection(
+            connection = DriverManager.getConnection(
                     config.getDatabaseUrl(),
                     config.getDatabaseUser(),
                     config.getDatabasePass());
             connection.setAutoCommit(true);
+
+            if(connection.isValid(1)) {
+                plugin.getLogger().info("database initialized!");
+                this.enabled = true;
+            }
         } catch(SQLException e) {
             plugin.getLogger().warning("Can't connect to database: " + e.getMessage());
             this.enabled = false;

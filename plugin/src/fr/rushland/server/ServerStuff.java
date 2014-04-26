@@ -2,6 +2,8 @@ package fr.rushland.server;
 
 import java.util.ArrayList;
 
+import com.google.inject.Inject;
+import fr.rushland.core.Config;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -11,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
@@ -18,15 +21,15 @@ import org.bukkit.potion.PotionType;
 public class ServerStuff {
     @Getter public final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
     @Getter private Inventory kitInv = null;
-	
-	//icons
-	//normal
 	@Getter private ItemStack warriorIcon;
     @Getter private ItemStack hunterIcon;
-    //vip
     @Getter private ItemStack trollIcon;
     @Getter private ItemStack ninjaIcon;
     @Getter private ItemStack mageIcon;
+    @Getter private ItemStack lobbyItems;
+    @Getter private ItemStack pvpItems;
+
+    @Inject Config config;
     
     public void initializeStuff() {
     	kitInv = Bukkit.createInventory(null, 9, "Kits");
@@ -36,8 +39,34 @@ public class ServerStuff {
     	kitInv.setItem(4, trollIcon);
     	kitInv.setItem(5, ninjaIcon);
     	kitInv.setItem(6, mageIcon);
+
+        //loading items
+        intializeItems();
     }
-    
+
+    private void intializeItems() {
+        lobbyItems = new ItemStack(Material.COMPASS);
+        ItemMeta meta = lobbyItems.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + "Lobby");
+        lobbyItems.setItemMeta(meta);
+
+        pvpItems = new ItemStack(Material.WOOD_SWORD);
+        meta = pvpItems.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "PVP");
+        pvpItems.setItemMeta(meta);
+    }
+
+    public void giveStartingItems(Player player) {
+        Utils.goNaked(player);
+        PlayerInventory inv = player.getInventory();
+        inv.addItem(new ItemStack[]{lobbyItems});
+
+        if (config.isMainServer())
+            inv.addItem(new ItemStack[]{pvpItems});
+
+        player.updateInventory();
+    }
+
     private void intializeIcons() {
     	warriorIcon = new ItemStack(Material.IRON_SWORD);
     	ItemMeta meta = warriorIcon.getItemMeta();
@@ -46,7 +75,7 @@ public class ServerStuff {
         lore.add("A barbarian from the north skilled with the sword");
         meta.setLore(lore);
     	warriorIcon.setItemMeta(meta);
-    	
+
     	hunterIcon = new ItemStack(Material.BOW);
     	meta = hunterIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.GRAY + "Hunter");
@@ -54,9 +83,9 @@ public class ServerStuff {
         lore.add("A solitary individual who poaches in forests");
         meta.setLore(lore);
     	hunterIcon.setItemMeta(meta);
-    	
+
     	//vip now yo
-    	
+
     	trollIcon = new ItemStack(Material.STICK);
     	meta = trollIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.RED + "Troll");

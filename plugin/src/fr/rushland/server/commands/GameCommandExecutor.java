@@ -5,22 +5,20 @@ import java.util.List;
 import com.google.inject.Inject;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
-import fr.rushland.core.Main;
 import fr.rushland.enums.LangValues;
-import fr.rushland.utils.DatabaseUtils;
+import fr.rushland.utils.DataManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GameCommandExecutor implements CommandExecutor {
     @Inject JavaPlugin plugin;
     @Inject Server server;
-    @Inject DatabaseUtils databaseUtils;
+    @Inject DataManager databaseUtils;
 
 	void forceStartWid(String[] args, CommandSender sender)
 	{

@@ -1,7 +1,5 @@
 package fr.rushland.server.commands;
 
-import java.sql.SQLException;
-
 import com.google.inject.Inject;
 import fr.rushland.core.*;
 import fr.rushland.database.Database;
@@ -9,7 +7,7 @@ import fr.rushland.enums.LangValues;
 import fr.rushland.server.Server;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.utils.DatabaseUtils;
+import fr.rushland.utils.DataManager;
 import fr.rushland.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +24,7 @@ public class ServerCommandExecutor implements CommandExecutor {
     @Inject Server server;
     @Inject ServerStuff serverStuff;
     @Inject Database database;
-    @Inject DatabaseUtils databaseUtils;
+    @Inject DataManager databaseUtils;
     @Inject Config config;
 
 	public void ban(String[] args, CommandSender sender, String bannerName) {
@@ -270,7 +268,7 @@ public class ServerCommandExecutor implements CommandExecutor {
 							Utils.goNaked(player);
 							game.remove(player);
 						}
-
+                        serverStuff.giveStartingItems(player);
 						Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
 						player.teleport(l);
 					}

@@ -44,7 +44,7 @@ public class Main extends JavaPlugin {
     @Inject Database database;
 
 	@Override
-	public void onEnable() {
+    public void onEnable() {
         Injector injector = Guice.createInjector(new DefaultModule(this), new ListenerModule(), new DatabaseModule(), new ServerModule());
 
         getLogger().info("loading config..");
@@ -55,11 +55,11 @@ public class Main extends JavaPlugin {
         getLogger().info("initializing database..");
         injector.getInstance(Database.class).initialize();
 
-		getLogger().info("initializing rush plugin");
+        getLogger().info("initializing rush plugin");
         injector.getInstance(Server.class).initialize();
 
         getLogger().info("plugin Rush enabled successfully!");
-	}
+    }
 
 	@Override
 	public void onDisable() {

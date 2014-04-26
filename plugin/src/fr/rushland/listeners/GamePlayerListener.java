@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
-import fr.rushland.core.Main;
 import fr.rushland.enums.LangValues;
 import fr.rushland.enums.PluginValues;
 import fr.rushland.enums.SignValues;
@@ -28,7 +27,6 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GamePlayerListener implements Listener {

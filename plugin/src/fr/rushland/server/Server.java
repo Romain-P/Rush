@@ -3,6 +3,7 @@ package fr.rushland.server;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.rushland.core.*;
+import fr.rushland.database.Database;
 import fr.rushland.enums.LangValues;
 import fr.rushland.enums.PluginValues;
 import fr.rushland.server.commands.GameCommandExecutor;
@@ -35,6 +36,7 @@ public class Server {
     @Inject Config config;
     @Inject Injector injector;
     @Inject ServerStuff serverStuff;
+    @Inject Database database;
 
     public Server() {
         this.gameTypes = new ArrayList<>();
@@ -202,11 +204,22 @@ public class Server {
         }
     }
 
+    public void attachPrefix(Player player) {
+        if (player != null) {
+            if (player.isOp())
+                player.setDisplayName(LangValues.OP_PREFIX + player.getDisplayName());
+            else if (player.hasPermission("rushy2.mPrefix"))
+                player.setDisplayName(LangValues.M_PREFIX + player.getDisplayName());
+            else if (database.isEnabled())
+                if (vips.contains(player.getName()))
+                    player.setDisplayName(LangValues.VIP_PREFIX + player.getDisplayName());
+        }
+    }
+
     public void addVips(String name) {
         Player player = Bukkit.getPlayer(name);
         if(player != null) {
             vips.add(name);
-            player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
         }
     }
 

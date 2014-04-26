@@ -76,6 +76,7 @@ public abstract class Manager {
 	    try {
             database.getConnection().setAutoCommit(false);
 		} catch (Exception e1) {
+
             plugin.getLogger().warning("(sql error): " + e1.getMessage());
 		}
 
@@ -107,7 +108,8 @@ public abstract class Manager {
             return database.getConnection().prepareStatement(query);
         } catch(Exception e) {
             plugin.getLogger().warning("(sql error): " + e.getMessage());
-        } finally {return null;}
+        }
+        return null;
     }
 
 	public void closeResultSet(ResultSet result) {
