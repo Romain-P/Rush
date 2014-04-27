@@ -46,6 +46,10 @@ public class Client {
         this.save();
     }
 
+    public int remainingHoursBannedTime() {
+        return (int)(this.bannedTime - System.currentTimeMillis())/1000/60/60 +1;
+    }
+
     public boolean isBanned() {
         return this.bannedTime == -1 ||
                 System.currentTimeMillis() < this.bannedTime;

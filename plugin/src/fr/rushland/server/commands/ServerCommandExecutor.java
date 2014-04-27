@@ -62,12 +62,12 @@ public class ServerCommandExecutor implements CommandExecutor {
                 server.getPlayer(name).ban(time, unit, bannerName, reason.toString());
                 Player p = Bukkit.getPlayer(name);
 
-                if(p != null)
-                    p.kickPlayer(LangValues.BAN_PREFIX.getValue() + reason.toString());
-
                 String tosend = !unity.equalsIgnoreCase("infinity")
                         ? "pour "+time+" "+unity+"."
                         : "à vie.";
+                if(p != null)
+                    p.kickPlayer("Vous avez ete banni par "+bannerName+": "+ reason.toString()+" (ban "+tosend+")");
+
                 Bukkit.broadcastMessage(ChatColor.GREEN + name + " est banni par " + bannerName +" "+tosend);
             } else
                sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());

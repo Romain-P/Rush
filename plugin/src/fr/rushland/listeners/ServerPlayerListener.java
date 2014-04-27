@@ -53,7 +53,10 @@ public class ServerPlayerListener implements Listener {
             Client client = server.getPlayer(player.getName(), true);
             if(client.isBanned()) {
                 manager.reloadVars(client);
-                event.disallow(Result.KICK_BANNED, LangValues.BAN_PREFIX.getValue() + client.getBannedReason());
+                String message = client.getBannedTime() == -1
+                        ? "Vous avez ete banni a vie du serveur par "+client.getBannedAuthor()+": "+client.getBannedReason()
+                        : "Vous avez ete banni par "+client.getBannedAuthor()+".\nVous etes encore banni "+client.remainingHoursBannedTime()+" heures suite à votre malconduite: "+client.getBannedReason();
+                event.disallow(Result.KICK_BANNED, message);
             } else if(Bukkit.getOnlinePlayers().length >= Bukkit.getServer().getMaxPlayers()) {
                 if(client.getGrade() > 0) {
                     event.allow();

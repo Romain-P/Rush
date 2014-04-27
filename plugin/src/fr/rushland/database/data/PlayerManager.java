@@ -80,7 +80,7 @@ public class PlayerManager extends Manager{
         try {
             PreparedStatement statement = createStatement(
                     "UPDATE players SET uuid = ?, name = ?, grade = ?, gradeTime = ?, adminLevel = ?, " +
-                            "bannedTime = ?, bannedAuthor = ?, bannedReason = ?, registrationTime = ? WHERE name = ?");
+                            "bannedTime = ?, bannedAuthor = ?, bannedReason = ? WHERE name = ?");
             statement.setString(1, player.getUuid());
             statement.setString(2, player.getName());
             statement.setInt(3, player.getGrade());
