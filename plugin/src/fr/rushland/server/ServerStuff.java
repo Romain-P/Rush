@@ -63,7 +63,7 @@ public class ServerStuff {
         kitInv.setItem(8, godIcon);
 
         //on running rush & player vip 3
-        vipInventory = Bukkit.createInventory(null, 2, "Bonus");
+        vipInventory = Bukkit.createInventory(null, 9, "Bonus");
         initializeBonusIcons();
 
         vipInventory.setItem(0, swordBonus);

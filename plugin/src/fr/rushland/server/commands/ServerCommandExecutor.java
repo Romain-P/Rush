@@ -191,9 +191,7 @@ public class ServerCommandExecutor implements CommandExecutor {
 					if(!config.isMainServer())
 						Utils.goServer(player, "main", plugin);
 					else {
-                        int count = player.getEquipment().getArmorContents().length;
-                        boolean accepted = count < 4;
-                        if(!accepted)
+                        if(player.getEquipment().getChestplate() != null)
                             player.sendMessage("Vous ne pouvez pas en PVP!");
                         else {
                             final Game game = server.getPlayerGame(name);
@@ -220,9 +218,7 @@ public class ServerCommandExecutor implements CommandExecutor {
 
 				if(player.hasPermission("rushy2.stuff")) {
 					if(config.isMainServer()) {
-                        int count = player.getEquipment().getArmorContents().length;
-                        boolean accepted = count < 4;
-                        if(!accepted)
+                        if(player.getEquipment().getChestplate() != null)
                             player.sendMessage("Vous ne pouvez pas en PVP!");
                         else
 						    player.openInventory(serverStuff.getKitInv());
