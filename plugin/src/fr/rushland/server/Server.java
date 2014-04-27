@@ -238,7 +238,7 @@ public class Server {
     }
 
     private Client createPlayer(String name) {
-        Client player = new Client("", name, 0, 0, 0, 0, "", "");
+        Client player = new Client("", name, 0, 0, 0, 0, 0, "", "", 0);
         manager.create(player);
         return player;
     }

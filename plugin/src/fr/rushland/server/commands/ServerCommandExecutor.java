@@ -95,21 +95,22 @@ public class ServerCommandExecutor implements CommandExecutor {
 
 			if(args[0].equalsIgnoreCase("add"))  {
                 if(client != null) {
-                    if(client.getGrade() == 0) {
-                        client.subscribe(Integer.parseInt(args[2]), 30, TimeUnit.DAYS);
-
+                        try {
+                            client.subscribe(Integer.parseInt(args[2]), 30, TimeUnit.DAYS);
+                        } catch(Exception e) {
+                            sender.sendMessage("Usage: /vip add <name> <vipGrade>");
+                            return;
+                        }
                         if(vipPlayer != null)
                             vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes maintenant un VIP "+Integer.parseInt(args[2]));
 
                         sender.sendMessage(ChatColor.YELLOW + args[1] + " est devenu VIP "+Integer.parseInt(args[2]));
-                    } else
-                        sender.sendMessage(ChatColor.RED + args[1] + " est deja VIP.");
                 } else
                     sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 			} else if(args[0].equalsIgnoreCase("del")) {
                 if(client != null)  {
                     if(client.getGrade() > 0) {
-                        client.unsubcribe();
+                        client.unsubscribe();
                         if(vipPlayer != null)
                             vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes plus un VIP!");
 
