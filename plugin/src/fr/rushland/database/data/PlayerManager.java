@@ -3,6 +3,7 @@ package fr.rushland.database.data;
 import com.google.inject.Inject;
 import fr.rushland.database.Manager;
 import fr.rushland.server.Server;
+import fr.rushland.server.objects.Client;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
@@ -12,126 +13,86 @@ public class PlayerManager extends Manager{
     @Inject JavaPlugin plugin;
     @Inject Server server;
 
-    public boolean isMember(String name) {
-        ResultSet result = null;
+	public void create(Client player) {
         try {
-            result = getData("SELECT * FROM members WHERE name = '"+name+"'");
-            return result.next();
+            PreparedStatement statement = createStatement(
+                    "INSERT INTO players(uuid, name, grade, gradeTime, adminLevel, bannedTime, bannedAuthor, bannedReason, registrationTime)" +
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+            statement.setString(1, player.getUuid());
+            statement.setString(2, player.getName());
+            statement.setInt(3, player.getGrade());
+            statement.setLong(4, player.getGradeTime());
+            statement.setInt(5, player.getAdminLevel());
+            statement.setLong(6, player.getBannedTime());
+            statement.setString(7, player.getBannedAuthor());
+            statement.setString(8, player.getBannedReason());
+            execute(statement);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);
-        } finally {
-            closeResultSet(result);
         }
-        return false;
+	}
+
+    public Client load(String name) {
+        Client player = null;
+        try {
+            ResultSet result = getData("SELECT * FROM players WHERE name = '"+name+"';");
+
+            if(result.next()) {
+                player = new Client(
+                    result.getString("uuid"),
+                    result.getString("name"),
+                    result.getInt("grade"),
+                    result.getLong("gradeTime"),
+                    result.getInt("adminLevel"),
+                    result.getLong("bannedTime"),
+                    result.getString("bannedAuthor"),
+                    result.getString("bannedReason"));
+            }
+            closeResultSet(result);
+        } catch(Exception e) {
+            plugin.getLogger().warning("sql error: "+e);
+        }
+        return player;
     }
 
-    public int loadVipGrade(String name) {
-        ResultSet result = null;
+    public void reloadVars(Client player) {
         try {
-            result = getData("SELECT * FROM vips WHERE memberId = "+getMemberId(name)+";");
-            if(result.next())
-                return result.getInt("grade");
-            else
-                return 0;
+            ResultSet result = getData("SELECT * FROM players WHERE name = '"+player.getName()+"';");
+
+            if(result.next()) {
+                player.setUuid(result.getString("uuid"));
+                player.setName(result.getString("name"));
+                player.setGrade(result.getInt("grade"));
+                player.setGradeTime(result.getLong("gradeTime"));
+                player.setAdminLevel(result.getInt("adminLevel"));
+                player.setBannedTime(result.getLong("bannedTime"));
+                player.setBannedAuthor(result.getString("bannedAuthor"));
+                player.setBannedReason(result.getString("bannedReason"));
+            }
+            closeResultSet(result);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);
-        } finally {
-            closeResultSet(result);
         }
-        return 0;
     }
 
-	public int getMemberId(String name) {
-        ResultSet result = null;
+    public void update(Client player) {
+        //temporary, and it will update just name etc.. & where uuid = ?..
         try {
-            result = getData("SELECT * FROM members WHERE name = '"+name+"';");
-            if(result.next())
-                return result.getInt("id");
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        } finally {
-            closeResultSet(result);
-        }
-        return -1;
-	}
-
-	public void addMember(String name) {
-        try {
-            PreparedStatement queryStatement = createStatement(
-                    "INSERT INTO members(name, joined) VALUES (?, NOW())");
-            queryStatement.setString(1, name);
-            execute(queryStatement);
+            PreparedStatement statement = createStatement(
+                    "UPDATE players SET uuid = ?, name = ?, grade = ?, gradeTime = ?, adminLevel = ?, " +
+                            "bannedTime = ?, bannedAuthor = ?, bannedReason = ?, registrationTime = ? WHERE name = ?");
+            statement.setString(1, player.getUuid());
+            statement.setString(2, player.getName());
+            statement.setInt(3, player.getGrade());
+            statement.setLong(4, player.getGradeTime());
+            statement.setInt(5, player.getAdminLevel());
+            statement.setLong(6, player.getBannedTime());
+            statement.setString(7, player.getBannedAuthor());
+            statement.setString(8, player.getBannedReason());
+            statement.setString(9, player.getName());
+            execute(statement);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);
         }
-	}
-
-	public void addVipMonth(String name) {
-        try {
-            PreparedStatement queryStatement = createStatement(
-                    "INSERT INTO vips(memberId, grade, gotten, expires) "
-                            + "VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 MONTH))");
-            queryStatement.setInt(1, getMemberId(name));
-            queryStatement.setInt(2, server.getVips().get(name).getGrade());
-            execute(queryStatement);
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        }
-	}
-	
-	public void deleteVip(String name) {
-		try {
-            execute("DELETE FROM vips WHERE memberId = " + getMemberId(name));
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        }
-	}
-
-	public boolean isBanned(String name) {
-        ResultSet result = null;
-        try {
-            result = getData("SELECT * FROM bans WHERE memberId = "+getMemberId(name)+";");
-            return result.next();
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        } finally {
-            closeResultSet(result);
-        }
-        return false;
-	}
-	
-	public void addBanned(String name, String message, String bannerName) {
-        try {
-            PreparedStatement queryStatement = createStatement(
-                    "INSERT INTO bans(memberId, reason, banner, banned) VALUES (?, ?, ?, NOW())");
-            queryStatement.setLong(1, getMemberId(name));
-            queryStatement.setString(2, message);
-            queryStatement.setString(3, bannerName);
-            execute(queryStatement);
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        }
-	}
-	
-	public String getBanMessage(String name) {
-        ResultSet result = null;
-        try {
-            result = getData("SELECT * FROM bans WHERE memberId = "+getMemberId(name)+";");
-            if(result.next())
-                return result.getString("reason");
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        } finally {
-            closeResultSet(result);
-        }
-        return null;
-	}
-	
-	public void deleteBanned(String name) {
-        try {
-            execute("DELETE FROM bans WHERE memberId = " + getMemberId(name));
-        } catch(Exception e) {
-            plugin.getLogger().warning("sql error: "+e);
-        }
-	}
+    }
 }

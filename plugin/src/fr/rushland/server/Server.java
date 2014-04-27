@@ -4,13 +4,14 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fr.rushland.core.*;
 import fr.rushland.database.Database;
+import fr.rushland.database.data.PlayerManager;
 import fr.rushland.enums.LangValues;
 import fr.rushland.enums.PluginValues;
 import fr.rushland.server.commands.GameCommandExecutor;
 import fr.rushland.server.commands.ServerCommandExecutor;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
-import fr.rushland.server.objects.Player;
+import fr.rushland.server.objects.Client;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -21,16 +22,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     @Getter private List<GameType> gameTypes;
     @Getter private List<Game> games;
-    @Getter private Map<String, Player> vips;
+    @Getter private Map<String, Client> players;
 
     @Inject JavaPlugin plugin;
     @Inject Set<Listener> listeners;
@@ -38,11 +36,12 @@ public class Server {
     @Inject Injector injector;
     @Inject ServerStuff serverStuff;
     @Inject Database database;
+    @Inject PlayerManager manager;
 
     public Server() {
         this.gameTypes = new ArrayList<>();
         this.games = new ArrayList<>();
-        this.vips = new ConcurrentHashMap<>();
+        this.players = new ConcurrentHashMap<>();
     }
 
     public void initialize() {
@@ -214,24 +213,34 @@ public class Server {
             else if (player.getDisplayName().contains("javadevelopper")) //moi aussi jveux mon title :D
                 player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled())
-                if (vips.containsKey(player.getName()))
+                if (players.containsKey(player.getName()))
                     player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
         }
     }
 
-    public void addVips(String name, int grade) {
-        org.bukkit.entity.Player player = Bukkit.getPlayer(name);
-        if(player != null) {
-            vips.put(name, new Player(name, grade));
+    public Client getPlayer(String name, boolean create) {
+        Client player = this.players.get(name);
+        if(player == null) {
+            player = manager.load(name);
+
+            if(player == null && create)
+                player = createPlayer(name);
+            if(player != null) {
+                injector.injectMembers(player);
+                this.players.put(name, player);
+            }
         }
+        return player;
     }
 
-    public void removeVips(String name) {
-        vips.remove(name);
-        org.bukkit.entity.Player player = Bukkit.getPlayer(name);
-        if(player != null) {
-            player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
-        }
+    public Client getPlayer(String name) {
+        return getPlayer(name, false);
+    }
+
+    private Client createPlayer(String name) {
+        Client player = new Client("", name, 0, 0, 0, 0, "", "");
+        manager.create(player);
+        return player;
     }
 
     public GameType getGameType(String name) {

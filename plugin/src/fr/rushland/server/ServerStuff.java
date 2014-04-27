@@ -16,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -102,8 +101,8 @@ public class ServerStuff {
     }
 
     public void giveVipBonus(Player player) {
-        if(server.getVips().containsKey(player.getName())) {
-            int grade = server.getVips().get(player.getName()).getGrade();
+        if(server.getPlayers().containsKey(player.getName())) {
+            int grade = server.getPlayers().get(player.getName()).getGrade();
             switch(grade) {
                 case 5:
                     player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));

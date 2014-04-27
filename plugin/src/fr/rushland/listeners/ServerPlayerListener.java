@@ -11,6 +11,7 @@ import fr.rushland.enums.Constants;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
+import fr.rushland.server.objects.Client;
 import fr.rushland.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -39,29 +40,25 @@ import org.bukkit.util.Vector;
 
 public class ServerPlayerListener implements Listener {
     @Inject Config config;
-    @Inject
-    PlayerManager databaseUtils;
+    @Inject PlayerManager manager;
     @Inject fr.rushland.server.Server server;
     @Inject Database database;
     @Inject ServerStuff serverStuff;
-    @Inject  JavaPlugin plugin;
+    @Inject JavaPlugin plugin;
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
-		String name = player.getName();
 		if(database.isEnabled()) {
-            if(!databaseUtils.isMember(name))
-                databaseUtils.addMember(name);
-            else if(databaseUtils.isBanned(name))
-                event.disallow(Result.KICK_BANNED, LangValues.BAN_PREFIX.getValue() + databaseUtils.getBanMessage(name));
-
-
-            if(Bukkit.getOnlinePlayers().length >= Bukkit.getServer().getMaxPlayers()) {
-                if(server.getVips().containsKey(name)) {
+            Client client = server.getPlayer(player.getName(), true);
+            if(client.isBanned()) {
+                manager.reloadVars(client);
+                event.disallow(Result.KICK_BANNED, LangValues.BAN_PREFIX.getValue() + client.getBannedReason());
+            } else if(Bukkit.getOnlinePlayers().length >= Bukkit.getServer().getMaxPlayers()) {
+                if(client.getGrade() > 0) {
                     event.allow();
                     for(Player p : Bukkit.getServer().getWorlds().get(0).getPlayers()) {
-                        if(!server.getVips().containsKey(p.getName()))  {
+                        if(server.getPlayers().get(p.getName()).getGrade() == 0)  {
                             p.kickPlayer(LangValues.KICKED_VIP.getValue());
                             break;
                         }
@@ -78,12 +75,6 @@ public class ServerPlayerListener implements Listener {
 		String name = player.getName();
         //adding items
         serverStuff.giveStartingItems(player);
-
-		if(database.isEnabled()) {
-            int grade = databaseUtils.loadVipGrade(name);
-            if(grade > 0)
-                server.addVips(name, grade);
-        }
 
         server.attachPrefix(player);
 
@@ -170,12 +161,6 @@ public class ServerPlayerListener implements Listener {
 
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
-
-		Player player = event.getPlayer();
-		String name = player.getName();
-
-		if(database.isEnabled())
-			server.removeVips(name);
 
 		event.setQuitMessage("");
 	}
@@ -281,7 +266,7 @@ public class ServerPlayerListener implements Listener {
                              : clicked.getItemMeta().getLore().get(2);
                     if(s != null) {
                         int grade = Integer.parseInt(s);
-                        if(!server.getVips().containsKey(name) || server.getVips().get(name).getGrade() < grade) {
+                        if(!server.getPlayers().containsKey(name) || server.getPlayers().get(name).getGrade() < grade) {
                             player.closeInventory();
                             player.sendMessage(LangValues.MUST_BE_VIP.getValue() +" (grade "+grade+")");
                             return;

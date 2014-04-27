@@ -8,6 +8,7 @@ import fr.rushland.enums.LangValues;
 import fr.rushland.server.Server;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
+import fr.rushland.server.objects.Client;
 import fr.rushland.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,46 +20,67 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.TimeUnit;
+
 public class ServerCommandExecutor implements CommandExecutor {
     @Inject JavaPlugin plugin;
     @Inject Server server;
     @Inject ServerStuff serverStuff;
     @Inject Database database;
-    @Inject
-    PlayerManager databaseUtils;
+    @Inject PlayerManager manager;
     @Inject Config config;
 
 	public void ban(String[] args, CommandSender sender, String bannerName) {
-		if(args.length >= 2) {
-			StringBuilder b = new StringBuilder();
+        //ban [name] [time] [timeUnity] [reason]
+		if(args.length >= 3) {
+            StringBuilder reason = new StringBuilder();
+            String name, unity;
+            TimeUnit unit;
+            long time;
 
-			for (int x = 1; x < args.length; x++)
-				b.append(args[x]).append(" ");
-
-			String message = b.toString();
-			String victimName = args[0];
-
-            if(databaseUtils.isMember(victimName)) {
-                databaseUtils.addBanned(args[0], message, bannerName);
-                Player p = Bukkit.getPlayer(victimName);
-                if(p != null)
-                {
-                    p.kickPlayer(LangValues.BAN_PREFIX.getValue() + message);
+            try {
+                name = args[0];
+                if(args[1].equalsIgnoreCase("infinity")) {
+                    unity = "infinity";
+                    unit = TimeUnit.MILLISECONDS;
+                    time = -1;
+                } else {
+                    time = Integer.parseInt(args[1]);
+                    unity = args[2];
+                    unit = TimeUnit.valueOf(unity.toUpperCase());
                 }
+            } catch(Exception e) {
+                sender.sendMessage(ChatColor.RED + "Usage: /ban <victim> <time> <seconds|minutes|hours|days> <reason> ");
+                sender.sendMessage(ChatColor.RED + "Ou: /ban <victim> infinity <reason>");
+                return;
+            }
 
-                Bukkit.broadcastMessage(ChatColor.GREEN + victimName + " was banned by " + bannerName);
+			for (int x = 3; x < args.length; x++)
+				reason.append(args[x]).append(" ");
+
+            if(server.getPlayer(name) != null) {
+                server.getPlayer(name).ban(time, unit, bannerName, reason.toString());
+                Player p = Bukkit.getPlayer(name);
+
+                if(p != null)
+                    p.kickPlayer(LangValues.BAN_PREFIX.getValue() + reason.toString());
+
+                String tosend = !unity.equalsIgnoreCase("infinity")
+                        ? "pour "+time+" "+unity+"."
+                        : "à vie.";
+                Bukkit.broadcastMessage(ChatColor.GREEN + name + " est banni par " + bannerName +" "+tosend);
             } else
                sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
         } else
-			sender.sendMessage(ChatColor.RED + "Usage: /ban <victim> <message>");
+			sender.sendMessage(ChatColor.RED + "Usage: /ban <victim> <time> <infinity|seconds|minutes|hours|days> <reason>");
 
 	}
 
 	public void pardon(String[] args, CommandSender sender, String bannerName) {
 		if(args.length >= 1) {
 			String victimName = args[0];
-            if(databaseUtils.isMember(victimName) && databaseUtils.isBanned(victimName)){
-                databaseUtils.deleteBanned(victimName);
+            if(server.getPlayer(victimName) != null && server.getPlayer(victimName).isBanned()){
+                server.getPlayer(victimName).unban();
                 Bukkit.broadcastMessage(ChatColor.GREEN + victimName + " a ete debanni " + bannerName);
             } else
                 sender.sendMessage(ChatColor.RED + "Ce joueur n'est pas banni!");
@@ -69,29 +91,28 @@ public class ServerCommandExecutor implements CommandExecutor {
 	void vip(String[] args, CommandSender sender) {
 		if(args.length >= 2) {
 			Player vipPlayer = Bukkit.getServer().getPlayer(args[1]);
+            Client client = server.getPlayer(args[1]);
 
-			if(args[0].equalsIgnoreCase("add")) {
-                if(databaseUtils.isMember(args[1])) {
-                    if(databaseUtils.loadVipGrade(args[1]) == 0) {
-                        databaseUtils.addVipMonth(args[1]);
+			if(args[0].equalsIgnoreCase("add"))  {
+                if(client != null) {
+                    if(client.getGrade() == 0) {
+                        client.subscribe(Integer.parseInt(args[2]), 30, TimeUnit.DAYS);
 
-                        if(vipPlayer != null) {
-                            server.addVips(args[1], Integer.parseInt(args[2]));
-                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes maintenant un VIP!");
-                        }
-                        sender.sendMessage(ChatColor.YELLOW + args[1] + " est devenu VIP!");
+                        if(vipPlayer != null)
+                            vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes maintenant un VIP "+Integer.parseInt(args[2]));
+
+                        sender.sendMessage(ChatColor.YELLOW + args[1] + " est devenu VIP "+Integer.parseInt(args[2]));
                     } else
                         sender.sendMessage(ChatColor.RED + args[1] + " est deja VIP.");
                 } else
                     sender.sendMessage(LangValues.PLAYER_NOT_FOUND.getValue());
 			} else if(args[0].equalsIgnoreCase("del")) {
-                if(databaseUtils.isMember(args[1]))  {
-                    if(databaseUtils.loadVipGrade(args[1]) > 0) {
-                        databaseUtils.deleteVip(args[1]);
-                        if(vipPlayer != null) {
-                            server.removeVips(args[1]);
+                if(client != null)  {
+                    if(client.getGrade() > 0) {
+                        client.unsubcribe();
+                        if(vipPlayer != null)
                             vipPlayer.sendMessage(ChatColor.YELLOW + "Vous etes plus un VIP!");
-                        }
+
                         sender.sendMessage(ChatColor.YELLOW + args[1] + " n'est plus VIP!");
                     }else
                         sender.sendMessage(ChatColor.RED + args[1] + " n'est pas un VIP.");
