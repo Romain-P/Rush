@@ -3,10 +3,10 @@ package fr.rushland.server.commands;
 import java.util.List;
 
 import com.google.inject.Inject;
+import fr.rushland.database.data.PlayerManager;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
 import fr.rushland.enums.LangValues;
-import fr.rushland.utils.DataManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,7 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class GameCommandExecutor implements CommandExecutor {
     @Inject JavaPlugin plugin;
     @Inject Server server;
-    @Inject DataManager databaseUtils;
+    @Inject
+    PlayerManager databaseUtils;
 
 	private void forceStartWid(String[] args, CommandSender sender) {
 		if(args.length >= 2) {

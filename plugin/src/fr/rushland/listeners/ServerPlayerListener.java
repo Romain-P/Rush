@@ -6,11 +6,11 @@ import java.util.Random;
 import com.google.inject.Inject;
 import fr.rushland.core.*;
 import fr.rushland.database.Database;
+import fr.rushland.database.data.PlayerManager;
 import fr.rushland.enums.Constants;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.utils.DataManager;
 import fr.rushland.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -21,7 +21,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
@@ -40,7 +39,8 @@ import org.bukkit.util.Vector;
 
 public class ServerPlayerListener implements Listener {
     @Inject Config config;
-    @Inject DataManager databaseUtils;
+    @Inject
+    PlayerManager databaseUtils;
     @Inject fr.rushland.server.Server server;
     @Inject Database database;
     @Inject ServerStuff serverStuff;
@@ -249,7 +249,7 @@ public class ServerPlayerListener implements Listener {
         if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player attacker = (Player) e.getDamager();
 
-            if(0 == 0 || (attacker.getItemInHand().getItemMeta().getDisplayName() != null
+            if((attacker.getItemInHand().getItemMeta().getDisplayName() != null
                 && !attacker.getItemInHand().getItemMeta().getDisplayName().toLowerCase().contains("spider"))) {
                 Player target = (Player) e.getEntity();
 
@@ -390,6 +390,7 @@ public class ServerPlayerListener implements Listener {
                         for(ItemStack item: player.getEquipment().getArmorContents())
                             item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
 
+
                         ItemStack magicSword = new ItemStack(Material.DIAMOND_SWORD);
                         ItemMeta meta = magicSword.getItemMeta();
                         meta.setDisplayName(ChatColor.GRAY + "GOD Sword");
@@ -399,9 +400,17 @@ public class ServerPlayerListener implements Listener {
                         meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
                         magicSword.setItemMeta(meta);
 
+
                         playerInv.addItem(magicSword);
+
+
                         ItemStack stick = new ItemStack(Material.STICK);
-                        stick.getItemMeta().addEnchant(Enchantment.FIRE_ASPECT, 2, true);
+                        meta = stick.getItemMeta();
+                        meta.setDisplayName("Magic Stick");
+                        lore.clear();
+                        lore.add("powerful stick");
+                        meta.addEnchant(Enchantment.FIRE_ASPECT, 2, true);
+                        stick.setItemMeta(meta);
                         playerInv.addItem(stick);
 
                         playerInv.addItem(new ItemStack(Material.GOLDEN_APPLE, 5));

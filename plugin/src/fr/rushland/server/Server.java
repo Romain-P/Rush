@@ -10,17 +10,15 @@ import fr.rushland.server.commands.GameCommandExecutor;
 import fr.rushland.server.commands.ServerCommandExecutor;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
-import fr.rushland.server.objects.VipPlayer;
+import fr.rushland.server.objects.Player;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
     @Getter private List<GameType> gameTypes;
     @Getter private List<Game> games;
-    @Getter private Map<String, VipPlayer> vips;
+    @Getter private Map<String, Player> vips;
 
     @Inject JavaPlugin plugin;
     @Inject Set<Listener> listeners;
@@ -207,7 +205,7 @@ public class Server {
         }
     }
 
-    public void attachPrefix(Player player) {
+    public void attachPrefix(org.bukkit.entity.Player player) {
         if (player != null) {
             if (player.isOp())
                 player.setDisplayName(LangValues.OP_PREFIX.getValue() + player.getDisplayName());
@@ -222,15 +220,15 @@ public class Server {
     }
 
     public void addVips(String name, int grade) {
-        Player player = Bukkit.getPlayer(name);
+        org.bukkit.entity.Player player = Bukkit.getPlayer(name);
         if(player != null) {
-            vips.put(name, new VipPlayer(name, grade));
+            vips.put(name, new Player(name, grade));
         }
     }
 
     public void removeVips(String name) {
         vips.remove(name);
-        Player player = Bukkit.getPlayer(name);
+        org.bukkit.entity.Player player = Bukkit.getPlayer(name);
         if(player != null) {
             player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
         }

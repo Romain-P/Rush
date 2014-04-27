@@ -3,11 +3,11 @@ package fr.rushland.server.commands;
 import com.google.inject.Inject;
 import fr.rushland.core.*;
 import fr.rushland.database.Database;
+import fr.rushland.database.data.PlayerManager;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.Server;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.utils.DataManager;
 import fr.rushland.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +17,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ServerCommandExecutor implements CommandExecutor {
@@ -25,7 +24,8 @@ public class ServerCommandExecutor implements CommandExecutor {
     @Inject Server server;
     @Inject ServerStuff serverStuff;
     @Inject Database database;
-    @Inject DataManager databaseUtils;
+    @Inject
+    PlayerManager databaseUtils;
     @Inject Config config;
 
 	public void ban(String[] args, CommandSender sender, String bannerName) {
