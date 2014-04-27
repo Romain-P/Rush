@@ -195,7 +195,7 @@ public class GamePlayerListener implements Listener {
                         server.getGames().add(g);
 						game = server.getGame(gameKey, gameName);
 					}
-                    if(isVip && server.getVips().get(player.getName()).getGrade() < 2) {
+                    if(isVip && (server.getVips().get(player.getName()) == null || server.getVips().get(player.getName()).getGrade() < 2)) {
                         player.sendMessage(LangValues.MUST_BE_VIP.getValue() +" (grade 2)");
                         return;
                     } else if(!game.isStarted()) {

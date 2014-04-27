@@ -1,6 +1,7 @@
 package fr.rushland.listeners;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.google.inject.Inject;
 import fr.rushland.core.*;
@@ -17,8 +18,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
@@ -28,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -40,6 +44,7 @@ public class ServerPlayerListener implements Listener {
     @Inject fr.rushland.server.Server server;
     @Inject Database database;
     @Inject ServerStuff serverStuff;
+    @Inject  JavaPlugin plugin;
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
@@ -165,6 +170,7 @@ public class ServerPlayerListener implements Listener {
 
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
+
 		Player player = event.getPlayer();
 		String name = player.getName();
 
@@ -238,6 +244,24 @@ public class ServerPlayerListener implements Listener {
 				e.setCancelled(true);
 	}
 
+    @EventHandler
+    public void onPlayerReceiveDamages(EntityDamageByEntityEvent e) {
+        if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
+            Player attacker = (Player) e.getDamager();
+
+            if(0 == 0 || (attacker.getItemInHand().getItemMeta().getDisplayName() != null
+                && !attacker.getItemInHand().getItemMeta().getDisplayName().toLowerCase().contains("spider"))) {
+                Player target = (Player) e.getEntity();
+
+                Random generator = new Random();
+                int value = generator.nextInt(6);
+
+                if(value == 1)
+                    target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Utils.convertSecondsToTicks(3), 1));
+            }
+        }
+    }
+
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
@@ -252,12 +276,17 @@ public class ServerPlayerListener implements Listener {
 				if(clicked != null && clicked.getItemMeta() != null
                         && clicked.getItemMeta().getLore() != null) {
 
-					if(clicked.getItemMeta().getLore().contains(serverStuff.VIP_PREFIX)
-                            && !server.getVips().containsKey(name)) {
-						player.closeInventory();
-						player.sendMessage(LangValues.MUST_BE_VIP.getValue());
-						return;
-					}
+                    String s = clicked.getItemMeta().getLore().size() < 3
+                             ? null
+                             : clicked.getItemMeta().getLore().get(2);
+                    if(s != null) {
+                        int grade = Integer.parseInt(s);
+                        if(!server.getVips().containsKey(name) || server.getVips().get(name).getGrade() < grade) {
+                            player.closeInventory();
+                            player.sendMessage(LangValues.MUST_BE_VIP.getValue() +" (grade "+grade+")");
+                            return;
+                        }
+                    }
 
 					Utils.goNaked(player);
 					PlayerInventory playerInv = player.getInventory();
@@ -271,28 +300,89 @@ public class ServerPlayerListener implements Listener {
 						playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 15));
 						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Constants.SECONDS_IN_YEAR.getValue(), 0));
 
-					} else if(clicked.equals(serverStuff.getHunterIcon())) {
-						playerInv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
-						playerInv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-						playerInv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-						playerInv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
+                    } else if(clicked.equals(serverStuff.getHunterIcon())) {
+                        playerInv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
 
-						ItemStack huntersBow = new ItemStack(Material.BOW);
-						ItemMeta meta = huntersBow.getItemMeta();
-						meta.setDisplayName(ChatColor.GRAY + "Hunter's Bow");
-						ArrayList<String> lore = new ArrayList<String>();
-						lore.add("A powerful longbow");
-						meta.setLore(lore);
-						meta.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
-						meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
-						huntersBow.setItemMeta(meta);
+                        ItemStack huntersBow = new ItemStack(Material.BOW);
+                        ItemMeta meta = huntersBow.getItemMeta();
+                        meta.setDisplayName(ChatColor.GRAY + "Hunter's Bow");
+                        ArrayList<String> lore = new ArrayList<String>();
+                        lore.add("A powerful longbow");
+                        meta.setLore(lore);
+                        meta.addEnchant(Enchantment.ARROW_DAMAGE, 2, true);
+                        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        huntersBow.setItemMeta(meta);
 
-						playerInv.addItem(huntersBow);
-						playerInv.addItem(new ItemStack(Material.STONE_SWORD));
-						playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 17));
-						playerInv.addItem(new ItemStack(Material.ARROW));
+                        playerInv.addItem(huntersBow);
+                        playerInv.addItem(new ItemStack(Material.STONE_SWORD));
+                        playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 17));
+                        playerInv.addItem(new ItemStack(Material.ARROW));
 
-					} else if(clicked.equals(serverStuff.getTrollIcon())) {
+                    } else if(clicked.equals(serverStuff.getHunterVipIcon())) {
+                        playerInv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+
+                        ItemStack huntersBow = new ItemStack(Material.BOW);
+                        ItemMeta meta = huntersBow.getItemMeta();
+                        meta.setDisplayName(ChatColor.GRAY + "Hunter's Bow");
+                        ArrayList<String> lore = new ArrayList<String>();
+                        lore.add("A powerful longbow");
+                        meta.setLore(lore);
+                        meta.addEnchant(Enchantment.ARROW_DAMAGE, 3, true);
+                        meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+                        huntersBow.setItemMeta(meta);
+
+                        playerInv.addItem(huntersBow);
+                        playerInv.addItem(new ItemStack(Material.ARROW));
+                        playerInv.addItem(new ItemStack(Material.STONE_SWORD));
+                        playerInv.addItem(new ItemStack(Material.GOLDEN_APPLE));
+                        playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 10));
+
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 1));
+
+                    } else if(clicked.equals(serverStuff.getSpiderIcon())) {
+                        playerInv.setHelmet(new ItemStack(Material.IRON_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.IRON_BOOTS));
+
+                        ItemStack magicSword = new ItemStack(Material.IRON_SWORD);
+                        ItemMeta meta = magicSword.getItemMeta();
+                        meta.setDisplayName(ChatColor.GRAY + "Spider Sword");
+                        ArrayList<String> lore = new ArrayList<String>();
+                        lore.add("A powerful longSword");
+                        meta.setLore(lore);
+                        magicSword.setItemMeta(meta);
+
+                        playerInv.addItem(magicSword);
+                        playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 10));
+
+                    } else if(clicked.equals(serverStuff.getMastodonteIcon())) {
+                        playerInv.setHelmet(new ItemStack(Material.IRON_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.IRON_BOOTS));
+
+                        ItemStack magicSword = new ItemStack(Material.IRON_SWORD);
+                        ItemMeta meta = magicSword.getItemMeta();
+                        meta.setDisplayName(ChatColor.GRAY + "Masto Sword");
+                        ArrayList<String> lore = new ArrayList<String>();
+                        lore.add("A powerful longSword");
+                        meta.setLore(lore);
+                        magicSword.setItemMeta(meta);
+
+                        playerInv.addItem(magicSword);
+                        playerInv.addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
+                        playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 10));
+
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 1));
+
+                    } else if(clicked.equals(serverStuff.getTrollIcon())) {
 						playerInv.setHelmet(new ItemStack(397, 1, (short) 2));
 						playerInv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
 						playerInv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));

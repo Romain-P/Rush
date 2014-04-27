@@ -28,6 +28,10 @@ public class ServerStuff {
     @Getter private ItemStack trollIcon;
     @Getter private ItemStack ninjaIcon;
     @Getter private ItemStack mageIcon;
+    @Getter private ItemStack hunterVipIcon;
+    @Getter private ItemStack spiderIcon;
+    @Getter private ItemStack mastodonteIcon;
+
     @Getter private ItemStack lobbyItems;
     @Getter private ItemStack pvpItems;
 
@@ -35,14 +39,17 @@ public class ServerStuff {
     @Inject JavaPlugin plugin;
     
     public void initializeStuff() {
-    	kitInv = Bukkit.createInventory(null, 9, "Kits");
+    	kitInv = Bukkit.createInventory(null, 8, "Kits");
     	intializeIcons();
 
-    	kitInv.setItem(2, warriorIcon);
-    	kitInv.setItem(3, hunterIcon);
-    	kitInv.setItem(4, trollIcon);
-    	kitInv.setItem(5, ninjaIcon);
-    	kitInv.setItem(6, mageIcon);
+    	kitInv.setItem(0, warriorIcon);
+    	kitInv.setItem(1, hunterIcon);
+        kitInv.setItem(2, hunterVipIcon);
+    	kitInv.setItem(3, trollIcon);
+    	kitInv.setItem(4, ninjaIcon);
+    	kitInv.setItem(5, mageIcon);
+        kitInv.setItem(6, spiderIcon);
+        kitInv.setItem(7, mastodonteIcon);
     }
 
     public void intializeItems() {
@@ -79,29 +86,41 @@ public class ServerStuff {
     private void intializeIcons() {
     	warriorIcon = new ItemStack(Material.IRON_SWORD);
     	ItemMeta meta = warriorIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.GRAY + "Warrior");
+    	meta.setDisplayName(ChatColor.GRAY + "Guerrier");
         ArrayList<String> lore = new ArrayList<String>();
-        lore.add("A barbarian from the north skilled with the sword");
+        lore.add("Incarnez un barbard qui assome tout ce qui bouge!");
         meta.setLore(lore);
     	warriorIcon.setItemMeta(meta);
 
-    	hunterIcon = new ItemStack(Material.BOW);
-    	meta = hunterIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.GRAY + "Hunter");
+        hunterIcon = new ItemStack(Material.BOW);
+        meta = hunterIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.GRAY + "Archer");
         lore = new ArrayList<String>();
-        lore.add("A solitary individual who poaches in forests");
+        lore.add("Incarnez l'ame d'un archer puissant et insolite");
         meta.setLore(lore);
-    	hunterIcon.setItemMeta(meta);
+        hunterIcon.setItemMeta(meta);
 
     	//vip now yo
+
+        hunterVipIcon = new ItemStack(Material.BOW);
+        meta = hunterVipIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Archer Puissant");
+        meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
+        lore = new ArrayList<>();
+        lore.add("Incarnez l'ame d'un archer surpuissant !!");
+        lore.add(VIP_PREFIX);
+        lore.add("2");
+        meta.setLore(lore);
+        hunterVipIcon.setItemMeta(meta);
 
     	trollIcon = new ItemStack(Material.STICK);
     	meta = trollIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.RED + "Troll");
     	meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
         lore = new ArrayList<String>();
-        lore.add("The troll likes eating humans and picking his nose");
+        lore.add("Incarnez un devoreur surpuissant");
         lore.add(VIP_PREFIX);
+        lore.add("1");
         meta.setLore(lore);
     	trollIcon.setItemMeta(meta);
     	
@@ -110,8 +129,9 @@ public class ServerStuff {
     	meta.setDisplayName(ChatColor.RED + "Ninja");
     	meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
         lore = new ArrayList<String>();
-        lore.add("A warrior from the east shrouded in mystery");
+        lore.add("Incarnez la maitrise des techniques ninja");
         lore.add(VIP_PREFIX);
+        lore.add("1");
         meta.setLore(lore);
     	ninjaIcon.setItemMeta(meta);
     	
@@ -122,14 +142,32 @@ public class ServerStuff {
     	meta.setDisplayName(ChatColor.RED + "Mage");
     	meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
         lore = new ArrayList<String>();
-        lore.add("Skilled in the art of brewing potions, the mage is a formidable fighter");
+        lore.add("Incarnez un puissant personnage magique");
         lore.add(VIP_PREFIX);
+        lore.add("1");
         meta.setLore(lore);
     	mageIcon.setItemMeta(meta);
-    }
 
-    public void giveWarriorStuff(Player player) {
-    	Utils.goNaked(player);
-    	player.getInventory();
+        spiderIcon = new ItemStack(Material.WEB);
+        meta = spiderIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Spider");
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
+        lore = new ArrayList<String>();
+        lore.add("Incarnez la puissance d'une arreignee malefique");
+        lore.add(VIP_PREFIX);
+        lore.add("2");
+        meta.setLore(lore);
+        spiderIcon.setItemMeta(meta);
+
+        mastodonteIcon = new ItemStack(Material.IRON_SWORD);
+        meta = mastodonteIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Mastodonte");
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
+        lore = new ArrayList<String>();
+        lore.add("Incarnez une brute intombable!");
+        lore.add(VIP_PREFIX);
+        lore.add("2");
+        meta.setLore(lore);
+        mastodonteIcon.setItemMeta(meta);
     }
 }

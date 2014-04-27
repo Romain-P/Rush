@@ -70,4 +70,8 @@ public class Utils {
 		} catch (IOException ex) {}
 		player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
 	}
+
+    public static int convertSecondsToTicks(long seconds) {
+        return (int)(((double)seconds) / 0.05);
+    }
 }

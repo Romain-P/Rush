@@ -45,7 +45,6 @@ public class Game {
 	private List<String> voted = new ArrayList<String>();
     @Getter private boolean vip;
 
-    @Inject Server server;
     @Inject JavaPlugin plugin;
 
 	@SuppressWarnings("unchecked")
