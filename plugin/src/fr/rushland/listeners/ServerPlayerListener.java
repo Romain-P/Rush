@@ -501,7 +501,30 @@ public class ServerPlayerListener implements Listener {
 					player.closeInventory();				
 					player.teleport(new Location(Bukkit.getServer().getWorlds().get(0), -220, 106, -539));
 				}
-			}
+			} else if (inventory.getName().equals(serverStuff.getVipInventory().getName())) {
+                event.setCancelled(true);
+                if(clicked != null && clicked.getItemMeta() != null
+                        && clicked.getItemMeta().getLore() != null) {
+
+                    PlayerInventory playerInv = player.getInventory();
+
+                    if(clicked.equals(serverStuff.getSwordBonus())) {
+                        ItemStack sword = new ItemStack(Material.GOLD_SWORD);
+                        sword.getItemMeta().addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+                        sword.getItemMeta().addEnchant(Enchantment.KNOCKBACK, 1, true);
+                    } else if (clicked.equals(serverStuff.getChestplate())) {
+                        playerInv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+
+                        for(ItemStack item: player.getEquipment().getArmorContents())
+                            item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+                    }
+                    player.updateInventory();
+                    player.closeInventory();
+                }
+            }
 		}
 	}
 }

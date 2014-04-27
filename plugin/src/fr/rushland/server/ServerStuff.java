@@ -22,7 +22,8 @@ import org.bukkit.potion.PotionType;
 
 public class ServerStuff {
     @Getter public final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
-    @Getter private Inventory kitInv = null;
+    @Getter private Inventory kitInv;
+    @Getter private Inventory vipInventory;
 	@Getter private ItemStack warriorIcon;
     @Getter private ItemStack hunterIcon;
     @Getter private ItemStack trollIcon;
@@ -34,6 +35,10 @@ public class ServerStuff {
 
     @Getter private ItemStack lobbyItems;
     @Getter private ItemStack pvpItems;
+
+    //bonus
+    @Getter private ItemStack swordBonus;
+    @Getter private ItemStack chestplate;
 
     @Inject Config config;
     @Inject JavaPlugin plugin;
@@ -50,6 +55,13 @@ public class ServerStuff {
     	kitInv.setItem(5, mageIcon);
         kitInv.setItem(6, spiderIcon);
         kitInv.setItem(7, mastodonteIcon);
+
+        //on running rush & player vip 3
+        vipInventory = Bukkit.createInventory(null, 2, "Bonus");
+        initializeBonusIcons();
+
+        vipInventory.setItem(0, swordBonus);
+        vipInventory.setItem(1, chestplate);
     }
 
     public void intializeItems() {
@@ -87,7 +99,7 @@ public class ServerStuff {
     	warriorIcon = new ItemStack(Material.IRON_SWORD);
     	ItemMeta meta = warriorIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.GRAY + "Guerrier");
-        ArrayList<String> lore = new ArrayList<String>();
+        ArrayList<String> lore = new ArrayList<>();
         lore.add("Incarnez un barbard qui assome tout ce qui bouge!");
         meta.setLore(lore);
     	warriorIcon.setItemMeta(meta);
@@ -95,7 +107,7 @@ public class ServerStuff {
         hunterIcon = new ItemStack(Material.BOW);
         meta = hunterIcon.getItemMeta();
         meta.setDisplayName(ChatColor.GRAY + "Archer");
-        lore = new ArrayList<String>();
+        lore.clear();
         lore.add("Incarnez l'ame d'un archer puissant et insolite");
         meta.setLore(lore);
         hunterIcon.setItemMeta(meta);
@@ -106,7 +118,7 @@ public class ServerStuff {
         meta = hunterVipIcon.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "Archer Puissant");
         meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
-        lore = new ArrayList<>();
+        lore.clear();
         lore.add("Incarnez l'ame d'un archer surpuissant !!");
         lore.add(VIP_PREFIX);
         lore.add("2");
@@ -117,7 +129,7 @@ public class ServerStuff {
     	meta = trollIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.RED + "Troll");
     	meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
-        lore = new ArrayList<String>();
+        lore.clear();
         lore.add("Incarnez un devoreur surpuissant");
         lore.add(VIP_PREFIX);
         lore.add("1");
@@ -128,7 +140,7 @@ public class ServerStuff {
     	meta = ninjaIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.RED + "Ninja");
     	meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore = new ArrayList<String>();
+        lore.clear();
         lore.add("Incarnez la maitrise des techniques ninja");
         lore.add(VIP_PREFIX);
         lore.add("1");
@@ -141,7 +153,7 @@ public class ServerStuff {
     	meta = mageIcon.getItemMeta();
     	meta.setDisplayName(ChatColor.RED + "Mage");
     	meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
-        lore = new ArrayList<String>();
+        lore.clear();
         lore.add("Incarnez un puissant personnage magique");
         lore.add(VIP_PREFIX);
         lore.add("1");
@@ -152,7 +164,7 @@ public class ServerStuff {
         meta = spiderIcon.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "Spider");
         meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore = new ArrayList<String>();
+        lore.clear();
         lore.add("Incarnez la puissance d'une arreignee malefique");
         lore.add(VIP_PREFIX);
         lore.add("2");
@@ -166,7 +178,29 @@ public class ServerStuff {
         lore = new ArrayList<String>();
         lore.add("Incarnez une brute intombable!");
         lore.add(VIP_PREFIX);
-        lore.add("2");
+        lore.add("3");
+        meta.setLore(lore);
+        mastodonteIcon.setItemMeta(meta);
+    }
+
+    public void initializeBonusIcons() {
+        swordBonus = new ItemStack(Material.GOLD_SWORD);
+        ItemMeta meta = swordBonus.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Bonus arme en or !");
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("Cliquez sur ce bonus pour commencer votre partie!");
+        lore.add(VIP_PREFIX);
+        meta.setLore(lore);
+        swordBonus.setItemMeta(meta);
+
+        mastodonteIcon = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+        meta = mastodonteIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Bonus armure de mail");
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+        lore = new ArrayList<>();
+        lore.add("Cliquez sur ce bonus pour commencer votre partie!");
+        lore.add(VIP_PREFIX);
         meta.setLore(lore);
         mastodonteIcon.setItemMeta(meta);
     }

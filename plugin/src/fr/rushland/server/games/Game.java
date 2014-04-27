@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import fr.rushland.server.Server;
+import fr.rushland.server.ServerStuff;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
@@ -46,6 +47,8 @@ public class Game {
     @Getter private boolean vip;
 
     @Inject JavaPlugin plugin;
+    @Inject Server server;
+    @Inject ServerStuff serverStuff;
 
 	@SuppressWarnings("unchecked")
 	public Game(String name, String gameType, int maxPlayers, String waitMap, String map, List<String> teamNames,
@@ -195,6 +198,11 @@ public class Game {
 				Player player = Bukkit.getServer().getPlayer(playerName);
 				player.teleport(new Location(w, locs.get(i)[0], locs.get(i)[1], locs.get(i)[2]));
 				Utils.goNaked(player);
+
+                if(server.getVips().containsKey(player.getName())
+                        && server.getVips().get(player.getName()).getGrade() > 2)
+                    player.openInventory(serverStuff.getVipInventory());
+
 				w.setTime(14000);
 			}
 		}
