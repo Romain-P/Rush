@@ -1,4 +1,4 @@
-package fr.rushland.utils;
+package fr.rushland.database.data;
 
 import com.google.inject.Inject;
 import fr.rushland.database.Manager;
@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class DataManager extends Manager{
+public class PlayerManager extends Manager{
     @Inject JavaPlugin plugin;
     @Inject Server server;
 
