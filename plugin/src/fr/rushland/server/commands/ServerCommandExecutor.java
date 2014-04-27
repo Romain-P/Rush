@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ServerCommandExecutor implements CommandExecutor {
@@ -190,17 +191,23 @@ public class ServerCommandExecutor implements CommandExecutor {
 					if(!config.isMainServer())
 						Utils.goServer(player, "main", plugin);
 					else {
-						final Game game = server.getPlayerGame(name);
+                        int count = player.getEquipment().getArmorContents().length;
+                        boolean accepted = count < 4;
+                        if(!accepted)
+                            player.sendMessage("Vous ne pouvez pas en PVP!");
+                        else {
+                            final Game game = server.getPlayerGame(name);
 
-						if(game != null) {
-							Utils.goNaked(player);
-							game.remove(player);
-						}
+                            if(game != null) {
+                                Utils.goNaked(player);
+                                game.remove(player);
+                            }
 
-						Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
-						player.teleport(l);
+                            Location l = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
+                            player.teleport(l);
 
-                        serverStuff.giveStartingItems(player);
+                            serverStuff.giveStartingItems(player);
+                        }
 					}
 				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
@@ -212,8 +219,14 @@ public class ServerCommandExecutor implements CommandExecutor {
 				Player player = (Player) sender;
 
 				if(player.hasPermission("rushy2.stuff")) {
-					if(config.isMainServer())
-						player.openInventory(serverStuff.getKitInv());
+					if(config.isMainServer()) {
+                        int count = player.getEquipment().getArmorContents().length;
+                        boolean accepted = count < 4;
+                        if(!accepted)
+                            player.sendMessage("Vous ne pouvez pas en PVP!");
+                        else
+						    player.openInventory(serverStuff.getKitInv());
+                    }
 				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
 			} else

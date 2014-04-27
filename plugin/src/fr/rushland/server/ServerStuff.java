@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.google.inject.Inject;
 import fr.rushland.core.Config;
+import fr.rushland.enums.Constants;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -18,6 +19,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 public class ServerStuff {
@@ -32,6 +35,7 @@ public class ServerStuff {
     @Getter private ItemStack hunterVipIcon;
     @Getter private ItemStack spiderIcon;
     @Getter private ItemStack mastodonteIcon;
+    @Getter private ItemStack godIcon;
 
     @Getter private ItemStack lobbyItems;
     @Getter private ItemStack pvpItems;
@@ -42,9 +46,10 @@ public class ServerStuff {
 
     @Inject Config config;
     @Inject JavaPlugin plugin;
+    @Inject Server server;
     
     public void initializeStuff() {
-    	kitInv = Bukkit.createInventory(null, 8, "Kits");
+    	kitInv = Bukkit.createInventory(null, 9, "Kits");
     	intializeIcons();
 
     	kitInv.setItem(0, warriorIcon);
@@ -55,6 +60,7 @@ public class ServerStuff {
     	kitInv.setItem(5, mageIcon);
         kitInv.setItem(6, spiderIcon);
         kitInv.setItem(7, mastodonteIcon);
+        kitInv.setItem(8, godIcon);
 
         //on running rush & player vip 3
         vipInventory = Bukkit.createInventory(null, 2, "Bonus");
@@ -93,6 +99,45 @@ public class ServerStuff {
             }
 
         player.updateInventory();
+    }
+
+    public void giveVipBonus(Player player) {
+        if(server.getVips().containsKey(player.getName())) {
+            int grade = server.getVips().get(player.getName()).getGrade();
+            switch(grade) {
+                case 5:
+                    player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                    player.getEquipment().getChestplate().getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2, true);
+                    player.getInventory().addItem(new ItemStack(Material.SANDSTONE, 44));
+
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Constants.SECONDS_IN_YEAR.getValue(), 0));
+                case 4:
+                    ItemStack weapon = new ItemStack(Material.DIAMOND_PICKAXE);
+                    weapon.getItemMeta().addEnchant(Enchantment.DIG_SPEED, 2, true);
+
+                    player.getInventory().addItem(weapon);
+                    player.getInventory().addItem(new ItemStack(Material.ARROW, 3));
+
+                    ItemStack sword = new ItemStack(Material.IRON_SWORD);
+                    sword.getItemMeta().addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+                    sword.getItemMeta().addEnchant(Enchantment.KNOCKBACK, 1, true);
+
+                    player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+                    if(grade != 5)
+                        player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                    player.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+                    player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+
+                    for(ItemStack item: player.getEquipment().getArmorContents())
+                        item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+                case 3:
+                    player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
+                    player.getInventory().addItem(new ItemStack(Material.SANDSTONE, 20));
+                    if(grade == 3)
+                        player.openInventory(getVipInventory());
+                    break;
+            }
+        }
     }
 
     private void intializeIcons() {
@@ -181,6 +226,17 @@ public class ServerStuff {
         lore.add("3");
         meta.setLore(lore);
         mastodonteIcon.setItemMeta(meta);
+
+        godIcon = new ItemStack(Material.GOLDEN_APPLE);
+        meta = godIcon.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "God");
+        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
+        lore = new ArrayList<String>();
+        lore.add("Incarnez dieu!");
+        lore.add(VIP_PREFIX);
+        lore.add("5");
+        meta.setLore(lore);
+        godIcon.setItemMeta(meta);
     }
 
     public void initializeBonusIcons() {
@@ -194,14 +250,14 @@ public class ServerStuff {
         meta.setLore(lore);
         swordBonus.setItemMeta(meta);
 
-        mastodonteIcon = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-        meta = mastodonteIcon.getItemMeta();
+        chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+        meta = chestplate.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "Bonus armure de mail");
         meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
         lore = new ArrayList<>();
         lore.add("Cliquez sur ce bonus pour commencer votre partie!");
         lore.add(VIP_PREFIX);
         meta.setLore(lore);
-        mastodonteIcon.setItemMeta(meta);
+        chestplate.setItemMeta(meta);
     }
 }

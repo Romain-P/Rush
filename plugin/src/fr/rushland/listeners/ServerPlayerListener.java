@@ -287,7 +287,6 @@ public class ServerPlayerListener implements Listener {
                             return;
                         }
                     }
-
 					Utils.goNaked(player);
 					PlayerInventory playerInv = player.getInventory();
 
@@ -371,13 +370,41 @@ public class ServerPlayerListener implements Listener {
                         ItemStack magicSword = new ItemStack(Material.IRON_SWORD);
                         ItemMeta meta = magicSword.getItemMeta();
                         meta.setDisplayName(ChatColor.GRAY + "Masto Sword");
-                        ArrayList<String> lore = new ArrayList<String>();
+                        ArrayList<String> lore = new ArrayList<>();
                         lore.add("A powerful longSword");
                         meta.setLore(lore);
                         magicSword.setItemMeta(meta);
 
                         playerInv.addItem(magicSword);
                         playerInv.addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
+                        playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 10));
+
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 1));
+
+                    } else if(clicked.equals(serverStuff.getGodIcon())) {
+                        playerInv.setHelmet(new ItemStack(Material.IRON_HELMET));
+                        playerInv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+                        playerInv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+                        playerInv.setBoots(new ItemStack(Material.IRON_BOOTS));
+
+                        for(ItemStack item: player.getEquipment().getArmorContents())
+                            item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+
+                        ItemStack magicSword = new ItemStack(Material.DIAMOND_SWORD);
+                        ItemMeta meta = magicSword.getItemMeta();
+                        meta.setDisplayName(ChatColor.GRAY + "GOD Sword");
+                        ArrayList<String> lore = new ArrayList<String>();
+                        lore.add("A powerful longSword");
+                        meta.setLore(lore);
+                        meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
+                        magicSword.setItemMeta(meta);
+
+                        playerInv.addItem(magicSword);
+                        ItemStack stick = new ItemStack(Material.STICK);
+                        stick.getItemMeta().addEnchant(Enchantment.FIRE_ASPECT, 2, true);
+                        playerInv.addItem(stick);
+
+                        playerInv.addItem(new ItemStack(Material.GOLDEN_APPLE, 5));
                         playerInv.addItem(new ItemStack(Material.COOKED_BEEF, 10));
 
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Constants.SECONDS_IN_YEAR.getValue(), 1));
@@ -520,6 +547,7 @@ public class ServerPlayerListener implements Listener {
 
                         for(ItemStack item: player.getEquipment().getArmorContents())
                             item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+
                     }
                     player.updateInventory();
                     player.closeInventory();

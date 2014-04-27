@@ -198,11 +198,7 @@ public class Game {
 				Player player = Bukkit.getServer().getPlayer(playerName);
 				player.teleport(new Location(w, locs.get(i)[0], locs.get(i)[1], locs.get(i)[2]));
 				Utils.goNaked(player);
-
-                if(server.getVips().containsKey(player.getName())
-                        && server.getVips().get(player.getName()).getGrade() > 2)
-                    player.openInventory(serverStuff.getVipInventory());
-
+                serverStuff.giveVipBonus(player);
 				w.setTime(14000);
 			}
 		}
