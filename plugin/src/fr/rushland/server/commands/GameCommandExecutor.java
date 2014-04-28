@@ -3,7 +3,6 @@ package fr.rushland.server.commands;
 import java.util.List;
 
 import com.google.inject.Inject;
-import fr.rushland.database.data.PlayerManager;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
 import fr.rushland.enums.LangValues;
@@ -13,7 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class GameCommandExecutor implements CommandExecutor {
     @Inject Server server;

@@ -1,5 +1,5 @@
 name: Rush
-version: 1.0.1
+version: 1.0.5
 description: Rushland plugin
 author: Romain-p
 main: fr.rushland.core.Main
@@ -37,6 +37,9 @@ commands:
       usage: /<command>
    stuff:
       description: To fight some bitches
+      usage: /<command>
+   points:
+      description: To see his points
       usage: /<command>
 permissions:
    rushy2.*:
