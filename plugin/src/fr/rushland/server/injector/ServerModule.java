@@ -10,6 +10,6 @@ public class ServerModule extends AbstractModule {
     protected void configure() {
         bind(Server.class).asEagerSingleton();
         bind(ServerStuff.class).asEagerSingleton();
-        bind(ClientServer.class).in(Singleton.class);
+        bind(ClientServer.class).asEagerSingleton();
     }
 }

@@ -118,14 +118,15 @@ public class ServerPlayerListener implements Listener {
 			String name = player.getName();
 			Game game = server.getPlayerGame(name);
 
-			if(game != null)
+			if(game != null) {
 				Utils.msgWorld(player, event.getDeathMessage());
+                if(player != null)
+                    server.getPlayer(player.getName()).losePoints(player, 1);
+            }
 
 			event.setDeathMessage("");
 
 			if(config.isMainServer()) {
-                if(player != null)
-                    server.getPlayer(player.getName()).losePoints(player, 1);
 				event.getDrops().clear();
             }
 		}
@@ -238,7 +239,8 @@ public class ServerPlayerListener implements Listener {
         if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player attacker = (Player) e.getDamager();
 
-            if((attacker.getItemInHand() != null && attacker.getItemInHand().getItemMeta().getDisplayName() != null
+            if((attacker.getItemInHand() != null && attacker.getItemInHand().getItemMeta() != null &&
+                    attacker.getItemInHand().getItemMeta().getDisplayName() != null
                 && !attacker.getItemInHand().getItemMeta().getDisplayName().toLowerCase().contains("spider"))) {
                 Player target = (Player) e.getEntity();
 

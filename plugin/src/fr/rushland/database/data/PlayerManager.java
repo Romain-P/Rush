@@ -17,7 +17,7 @@ public class PlayerManager extends Manager{
         try {
             PreparedStatement statement = createStatement(
                     "INSERT INTO players(uuid, name, points, grade, gradeTime, boughtGradesCount, adminLevel, bannedTime, bannedAuthor, bannedReason, banCount, registrationTime)" +
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? NOW())");
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
             statement.setString(1, player.getUuid());
             statement.setString(2, player.getName());
             statement.setInt(3, player.getPoints());

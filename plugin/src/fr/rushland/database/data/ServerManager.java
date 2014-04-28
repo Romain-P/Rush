@@ -13,7 +13,7 @@ public class ServerManager extends Manager {
     public void update(ClientServer server) {
         try {
             PreparedStatement statement = createStatement(
-                    "REPLACE INTO servers VALUES (?, ?, ?, ?, ?");
+                    "REPLACE INTO servers(id, online, players, uptime, attribute) VALUES(?, ?, ?, ?, ?);");
             statement.setString(1, server.getId());
             statement.setInt(2, server.isOnline() ? 1:0);
             statement.setInt(3, server.getPlayers());

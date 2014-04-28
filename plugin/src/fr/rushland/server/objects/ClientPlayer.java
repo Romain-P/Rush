@@ -48,13 +48,11 @@ public class ClientPlayer {
 
     public void winPoints(Player player, int points) {
         this.points += points;
-        player.sendMessage("Vous venez de gagner "+points+" points boutiques ! (/points pour voir vos points)");
         save();
     }
 
     public void losePoints(Player player, int points) {
         this.points -= points;
-        player.sendMessage("Vous venez de perdre "+points+" points boutiques ! (/points pour voir vos points)");
         save();
     }
 

@@ -22,19 +22,20 @@ public class ClientServer {
     @Inject ServerManager manager;
 
     public ClientServer() {
-        this.id = Bukkit.getServer().getServerId();
-        this.startedTime = System.currentTimeMillis();
-        this.attribute = config.isMainServer() ? "Main Server" : "Lobby";
+        this.startedTime = System.currentTimeMillis()/1000;
+        this.online = true;
         this.worker = Executors.newSingleThreadScheduledExecutor();
      }
 
     public void initialize() {
+        this.id = "port: "+Bukkit.getServer().getPort();
+        this.attribute = config.isMainServer() ? "Main Server" : "Lobby";
         this.worker.scheduleWithFixedDelay(new Runnable() {
             public void run() {
                 players = Bukkit.getServer().getOnlinePlayers().length;
                 update();
             }
-        }, 1, 1, TimeUnit.MINUTES);
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
     public void close() {
@@ -47,21 +48,27 @@ public class ClientServer {
     }
 
     public String getUptime() {
-        double currentTime = System.currentTimeMillis()/1000;
-        double days = 0, hours = 0, minutes = 0;
+        if(this.startedTime == -1)
+            return "offline";
+
+        long uptime = (System.currentTimeMillis()/1000 - startedTime);
+        int days = 0, hours = 0, minutes = 0;
 
         final int secondsInDay = 24*60*60*60;
         final int secondsInHour = 1*60*60;
         final int secondsInMinute = 60;
 
-        for(double i=currentTime; i>= secondsInDay; currentTime-=secondsInDay)
-            days++;
-        for(double i=currentTime; i>= secondsInHour; currentTime-=secondsInHour)
-            hours++;
-        for(double i=currentTime; i>= secondsInMinute; currentTime-=secondsInMinute)
-            minutes++;
+        for(double i=uptime; i>= secondsInDay; uptime-=secondsInDay) {
+            i = uptime; days++;
+        }
+        for(double i=uptime; i>= secondsInHour; uptime-=secondsInHour) {
+            i = uptime; hours++;
+        }
+        for(double i=uptime; i>= secondsInMinute; uptime-=secondsInMinute) {
+            i = uptime; minutes++;
+        }
 
-        return (int)days+"j "+(int)hours+"h "+(int)minutes+"min";
+        return days+"j "+hours+"h "+minutes+"min";
     }
 
     public void update() {
