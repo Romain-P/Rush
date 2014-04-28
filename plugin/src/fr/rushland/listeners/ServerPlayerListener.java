@@ -1,6 +1,5 @@
 package fr.rushland.listeners;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -13,7 +12,7 @@ import fr.rushland.enums.Constants;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.server.objects.Client;
+import fr.rushland.server.objects.ClientPlayer;
 import fr.rushland.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -31,7 +30,6 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -50,7 +48,7 @@ public class ServerPlayerListener implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 		if(database.isEnabled()) {
-            Client client = server.getPlayer(player.getName(), true);
+            ClientPlayer client = server.getPlayer(player.getName(), true);
             if(client.isBanned()) {
                 manager.reloadVars(client);
                 String message = client.getBannedTime() == -1

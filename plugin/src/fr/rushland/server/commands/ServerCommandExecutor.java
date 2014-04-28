@@ -8,7 +8,7 @@ import fr.rushland.enums.LangValues;
 import fr.rushland.server.Server;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
-import fr.rushland.server.objects.Client;
+import fr.rushland.server.objects.ClientPlayer;
 import fr.rushland.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -91,7 +91,7 @@ public class ServerCommandExecutor implements CommandExecutor {
 	void vip(String[] args, CommandSender sender) {
 		if(args.length >= 2) {
 			Player vipPlayer = Bukkit.getServer().getPlayer(args[1]);
-            Client client = server.getPlayer(args[1]);
+            ClientPlayer client = server.getPlayer(args[1]);
 
 			if(args[0].equalsIgnoreCase("add"))  {
                 if(client != null) {

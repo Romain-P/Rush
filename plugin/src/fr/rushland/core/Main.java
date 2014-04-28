@@ -13,6 +13,7 @@ import fr.rushland.listeners.injector.ListenerModule;
 import fr.rushland.server.Server;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.injector.ServerModule;
+import fr.rushland.server.objects.ClientServer;
 import fr.rushland.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
     @Inject Server server;
+    @Inject ClientServer client;
     @Inject Database database;
 
 	@Override
@@ -38,6 +40,7 @@ public class Main extends JavaPlugin {
 
         getLogger().info("initializing rush plugin");
         injector.getInstance(Server.class).initialize();
+        injector.getInstance(ClientServer.class).initialize();
 
         getLogger().info("plugin Rush enabled successfully!");
     }
@@ -67,6 +70,7 @@ public class Main extends JavaPlugin {
 			sign.update(true);
 		}
 
+        client.close();
         database.closeConnection();
 		getLogger().info("plugin Rush disabled successfully!");
 	}

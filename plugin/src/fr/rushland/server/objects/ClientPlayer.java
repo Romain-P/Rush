@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
 
-public class Client {
+public class ClientPlayer {
     @Getter @Setter private String uuid, name;
     @Getter @Setter private int  adminLevel;
     @Getter @Setter private long gradeTime;
@@ -23,8 +23,8 @@ public class Client {
 
     @Inject PlayerManager manager;
 
-    public Client(String uuid, String name, int grade, long gradeTime, int boughtGradesCount, int adminLevel,
-                  long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
+    public ClientPlayer(String uuid, String name, int grade, long gradeTime, int boughtGradesCount, int adminLevel,
+                        long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
         this.uuid = uuid;
         this.name = name;
         this.grade = grade;

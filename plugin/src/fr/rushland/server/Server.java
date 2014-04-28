@@ -11,7 +11,7 @@ import fr.rushland.server.commands.GameCommandExecutor;
 import fr.rushland.server.commands.ServerCommandExecutor;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
-import fr.rushland.server.objects.Client;
+import fr.rushland.server.objects.ClientPlayer;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
     @Getter private List<GameType> gameTypes;
     @Getter private List<Game> games;
-    @Getter private Map<String, Client> players;
+    @Getter private Map<String, ClientPlayer> players;
 
     @Inject JavaPlugin plugin;
     @Inject Set<Listener> listeners;
@@ -217,8 +217,8 @@ public class Server {
         }
     }
 
-    public Client getPlayer(String name, boolean create) {
-        Client player = this.players.get(name);
+    public ClientPlayer getPlayer(String name, boolean create) {
+        ClientPlayer player = this.players.get(name);
         if(player == null) {
             player = manager.load(name);
 
@@ -232,12 +232,12 @@ public class Server {
         return player;
     }
 
-    public Client getPlayer(String name) {
+    public ClientPlayer getPlayer(String name) {
         return getPlayer(name, false);
     }
 
-    private Client createPlayer(String name) {
-        Client player = new Client("", name, 0, 0, 0, 0, 0, "", "", 0);
+    private ClientPlayer createPlayer(String name) {
+        ClientPlayer player = new ClientPlayer("", name, 0, 0, 0, 0, 0, "", "", 0);
         manager.create(player);
         return player;
     }

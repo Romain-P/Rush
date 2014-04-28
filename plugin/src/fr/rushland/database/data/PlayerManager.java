@@ -3,7 +3,7 @@ package fr.rushland.database.data;
 import com.google.inject.Inject;
 import fr.rushland.database.Manager;
 import fr.rushland.server.Server;
-import fr.rushland.server.objects.Client;
+import fr.rushland.server.objects.ClientPlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ public class PlayerManager extends Manager{
     @Inject JavaPlugin plugin;
     @Inject Server server;
 
-	public void create(Client player) {
+	public void create(ClientPlayer player) {
         try {
             PreparedStatement statement = createStatement(
                     "INSERT INTO players(uuid, name, grade, gradeTime, boughtGradesCount, adminLevel, bannedTime, bannedAuthor, bannedReason, banCount, registrationTime)" +
@@ -34,13 +34,13 @@ public class PlayerManager extends Manager{
         }
 	}
 
-    public Client load(String name) {
-        Client player = null;
+    public ClientPlayer load(String name) {
+        ClientPlayer player = null;
         try {
             ResultSet result = getData("SELECT * FROM players WHERE name = '"+name+"';");
 
             if(result.next()) {
-                player = new Client(
+                player = new ClientPlayer(
                     result.getString("uuid"),
                     result.getString("name"),
                     result.getInt("grade"),
@@ -59,7 +59,7 @@ public class PlayerManager extends Manager{
         return player;
     }
 
-    public void reloadVars(Client player) {
+    public void reloadVars(ClientPlayer player) {
         try {
             ResultSet result = getData("SELECT * FROM players WHERE name = '"+player.getName()+"';");
 
@@ -81,7 +81,7 @@ public class PlayerManager extends Manager{
         }
     }
 
-    public void update(Client player) {
+    public void update(ClientPlayer player) {
         //temporary, and it will update just name etc.. & where uuid = ?..
         try {
             PreparedStatement statement = createStatement(
