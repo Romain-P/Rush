@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GameCommandExecutor implements CommandExecutor {
-    @Inject JavaPlugin plugin;
     @Inject Server server;
-    @Inject
-    PlayerManager databaseUtils;
 
 	private void forceStartWid(String[] args, CommandSender sender) {
 		if(args.length >= 2) {

@@ -31,6 +31,7 @@ public class ClientServer {
     public void initialize() {
         this.worker.scheduleWithFixedDelay(new Runnable() {
             public void run() {
+                players = Bukkit.getServer().getOnlinePlayers().length;
                 update();
             }
         }, 1, 1, TimeUnit.MINUTES);
@@ -64,7 +65,6 @@ public class ClientServer {
     }
 
     public void update() {
-        this.players = Bukkit.getServer().getOnlinePlayers().length;
         manager.update(this);
     }
 }

@@ -123,8 +123,11 @@ public class ServerPlayerListener implements Listener {
 
 			event.setDeathMessage("");
 
-			if(config.isMainServer())
+			if(config.isMainServer()) {
+                if(player != null)
+                    server.getPlayer(player.getName()).losePoints(player, 1);
 				event.getDrops().clear();
+            }
 		}
 	}
 

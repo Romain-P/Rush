@@ -67,7 +67,7 @@ public class Server {
             plugin.getCommand(command).setExecutor(executor);
         }
 
-        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff"};
+        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff", "points"};
         for(String command: serverCommands) {
             ServerCommandExecutor executor = new ServerCommandExecutor();
             injector.injectMembers(executor);
@@ -237,7 +237,7 @@ public class Server {
     }
 
     private ClientPlayer createPlayer(String name) {
-        ClientPlayer player = new ClientPlayer("", name, 0, 0, 0, 0, 0, "", "", 0);
+        ClientPlayer player = new ClientPlayer(name);
         manager.create(player);
         return player;
     }

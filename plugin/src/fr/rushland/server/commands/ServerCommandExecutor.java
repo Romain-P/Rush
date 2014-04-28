@@ -170,6 +170,15 @@ public class ServerCommandExecutor implements CommandExecutor {
 			} else
 				sender.sendMessage(LangValues.DB_DISABLED.getValue());
 
+        } else if(cmd.getName().equalsIgnoreCase("points")) {
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
+                if(player != null) {
+                    ClientPlayer client = server.getPlayer(player.getName());
+                    player.sendMessage("Vous possedez actuellement "+client.getPoints()+ " points boutiques !");
+                }
+            } else
+                sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 		} else if(cmd.getName().equalsIgnoreCase("connect")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;

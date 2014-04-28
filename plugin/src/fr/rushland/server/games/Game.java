@@ -303,14 +303,20 @@ public class Game {
 							winPlayerList += winPlayerName;
 							if(i != teams[lastTeamIndex].size()-1)
 								winPlayerList += ", ";
+
+                            Player w = Bukkit.getServer().getPlayer(winPlayerName);
+                            if(w != null)
+                                server.getPlayer(winPlayerName).winPoints(w, 10);
 						}
 					}
-					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + winPlayerList + " a gagne le " + gameType + " " + name + "!");
+					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + winPlayerList + " ont/a gagne le " + gameType + " " + name + "!");
 				} else
 					Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "Le " + gameType + " " + name + " s'est termine sans aucun vainqueur!");
 
 				reset();
 			}
+            if(player != null)
+                server.getPlayer(player.getName()).losePoints(player, 10);
 		} else
 			msgGame(ChatColor.GREEN + playerName + " a quitte la partie");
 	}

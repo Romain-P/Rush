@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientPlayer {
     @Getter @Setter private String uuid, name;
     @Getter @Setter private int  adminLevel;
+    @Getter @Setter private int points;
     @Getter @Setter private long gradeTime;
     @Setter private int grade;
     @Getter @Setter private int boughtGradesCount;
@@ -23,10 +24,11 @@ public class ClientPlayer {
 
     @Inject PlayerManager manager;
 
-    public ClientPlayer(String uuid, String name, int grade, long gradeTime, int boughtGradesCount, int adminLevel,
+    public ClientPlayer(String uuid, String name, int points, int grade, long gradeTime, int boughtGradesCount, int adminLevel,
                         long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
         this.uuid = uuid;
         this.name = name;
+        this.points = points;
         this.grade = grade;
         this.gradeTime = gradeTime;
         this.boughtGradesCount = boughtGradesCount;
@@ -35,6 +37,25 @@ public class ClientPlayer {
         this.bannedAuthor = bannedAuthor;
         this.bannedReason = bannedReason;
         this.banCount = banCount;
+    }
+
+    public ClientPlayer(String name) {
+        this.uuid = "";
+        this.name = name;
+        this.bannedAuthor = "";
+        this.bannedReason = "";
+    }
+
+    public void winPoints(Player player, int points) {
+        this.points += points;
+        player.sendMessage("Vous venez de gagner "+points+" points boutiques ! (/points pour voir vos points)");
+        save();
+    }
+
+    public void losePoints(Player player, int points) {
+        this.points -= points;
+        player.sendMessage("Vous venez de perdre "+points+" points boutiques ! (/points pour voir vos points)");
+        save();
     }
 
     public void ban(long time, TimeUnit unity, String author, String reason) {
