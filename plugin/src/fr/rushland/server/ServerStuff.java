@@ -1,6 +1,9 @@
 package fr.rushland.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 import fr.rushland.core.Config;
@@ -24,78 +27,147 @@ import org.bukkit.potion.PotionType;
 
 public class ServerStuff {
     @Getter public final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
-    @Getter private Inventory kitInv;
-    @Getter private Inventory vipInventory;
-	@Getter private ItemStack warriorIcon;
-    @Getter private ItemStack hunterIcon;
-    @Getter private ItemStack trollIcon;
-    @Getter private ItemStack ninjaIcon;
-    @Getter private ItemStack mageIcon;
-    @Getter private ItemStack hunterVipIcon;
-    @Getter private ItemStack spiderIcon;
-    @Getter private ItemStack mastodonteIcon;
-    @Getter private ItemStack godIcon;
+    @Getter private Map<String, Inventory> inventories;
+    @Getter private Map<String, ItemStack> items;
+    @Getter private Map<String, ItemStack> bonusItems;
 
-    @Getter private ItemStack lobbyItems;
-    @Getter private ItemStack pvpItems;
-
-    //bonus
-    @Getter private ItemStack swordBonus;
-    @Getter private ItemStack chestplate;
+    //special items
+    @Getter private ItemStack lobbyItem;
+    @Getter private ItemStack pvpItem;
 
     @Inject Config config;
     @Inject JavaPlugin plugin;
     @Inject Server server;
+
+    public ServerStuff() {
+        this.inventories = new HashMap<>();
+        this.items = new HashMap<>();
+        this.bonusItems = new HashMap<>();
+    }
     
-    public void initializeStuff() {
-    	kitInv = Bukkit.createInventory(null, 9, "Kits");
-    	intializeIcons();
-
-    	kitInv.setItem(0, warriorIcon);
-    	kitInv.setItem(1, hunterIcon);
-        kitInv.setItem(2, hunterVipIcon);
-    	kitInv.setItem(3, trollIcon);
-    	kitInv.setItem(4, ninjaIcon);
-    	kitInv.setItem(5, mageIcon);
-        kitInv.setItem(6, spiderIcon);
-        kitInv.setItem(7, mastodonteIcon);
-        kitInv.setItem(8, godIcon);
-
+    public void initializeStuffs() {
+    	Inventory kits = Bukkit.createInventory(null, 9, "Kits");
         //on running rush & player vip 3
-        vipInventory = Bukkit.createInventory(null, 9, "Bonus");
-        initializeBonusIcons();
+        Inventory bonus = Bukkit.createInventory(null, 9, "Bonus");
+        this.inventories.put("Kits", kits);
+        this.inventories.put("Bonus", bonus);
 
-        vipInventory.setItem(0, swordBonus);
-        vipInventory.setItem(1, chestplate);
+    	intializeIcons();
+    	for(ItemStack item: this.items.values())
+            kits.addItem(item);
+
+        initializeBonusIcons();
+        for(ItemStack item: this.bonusItems.values())
+            bonus.addItem(item);
     }
 
-    public void intializeItems() {
-        lobbyItems = new ItemStack(Material.COMPASS);
-        ItemMeta meta = lobbyItems.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Teleportation au Lobby");
-        lobbyItems.setItemMeta(meta);
+    public void initializeSpecialItems() {
+        this.lobbyItem = createCustomItem(
+                Material.COMPASS, -1,
+                ChatColor.RED+"Teleportation au spawn",
+                new String[] {"Cliquez pour vous teleporter!", VIP_PREFIX}
+        );
 
-        pvpItems = new ItemStack(Material.WOOD_SWORD);
-        meta = pvpItems.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Lancer le PVP");
-        pvpItems.setItemMeta(meta);
+        this.pvpItem = createCustomItem(
+                Material.WOOD_SWORD, -1,
+                ChatColor.RED+"Lancer le PVP",
+                new String[] {"Cliquez pour voir les classes!", VIP_PREFIX}
+        );
+    }
+
+    private void intializeIcons() {
+        this.items.put("Guerrier", createCustomItem(
+                Material.IRON_SWORD, -1,
+                ChatColor.GRAY+"Guerrier",
+                new String[] {"Incarnez un barbard qui assome tout ce qui bouge!"}
+        ));
+
+        this.items.put("Archer", createCustomItem(
+                Material.BOW, -1,
+                ChatColor.GRAY+"Archer",
+                new String[] {"Incarnez l'ame d'un archer puissant!"}
+        ));
+
+        //vip now yo
+        Map<Enchantment, Integer> map = new HashMap<>();
+        map.put(Enchantment.KNOCKBACK, 2);
+
+        this.items.put("Archer puissant", createCustomItem(
+                Material.BOW, -1,
+                ChatColor.RED+"Archer puissant",
+                new String[] {"Incarnez l'ame d'un archer puissant!", VIP_PREFIX, "2"},
+                map
+        ));
+
+        this.items.put("Troll", createCustomItem(
+                Material.STICK, -1,
+                ChatColor.RED+"Troll",
+                new String[] {"Incarnez un devoreur puissant!", VIP_PREFIX, "1"},
+                map
+        ));
+
+        this.items.put("Ninja", createCustomItem(
+                Material.IRON_HOE, -1,
+                ChatColor.RED+"Ninja",
+                new String[] {"Incarnez la maitrise des techniques ninjas!", VIP_PREFIX, "1"},
+                map
+        ));
+
+        this.items.put("Mage", createCustomItem(
+                new Potion(PotionType.INSTANT_DAMAGE), 1,
+                ChatColor.RED+"Mage",
+                new String[] {"Incarnez un puissant personnage magique!", VIP_PREFIX, "1"},
+                map
+        ));
+
+        this.items.put("Spider", createCustomItem(
+                Material.WEB, -1,
+                ChatColor.RED + "Spider",
+                new String[]{"Incarnez la puissance d'un arreignee malefique!", VIP_PREFIX, "2"},
+                map
+        ));
+
+        this.items.put("Mastodonte", createCustomItem(
+                Material.IRON_SWORD, -1,
+                ChatColor.RED + "Mastodonte",
+                new String[]{"Incarnez une brute intombable!", VIP_PREFIX, "3"},
+                map
+        ));
+
+        this.items.put("God", createCustomItem(
+                Material.GOLDEN_APPLE, -1,
+                ChatColor.RED + "God",
+                new String[]{"Incarnez dieu!", VIP_PREFIX, "5"},
+                map
+        ));
+    }
+
+    public void initializeBonusIcons() {
+        Map<Enchantment, Integer> map = new HashMap<>();
+        map.put(Enchantment.KNOCKBACK, 2);
+
+        this.bonusItems.put("Bonus1", createCustomItem(
+                Material.GOLD_SWORD, -1,
+                ChatColor.RED+"Bonus arme en or !",
+                new String[] {"Cliquez sur ce bonus pour commencer votre partie!", VIP_PREFIX},
+                map
+        ));
+
+        this.bonusItems.put("Bonus2", createCustomItem(
+                Material.CHAINMAIL_CHESTPLATE, -1,
+                ChatColor.RED + "Bonus armure en mail!",
+                new String[]{"Cliquez sur ce bonus pour commencer votre partie!", VIP_PREFIX},
+                map
+        ));
     }
 
     public void giveStartingItems(Player player) {
         Utils.goNaked(player);
-        PlayerInventory inv = player.getInventory();
-        try {
-            inv.addItem(lobbyItems);
-        } catch(Exception e) {
-            plugin.getLogger().warning("error when trying to add lobbyItems");
-        }
+        PlayerInventory inventory = player.getInventory();
 
+        inventory.addItem(lobbyItem);
         if (config.isMainServer())
-            try {
-                inv.addItem(pvpItems);
-            } catch(Exception e) {
-                plugin.getLogger().warning("error when trying to add pvpItems");
-            }
+            inventory.addItem(pvpItem);
 
         player.updateInventory();
     }
@@ -103,23 +175,27 @@ public class ServerStuff {
     public void giveVipBonus(Player player) {
         if(server.getPlayers().containsKey(player.getName())) {
             int grade = server.getPlayers().get(player.getName()).getGrade();
+            Map<Enchantment, Integer> enchantments = new HashMap<>();
+
             switch(grade) {
                 case 5:
                     player.getInventory().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-                    player.getEquipment().getChestplate().getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2, true);
+                    addEnchantment(player.getEquipment().getChestplate(), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
                     player.getInventory().addItem(new ItemStack(Material.SANDSTONE, 44));
 
                     player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, Constants.SECONDS_IN_YEAR.getValue(), 0));
                 case 4:
                     ItemStack weapon = new ItemStack(Material.DIAMOND_PICKAXE);
-                    weapon.getItemMeta().addEnchant(Enchantment.DIG_SPEED, 2, true);
+                    addEnchantment(weapon, Enchantment.DIG_SPEED, 2);
 
                     player.getInventory().addItem(weapon);
                     player.getInventory().addItem(new ItemStack(Material.ARROW, 3));
 
                     ItemStack sword = new ItemStack(Material.IRON_SWORD);
-                    sword.getItemMeta().addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-                    sword.getItemMeta().addEnchant(Enchantment.KNOCKBACK, 1, true);
+                    enchantments.clear();
+                    enchantments.put(Enchantment.DAMAGE_ALL, 1);
+                    enchantments.put(Enchantment.KNOCKBACK, 1);
+                    addEnchantment(sword, enchantments);
 
                     player.getInventory().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
                     if(grade != 5)
@@ -128,135 +204,84 @@ public class ServerStuff {
                     player.getInventory().setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
 
                     for(ItemStack item: player.getEquipment().getArmorContents())
-                        item.getItemMeta().addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+                        addEnchantment(item, Enchantment.PROTECTION_ENVIRONMENTAL, 1);
                 case 3:
                     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
                     player.getInventory().addItem(new ItemStack(Material.SANDSTONE, 20));
                     if(grade == 3)
-                        player.openInventory(getVipInventory());
+                        player.openInventory(inventories.get("bonus"));
                     break;
             }
         }
     }
 
-    private void intializeIcons() {
-    	warriorIcon = new ItemStack(Material.IRON_SWORD);
-    	ItemMeta meta = warriorIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.GRAY + "Guerrier");
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add("Incarnez un barbard qui assome tout ce qui bouge!");
-        meta.setLore(lore);
-    	warriorIcon.setItemMeta(meta);
+    public ItemStack createCustomItem(Material material, int quantity, String name,
+                                      String[] lores, Map<Enchantment, Integer> enchantments) {
+        ItemStack item = quantity > 0 ? new ItemStack(material, quantity): new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
 
-        hunterIcon = new ItemStack(Material.BOW);
-        meta = hunterIcon.getItemMeta();
-        meta.setDisplayName(ChatColor.GRAY + "Archer");
-        lore.clear();
-        lore.add("Incarnez l'ame d'un archer puissant et insolite");
-        meta.setLore(lore);
-        hunterIcon.setItemMeta(meta);
+        meta.setDisplayName(name);
 
-    	//vip now yo
+        List<String> list = new ArrayList<>();
+        for(String s: lores)
+            list.add(s);
+        meta.setLore(list);
 
-        hunterVipIcon = new ItemStack(Material.BOW);
-        meta = hunterVipIcon.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Archer Puissant");
-        meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
-        lore.clear();
-        lore.add("Incarnez l'ame d'un archer surpuissant !!");
-        lore.add(VIP_PREFIX);
-        lore.add("2");
-        meta.setLore(lore);
-        hunterVipIcon.setItemMeta(meta);
-
-    	trollIcon = new ItemStack(Material.STICK);
-    	meta = trollIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.RED + "Troll");
-    	meta.addEnchant(Enchantment.KNOCKBACK, 2, true);
-        lore.clear();
-        lore.add("Incarnez un devoreur surpuissant");
-        lore.add(VIP_PREFIX);
-        lore.add("1");
-        meta.setLore(lore);
-    	trollIcon.setItemMeta(meta);
-    	
-    	ninjaIcon = new ItemStack(Material.IRON_HOE);
-    	meta = ninjaIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.RED + "Ninja");
-    	meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore.clear();
-        lore.add("Incarnez la maitrise des techniques ninja");
-        lore.add(VIP_PREFIX);
-        lore.add("1");
-        meta.setLore(lore);
-    	ninjaIcon.setItemMeta(meta);
-    	
-        Potion potion = new Potion(PotionType.INSTANT_DAMAGE);
-        ItemStack potionItem = potion.toItemStack(1);
-    	mageIcon = potionItem;
-    	meta = mageIcon.getItemMeta();
-    	meta.setDisplayName(ChatColor.RED + "Mage");
-    	meta.addEnchant(Enchantment.DAMAGE_ALL, 2, true);
-        lore.clear();
-        lore.add("Incarnez un puissant personnage magique");
-        lore.add(VIP_PREFIX);
-        lore.add("1");
-        meta.setLore(lore);
-    	mageIcon.setItemMeta(meta);
-
-        spiderIcon = new ItemStack(Material.WEB);
-        meta = spiderIcon.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Spider");
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore.clear();
-        lore.add("Incarnez la puissance d'une arreignee malefique");
-        lore.add(VIP_PREFIX);
-        lore.add("2");
-        meta.setLore(lore);
-        spiderIcon.setItemMeta(meta);
-
-        mastodonteIcon = new ItemStack(Material.IRON_SWORD);
-        meta = mastodonteIcon.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Mastodonte");
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore = new ArrayList<String>();
-        lore.add("Incarnez une brute intombable!");
-        lore.add(VIP_PREFIX);
-        lore.add("3");
-        meta.setLore(lore);
-        mastodonteIcon.setItemMeta(meta);
-
-        godIcon = new ItemStack(Material.GOLDEN_APPLE);
-        meta = godIcon.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "God");
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 3, true);
-        lore = new ArrayList<String>();
-        lore.add("Incarnez dieu!");
-        lore.add(VIP_PREFIX);
-        lore.add("5");
-        meta.setLore(lore);
-        godIcon.setItemMeta(meta);
+        if(enchantments != null)
+            for(Map.Entry<Enchantment, Integer> entry: enchantments.entrySet())
+                meta.addEnchant(entry.getKey(), entry.getValue(), true);
+        item.setItemMeta(meta);
+        return item;
     }
 
-    public void initializeBonusIcons() {
-        swordBonus = new ItemStack(Material.GOLD_SWORD);
-        ItemMeta meta = swordBonus.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Bonus arme en or !");
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-        ArrayList<String> lore = new ArrayList<>();
-        lore.add("Cliquez sur ce bonus pour commencer votre partie!");
-        lore.add(VIP_PREFIX);
-        meta.setLore(lore);
-        swordBonus.setItemMeta(meta);
+    public ItemStack createCustomItem(Potion material, int quantity, String name,
+                                      String[] lores, Map<Enchantment, Integer> enchantments) {
+        ItemStack item = material.toItemStack(quantity);
+        ItemMeta meta = item.getItemMeta();
 
-        chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-        meta = chestplate.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "Bonus armure de mail");
-        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-        lore = new ArrayList<>();
-        lore.add("Cliquez sur ce bonus pour commencer votre partie!");
-        lore.add(VIP_PREFIX);
-        meta.setLore(lore);
-        chestplate.setItemMeta(meta);
+        meta.setDisplayName(name);
+
+        List<String> list = new ArrayList<>();
+        for(String s: lores)
+            list.add(s);
+        meta.setLore(list);
+
+        if(enchantments != null)
+            for(Map.Entry<Enchantment, Integer> entry: enchantments.entrySet())
+                meta.addEnchant(entry.getKey(), entry.getValue(), true);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public ItemStack createCustomItem(Material material, int quantity, String name, String[] lores) {
+        return createCustomItem(material, quantity, name, lores, null);
+    }
+
+    public void addEnchantment(ItemStack item, Enchantment enchantment, int level) {
+        ItemMeta meta = item.getItemMeta();
+
+        meta.setDisplayName("Powerful");
+        List<String> list = new ArrayList<>();
+        list.add("BUFFED");
+
+        meta.setLore(list);
+
+        meta.addEnchant(enchantment, level, true);
+        item.setItemMeta(meta);
+    }
+
+    public void addEnchantment(ItemStack item, Map<Enchantment, Integer> enchantments) {
+        ItemMeta meta = item.getItemMeta();
+
+        meta.setDisplayName("Powerful");
+        List<String> list = new ArrayList<>();
+        list.add("BUFFED");
+
+        meta.setLore(list);
+
+        if(enchantments != null)
+            for(Map.Entry<Enchantment, Integer> entry: enchantments.entrySet())
+                meta.addEnchant(entry.getKey(), entry.getValue(), true);
+        item.setItemMeta(meta);
     }
 }

@@ -14,7 +14,6 @@ import fr.rushland.server.games.GameType;
 import fr.rushland.server.objects.Client;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,8 +49,8 @@ public class Server {
             plugin.getServer().getPluginManager().registerEvents(listener, plugin);
 
         if(config.isMainServer())
-            serverStuff.initializeStuff();
-        serverStuff.intializeItems();
+            serverStuff.initializeStuffs();
+        serverStuff.initializeSpecialItems();
 
         plugin.getLogger().info("loading games..");
         loadGames();
@@ -213,7 +212,7 @@ public class Server {
             else if (player.getDisplayName().contains("javadevelopper")) //moi aussi jveux mon title :D
                 player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled())
-                if (players.containsKey(player.getName()))
+                if (players.get(player.getName()).getGrade() > 0)
                     player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
         }
     }

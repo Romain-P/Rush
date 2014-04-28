@@ -79,7 +79,8 @@ public class Client {
         this.gradeTime = 0;
 
         Player player = Bukkit.getPlayer(this.name);
-        player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
+        if(player != null)
+            player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
 
         this.save();
     }

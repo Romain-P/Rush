@@ -243,7 +243,7 @@ public class ServerCommandExecutor implements CommandExecutor {
                         if(player.getEquipment().getChestplate() != null)
                             player.sendMessage("Vous ne pouvez pas en PVP!");
                         else
-						    player.openInventory(serverStuff.getKitInv());
+						    player.openInventory(serverStuff.getInventories().get("Kits"));
                     }
 				} else
 					player.sendMessage(LangValues.NO_PERM.getValue());
