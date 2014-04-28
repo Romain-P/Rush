@@ -243,23 +243,35 @@ public class ServerCommandExecutor implements CommandExecutor {
 			} else
 				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 
-		} else if(cmd.getName().equalsIgnoreCase("stuff")) {
-			if(sender instanceof Player) {
-				Player player = (Player) sender;
+        } else if(cmd.getName().equalsIgnoreCase("stuff")) {
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
 
-				if(player.hasPermission("rushy2.stuff")) {
-					if(config.isMainServer()) {
+                if(player.hasPermission("rushy2.stuff")) {
+                    if(config.isMainServer()) {
                         if(player.getEquipment().getChestplate() != null)
                             player.sendMessage("Vous ne pouvez pas en PVP!");
                         else
-						    player.openInventory(serverStuff.getInventories().get("Kits"));
+                            player.openInventory(serverStuff.getInventories().get("Kits"));
                     }
-				} else
-					player.sendMessage(LangValues.NO_PERM.getValue());
-			} else
-				sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
+                } else
+                    player.sendMessage(LangValues.NO_PERM.getValue());
+            } else
+                sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 
-		} else if(cmd.getName().equalsIgnoreCase("disg")) {
+        } else if(cmd.getName().equalsIgnoreCase("prestige")) {
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
+                if(config.isMainServer()) {
+                    if(player.getEquipment().getChestplate() != null)
+                        player.sendMessage("Vous ne pouvez pas en PVP!");
+                    else
+                        player.openInventory(serverStuff.getInventories().get("Kits"));
+                }
+            } else
+                sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
+
+        } else if(cmd.getName().equalsIgnoreCase("disg")) {
 			if(sender instanceof Player) {
 				Player player = (Player) sender;
 

@@ -51,24 +51,20 @@ public class ClientServer {
         if(this.startedTime == -1)
             return "offline";
 
-        long uptime = (System.currentTimeMillis()/1000 - startedTime);
-        int days = 0, hours = 0, minutes = 0;
+        double uptime = (System.currentTimeMillis()/1000 - startedTime);
+        double days = 0, hours = 0, minutes = 0;
 
         final int secondsInDay = 24*60*60*60;
         final int secondsInHour = 1*60*60;
         final int secondsInMinute = 60;
 
-        for(double i=uptime; i>= secondsInDay; uptime-=secondsInDay) {
-            i = uptime; days++;
-        }
-        for(double i=uptime; i>= secondsInHour; uptime-=secondsInHour) {
-            i = uptime; hours++;
-        }
-        for(double i=uptime; i>= secondsInMinute; uptime-=secondsInMinute) {
-            i = uptime; minutes++;
-        }
+        days = uptime / secondsInDay;
+        uptime %= secondsInDay;
+        hours = uptime / secondsInHour;
+        uptime %= secondsInHour;
+        minutes = uptime / secondsInMinute;
 
-        return days+"j "+hours+"h "+minutes+"min";
+        return (int)days+"j "+(int)hours+"h "+(int)minutes+"min";
     }
 
     public void update() {

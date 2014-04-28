@@ -16,19 +16,25 @@ public class PlayerManager extends Manager{
 	public void create(ClientPlayer player) {
         try {
             PreparedStatement statement = createStatement(
-                    "INSERT INTO players(uuid, name, points, grade, gradeTime, boughtGradesCount, adminLevel, bannedTime, bannedAuthor, bannedReason, banCount, registrationTime)" +
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    "INSERT INTO players(uuid, name, wins, loses, kills, deaths, points, prestige, " +
+                            "grade, gradeTime, boughtGradesCount, adminLevel, bannedTime, bannedAuthor, bannedReason, banCount, registrationTime)" +
+                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
             statement.setString(1, player.getUuid());
             statement.setString(2, player.getName());
-            statement.setInt(3, player.getPoints());
-            statement.setInt(4, player.getGrade());
-            statement.setLong(5, player.getGradeTime());
-            statement.setInt(6, player.getBoughtGradesCount());
-            statement.setInt(7, player.getAdminLevel());
-            statement.setLong(8, player.getBannedTime());
-            statement.setString(9, player.getBannedAuthor());
-            statement.setString(10, player.getBannedReason());
-            statement.setInt(11, player.getBanCount());
+            statement.setInt(3, player.getWins());
+            statement.setInt(4, player.getLoses());
+            statement.setInt(5, player.getKills());
+            statement.setInt(6, player.getDeaths());
+            statement.setInt(7, player.getPoints());
+            statement.setInt(8, player.getPrestige());
+            statement.setInt(9, player.getGrade());
+            statement.setLong(10, player.getGradeTime());
+            statement.setInt(11, player.getBoughtGradesCount());
+            statement.setInt(12, player.getAdminLevel());
+            statement.setLong(13, player.getBannedTime());
+            statement.setString(14, player.getBannedAuthor());
+            statement.setString(15, player.getBannedReason());
+            statement.setInt(16, player.getBanCount());
             execute(statement);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);
@@ -45,6 +51,11 @@ public class PlayerManager extends Manager{
                     result.getString("uuid"),
                     result.getString("name"),
                     result.getInt("points"),
+                    result.getInt("prestige"),
+                    result.getInt("wins"),
+                    result.getInt("loses"),
+                    result.getInt("kills"),
+                    result.getInt("deaths"),
                     result.getInt("grade"),
                     result.getLong("gradeTime"),
                     result.getInt("boughtGradesCount"),
@@ -68,7 +79,12 @@ public class PlayerManager extends Manager{
             if(result.next()) {
                 player.setUuid(result.getString("uuid"));
                 player.setName(result.getString("name"));
+                player.setWins(result.getInt("wins"));
+                player.setLoses(result.getInt("loses"));
+                player.setKills(result.getInt("kills"));
+                player.setDeaths(result.getInt("deaths"));
                 player.setPoints(result.getInt("points"));
+                player.setPrestige(result.getInt("prestige"));
                 player.setGrade(result.getInt("grade"));
                 player.setGradeTime(result.getLong("gradeTime"));
                 player.setBoughtGradesCount(result.getInt("boughtGradesCount"));
@@ -88,20 +104,25 @@ public class PlayerManager extends Manager{
         //temporary, and it will update just name etc.. & where uuid = ?..
         try {
             PreparedStatement statement = createStatement(
-                    "UPDATE players SET uuid = ?, name = ?, points = ?, grade = ?, gradeTime = ?, boughtGradesCount = ?, adminLevel = ?, " +
+                    "UPDATE players SET uuid = ?, name = ?, wins = ?, loses = ?, kills = ?, deaths = ?, points = ?, prestige = ?, grade = ?, gradeTime = ?, boughtGradesCount = ?, adminLevel = ?, " +
                             "bannedTime = ?, bannedAuthor = ?, bannedReason = ?, banCount = ? WHERE name = ?");
             statement.setString(1, player.getUuid());
             statement.setString(2, player.getName());
-            statement.setInt(3, player.getPoints());
-            statement.setInt(4, player.getGrade());
-            statement.setLong(5, player.getGradeTime());
-            statement.setInt(6, player.getBoughtGradesCount());
-            statement.setInt(7, player.getAdminLevel());
-            statement.setLong(8, player.getBannedTime());
-            statement.setString(9, player.getBannedAuthor());
-            statement.setString(10, player.getBannedReason());
-            statement.setInt(11, player.getBanCount());
-            statement.setString(12, player.getName());
+            statement.setInt(3, player.getWins());
+            statement.setInt(4, player.getLoses());
+            statement.setInt(5, player.getKills());
+            statement.setInt(6, player.getDeaths());
+            statement.setInt(7, player.getPoints());
+            statement.setInt(8, player.getPrestige());
+            statement.setInt(9, player.getGrade());
+            statement.setLong(10, player.getGradeTime());
+            statement.setInt(11, player.getBoughtGradesCount());
+            statement.setInt(12, player.getAdminLevel());
+            statement.setLong(13, player.getBannedTime());
+            statement.setString(14, player.getBannedAuthor());
+            statement.setString(15, player.getBannedReason());
+            statement.setInt(16, player.getBanCount());
+            statement.setString(17, player.getName());
             execute(statement);
         } catch(Exception e) {
             plugin.getLogger().warning("sql error: "+e);

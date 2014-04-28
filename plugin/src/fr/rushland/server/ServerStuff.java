@@ -19,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -28,20 +27,21 @@ import org.bukkit.potion.PotionType;
 public class ServerStuff {
     @Getter public final String VIP_PREFIX = ChatColor.YELLOW + "VIP";
     @Getter private Map<String, Inventory> inventories;
-    @Getter private Map<String, ItemStack> items;
+    @Getter private Map<String, ItemStack> pvpItems;
     @Getter private Map<String, ItemStack> bonusItems;
+    @Getter private Map<String, ItemStack> prestigeItems;
 
-    //special items
+    //special pvpItems
     @Getter private ItemStack lobbyItem;
     @Getter private ItemStack pvpItem;
+    @Getter private ItemStack prestigeItem;
 
     @Inject Config config;
-    @Inject JavaPlugin plugin;
     @Inject Server server;
 
     public ServerStuff() {
         this.inventories = new HashMap<>();
-        this.items = new HashMap<>();
+        this.pvpItems = new HashMap<>();
         this.bonusItems = new HashMap<>();
     }
     
@@ -49,16 +49,24 @@ public class ServerStuff {
     	Inventory kits = Bukkit.createInventory(null, 9, "Kits");
         //on running rush & player vip 3
         Inventory bonus = Bukkit.createInventory(null, 9, "Bonus");
+        //prestiges
+        Inventory prestiges = Bukkit.createInventory(null, 9, "Prestiges");
+
         this.inventories.put("Kits", kits);
         this.inventories.put("Bonus", bonus);
+        this.inventories.put("Prestiges", prestiges);
 
     	intializeIcons();
-    	for(ItemStack item: this.items.values())
+    	for(ItemStack item: this.pvpItems.values())
             kits.addItem(item);
 
         initializeBonusIcons();
         for(ItemStack item: this.bonusItems.values())
             bonus.addItem(item);
+
+        initializePrestigeIcons();
+        for(ItemStack item: this.prestigeItems.values())
+            prestiges.addItem(item);
     }
 
     public void initializeSpecialItems() {
@@ -73,68 +81,74 @@ public class ServerStuff {
                 ChatColor.RED+"Lancer le PVP",
                 new String[] {"Cliquez pour voir les classes!", VIP_PREFIX}
         );
+
+        this.prestigeItem = createCustomItem(
+                Material.REDSTONE_LAMP_ON, -1,
+                ChatColor.RED+"Monter de prestige",
+                new String[] {"Cliquez pour voir les prestiges disponibles", VIP_PREFIX}
+        );
     }
 
     private void intializeIcons() {
-        this.items.put("Guerrier", createCustomItem(
+        this.pvpItems.put("Guerrier", createCustomItem(
                 Material.IRON_SWORD, -1,
                 ChatColor.GRAY+"Guerrier",
                 new String[] {"Incarnez un barbard qui assome tout ce qui bouge!"}
         ));
 
-        this.items.put("Archer", createCustomItem(
+        this.pvpItems.put("Archer", createCustomItem(
                 Material.BOW, -1,
-                ChatColor.GRAY+"Archer",
-                new String[] {"Incarnez l'ame d'un archer puissant!"}
+                ChatColor.GRAY + "Archer",
+                new String[]{"Incarnez l'ame d'un archer puissant!"}
         ));
 
         //vip now yo
         Map<Enchantment, Integer> map = new HashMap<>();
         map.put(Enchantment.KNOCKBACK, 2);
 
-        this.items.put("Archer puissant", createCustomItem(
+        this.pvpItems.put("Archer puissant", createCustomItem(
                 Material.BOW, -1,
                 ChatColor.RED+"Archer puissant",
                 new String[] {"Incarnez l'ame d'un archer puissant!", VIP_PREFIX, "2"},
                 map
         ));
 
-        this.items.put("Troll", createCustomItem(
+        this.pvpItems.put("Troll", createCustomItem(
                 Material.STICK, -1,
                 ChatColor.RED+"Troll",
                 new String[] {"Incarnez un devoreur puissant!", VIP_PREFIX, "1"},
                 map
         ));
 
-        this.items.put("Ninja", createCustomItem(
+        this.pvpItems.put("Ninja", createCustomItem(
                 Material.IRON_HOE, -1,
                 ChatColor.RED+"Ninja",
                 new String[] {"Incarnez la maitrise des techniques ninjas!", VIP_PREFIX, "1"},
                 map
         ));
 
-        this.items.put("Mage", createCustomItem(
+        this.pvpItems.put("Mage", createCustomItem(
                 new Potion(PotionType.INSTANT_DAMAGE), 1,
-                ChatColor.RED+"Mage",
-                new String[] {"Incarnez un puissant personnage magique!", VIP_PREFIX, "1"},
+                ChatColor.RED + "Mage",
+                new String[]{"Incarnez un puissant personnage magique!", VIP_PREFIX, "1"},
                 map
         ));
 
-        this.items.put("Spider", createCustomItem(
+        this.pvpItems.put("Spider", createCustomItem(
                 Material.WEB, -1,
                 ChatColor.RED + "Spider",
                 new String[]{"Incarnez la puissance d'un arreignee malefique!", VIP_PREFIX, "2"},
                 map
         ));
 
-        this.items.put("Mastodonte", createCustomItem(
+        this.pvpItems.put("Mastodonte", createCustomItem(
                 Material.IRON_SWORD, -1,
                 ChatColor.RED + "Mastodonte",
                 new String[]{"Incarnez une brute intombable!", VIP_PREFIX, "3"},
                 map
         ));
 
-        this.items.put("God", createCustomItem(
+        this.pvpItems.put("God", createCustomItem(
                 Material.GOLDEN_APPLE, -1,
                 ChatColor.RED + "God",
                 new String[]{"Incarnez dieu!", VIP_PREFIX, "5"},
@@ -161,13 +175,50 @@ public class ServerStuff {
         ));
     }
 
+    public void initializePrestigeIcons() {
+        Map<Enchantment, Integer> map = new HashMap<>();
+        map.put(Enchantment.FIRE_ASPECT, 1);
+
+        this.prestigeItems.put("1", createCustomItem(
+                Material.REDSTONE_LAMP_ON, 1,
+                ChatColor.RED+"Prestige I",
+                new String[] {"Prestige I contre 1200 tokens", VIP_PREFIX}
+        ));
+
+        this.prestigeItems.put("2", createCustomItem(
+                Material.REDSTONE_LAMP_ON, 2,
+                ChatColor.RED+"Prestige II",
+                new String[] {"Prestige II contre 3000 tokens", VIP_PREFIX}
+        ));
+
+        this.prestigeItems.put("3", createCustomItem(
+                Material.REDSTONE_LAMP_ON, 3,
+                ChatColor.RED+"Prestige III",
+                new String[] {"Prestige III contre 5000 tokens", VIP_PREFIX}
+        ));
+
+        this.prestigeItems.put("4", createCustomItem(
+                Material.REDSTONE_LAMP_ON, 4,
+                ChatColor.RED+"Prestige IV",
+                new String[] {"Prestige IV contre 7000 tokens", VIP_PREFIX}
+        ));
+
+        this.prestigeItems.put("5", createCustomItem(
+                Material.REDSTONE_LAMP_ON, 5,
+                ChatColor.RED+"Prestige V",
+                new String[] {"Prestige V contre 9000 tokens", VIP_PREFIX}
+        ));
+    }
+
     public void giveStartingItems(Player player) {
         Utils.goNaked(player);
         PlayerInventory inventory = player.getInventory();
 
         inventory.addItem(lobbyItem);
-        if (config.isMainServer())
+        inventory.addItem(prestigeItem);
+        if (config.isMainServer()) {
             inventory.addItem(pvpItem);
+        }
 
         player.updateInventory();
     }

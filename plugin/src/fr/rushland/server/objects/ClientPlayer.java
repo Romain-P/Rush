@@ -6,6 +6,7 @@ import fr.rushland.enums.LangValues;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
@@ -13,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 public class ClientPlayer {
     @Getter @Setter private String uuid, name;
     @Getter @Setter private int  adminLevel;
-    @Getter @Setter private int points;
+    @Getter @Setter private int wins, loses;
+    @Getter @Setter private int deaths, kills;
+    @Getter @Setter private int points, prestige;
     @Getter @Setter private long gradeTime;
     @Setter private int grade;
     @Getter @Setter private int boughtGradesCount;
@@ -22,13 +25,18 @@ public class ClientPlayer {
     @Getter @Setter private String bannedReason;
     @Getter @Setter private int banCount;
 
-    @Inject PlayerManager manager;
+    @Getter @Inject PlayerManager manager;
 
-    public ClientPlayer(String uuid, String name, int points, int grade, long gradeTime, int boughtGradesCount, int adminLevel,
-                        long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
+    public ClientPlayer(String uuid, String name, int wins, int loses, int kills, int deaths, int points, int prestige, int grade, long gradeTime, int boughtGradesCount,
+                        int adminLevel, long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
         this.uuid = uuid;
         this.name = name;
+        this.wins = wins;
+        this.loses = loses;
+        this.kills = kills;
+        this.deaths = deaths;
         this.points = points;
+        this.prestige = prestige;
         this.grade = grade;
         this.gradeTime = gradeTime;
         this.boughtGradesCount = boughtGradesCount;
@@ -44,16 +52,6 @@ public class ClientPlayer {
         this.name = name;
         this.bannedAuthor = "";
         this.bannedReason = "";
-    }
-
-    public void winPoints(Player player, int points) {
-        this.points += points;
-        save();
-    }
-
-    public void losePoints(Player player, int points) {
-        this.points -= points;
-        save();
     }
 
     public void ban(long time, TimeUnit unity, String author, String reason) {
@@ -114,6 +112,51 @@ public class ClientPlayer {
 
     public int getGrade() {
         return isSubscriber() ? this.grade : 0;
+    }
+
+    public String getPrestigeAsString() {
+        String value = ChatColor.YELLOW.toString();
+        switch(this.prestige) {
+            case 1: value += "I ";
+                break;
+            case 2: value += "II ";
+                break;
+            case 3: value += "III ";
+                break;
+            case 4: value += "IV ";
+                break;
+            case 5: value += "V ";
+                break;
+            default: value = String.valueOf(this.prestige);
+                break;
+        }
+        return value+ChatColor.RESET.toString();
+    }
+
+    public void addWin(int points) {
+        this.wins++;
+        this.points += points*bonus();
+        save();
+    }
+
+    public void addLose() {
+        this.loses++;
+        save();
+    }
+
+    public void addKill() {
+        this.kills++;
+        this.points += bonus();
+        save();
+    }
+
+    public void addDeath() {
+        this.deaths++;
+        save();
+    }
+
+    public int bonus() {
+        return this.grade > 0 ? 2:1;
     }
 
     public void save() {

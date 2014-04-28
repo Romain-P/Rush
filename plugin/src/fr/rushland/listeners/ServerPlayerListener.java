@@ -120,10 +120,15 @@ public class ServerPlayerListener implements Listener {
 
 			if(game != null) {
 				Utils.msgWorld(player, event.getDeathMessage());
-                if(player != null)
-                    server.getPlayer(player.getName()).losePoints(player, 1);
+                if(player != null) {
+                    server.getPlayer(player.getName()).addDeath();
+                    if(player.getLastDamageCause() != null && player.getLastDamageCause().getEntity() != null &&
+                            player.getLastDamageCause().getEntity() instanceof Player) {
+                        ClientPlayer killer = ((ClientPlayer)player.getLastDamageCause().getEntity());
+                        killer.addKill();
+                    }
+                }
             }
-
 			event.setDeathMessage("");
 
 			if(config.isMainServer()) {
@@ -178,6 +183,8 @@ public class ServerPlayerListener implements Listener {
                 player.chat("/lobby");
             else if (player.getItemInHand().equals(serverStuff.getPvpItem()))
                 player.chat("/stuff");
+            else if (player.getItemInHand().equals(serverStuff.getPrestigeItem()))
+                player.chat("/prestige");
         }
     }
 
@@ -230,18 +237,18 @@ public class ServerPlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerDamage(final EntityDamageEvent e) {
 		if(e.getEntity() instanceof Player)
-			if(e.getCause() == DamageCause.FALL && config.isMainServer())
+			if(e.getCause() == DamageCause.FALL && config.isMainServer()) {
 				e.setCancelled(true);
+            }
 	}
 
     @EventHandler
     public void onPlayerReceiveDamages(EntityDamageByEntityEvent e) {
         if(e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Player attacker = (Player) e.getDamager();
-
             if((attacker.getItemInHand() != null && attacker.getItemInHand().getItemMeta() != null &&
                     attacker.getItemInHand().getItemMeta().getDisplayName() != null
-                && !attacker.getItemInHand().getItemMeta().getDisplayName().toLowerCase().contains("spider"))) {
+                && attacker.getItemInHand().getItemMeta().getDisplayName().toLowerCase().contains("spider"))) {
                 Player target = (Player) e.getEntity();
 
                 Random generator = new Random();
@@ -282,7 +289,7 @@ public class ServerPlayerListener implements Listener {
 					Utils.goNaked(player);
 					PlayerInventory playerInv = player.getInventory();
 
-                    Map<String, ItemStack> items = serverStuff.getItems();
+                    Map<String, ItemStack> items = serverStuff.getPvpItems();
 
 					if (clicked.equals(items.get("Guerrier"))) {
 						playerInv.setHelmet(new ItemStack(Material.IRON_HELMET));
@@ -531,7 +538,7 @@ public class ServerPlayerListener implements Listener {
 
                     PlayerInventory playerInv = player.getInventory();
 
-                    Map<String, ItemStack> items = serverStuff.getItems();
+                    Map<String, ItemStack> items = serverStuff.getPvpItems();
                     if(clicked.equals(items.get("Bonus1"))) {
                         ItemStack sword = new ItemStack(Material.GOLD_SWORD);
                         enchantments.clear();
@@ -551,6 +558,41 @@ public class ServerPlayerListener implements Listener {
                     }
                     player.updateInventory();
                     player.closeInventory();
+                }
+            } else if (inventory.getName().equals(serverStuff.getInventories().get("Prestiges").getName())) {
+                event.setCancelled(true);
+                if(clicked != null && clicked.getItemMeta() != null
+                        && clicked.getItemMeta().getLore() != null) {
+                    int prestige, price;
+                    switch(clicked.getItemMeta().getDisplayName().substring(ChatColor.RED.toString().length()+9)) {
+                        case "I": prestige = 1; price = 1200;
+                            break;
+                        case "II": prestige = 2; price = 3000;
+                            break;
+                        case "III": prestige = 3; price = 5000;
+                            break;
+                        case "IV": prestige = 4; price = 7000;
+                            break;
+                        case "V": prestige = 5; price = 9000;
+                            break;
+                        default:
+                            player.sendMessage("prestige non disponible");
+                            return;
+                    }
+                    ClientPlayer client = server.getPlayer(player.getName());
+                    if(client == null) return;
+
+                    if(client.getPoints() < price)
+                        player.sendMessage("Vous devez posseder "+price+" tokens! /tokens pour voir vos tokens.");
+                    else {
+                        client.setPrestige(prestige);
+                        client.getManager().update(client);
+
+                        player.setDisplayName(client.getPrestigeAsString() + player.getDisplayName());
+                        client.setPoints(client.getPoints() - price);
+                        player.sendMessage("Vous venez d'acheter le prestige "+prestige+" a "+price+" tokens." +
+                                " Il vous reste "+client.getPoints()+" tokens.");
+                    }
                 }
             }
 		}

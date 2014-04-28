@@ -211,9 +211,12 @@ public class Server {
                 player.setDisplayName(LangValues.M_PREFIX.getValue() + player.getDisplayName());
             else if (player.getDisplayName().contains("javadevelopper")) //moi aussi jveux mon title :D
                 player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
-            else if (database.isEnabled())
+            else if (database.isEnabled()) {
                 if (players.get(player.getName()).getGrade() > 0)
                     player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
+                if(players.get(player.getName()).getPrestige() > 0)
+                    player.setDisplayName(players.get(player.getName()).getPrestigeAsString() + player.getDisplayName());
+            }
         }
     }
 
