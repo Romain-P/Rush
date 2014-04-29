@@ -67,7 +67,7 @@ public class Server {
             plugin.getCommand(command).setExecutor(executor);
         }
 
-        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff", "points"};
+        String[] serverCommands = {"vip", "ban", "pardon", "connect", "lobby", "stuff", "token", "prestige"};
         for(String command: serverCommands) {
             ServerCommandExecutor executor = new ServerCommandExecutor();
             injector.injectMembers(executor);
@@ -213,9 +213,9 @@ public class Server {
                 player.setDisplayName(LangValues.DEV_PREFIX.getValue() + player.getDisplayName());
             else if (database.isEnabled()) {
                 if (players.get(player.getName()).getGrade() > 0)
-                    player.setDisplayName(LangValues.VIP_PREFIX.getValue() + player.getDisplayName());
+                    player.setDisplayName(getPlayer(player.getName()).getVipPrefix() + player.getDisplayName());
                 if(players.get(player.getName()).getPrestige() > 0)
-                    player.setDisplayName(players.get(player.getName()).getPrestigeAsString() + player.getDisplayName());
+                    player.setDisplayName(getPlayer(player.getName()).getPrestigeAsString() + player.getDisplayName());
             }
         }
     }

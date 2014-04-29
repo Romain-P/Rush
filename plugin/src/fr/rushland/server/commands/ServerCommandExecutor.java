@@ -170,12 +170,12 @@ public class ServerCommandExecutor implements CommandExecutor {
 			} else
 				sender.sendMessage(LangValues.DB_DISABLED.getValue());
 
-        } else if(cmd.getName().equalsIgnoreCase("points")) {
+        } else if(cmd.getName().equalsIgnoreCase("token")) {
             if(sender instanceof Player) {
                 Player player = (Player) sender;
                 if(player != null) {
                     ClientPlayer client = server.getPlayer(player.getName());
-                    player.sendMessage("Vous possedez actuellement "+client.getPoints()+ " points boutiques !");
+                    player.sendMessage("Vous possedez actuellement "+client.getPoints()+ " token!");
                 }
             } else
                 sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
@@ -262,12 +262,10 @@ public class ServerCommandExecutor implements CommandExecutor {
         } else if(cmd.getName().equalsIgnoreCase("prestige")) {
             if(sender instanceof Player) {
                 Player player = (Player) sender;
-                if(config.isMainServer()) {
-                    if(player.getEquipment().getChestplate() != null)
-                        player.sendMessage("Vous ne pouvez pas en PVP!");
-                    else
-                        player.openInventory(serverStuff.getInventories().get("Kits"));
-                }
+                if(player.getEquipment().getChestplate() != null)
+                    player.sendMessage("Vous ne pouvez pas en PVP!");
+                else
+                    player.openInventory(serverStuff.getInventories().get("Prestiges"));
             } else
                 sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 

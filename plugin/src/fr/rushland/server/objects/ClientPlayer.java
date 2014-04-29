@@ -97,7 +97,7 @@ public class ClientPlayer {
 
         Player player = Bukkit.getPlayer(this.name);
         if(player != null)
-            player.setDisplayName(player.getDisplayName().replace(LangValues.VIP_PREFIX.getValue(), ""));
+            player.setDisplayName(player.getDisplayName().replace(this.getVipPrefix(), ""));
 
         this.save();
     }
@@ -157,6 +157,10 @@ public class ClientPlayer {
 
     public int bonus() {
         return this.grade > 0 ? 2:1;
+    }
+
+    public String getVipPrefix() {
+        return ChatColor.GREEN + "[VIP "+this.grade+"] " + ChatColor.RESET;
     }
 
     public void save() {

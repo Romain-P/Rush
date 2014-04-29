@@ -49,8 +49,9 @@ public class ServerPlayerListener implements Listener {
 		Player player = event.getPlayer();
 		if(database.isEnabled()) {
             ClientPlayer client = server.getPlayer(player.getName(), true);
+            manager.reloadVars(client);
+
             if(client.isBanned()) {
-                manager.reloadVars(client);
                 String message = client.getBannedTime() == -1
                         ? "Vous avez ete banni a vie du serveur par "+client.getBannedAuthor()+": "+client.getBannedReason()
                         : "Vous avez ete banni par "+client.getBannedAuthor()+".\nVous etes encore banni "+client.remainingHoursBannedTime()+" heures. Motif: "+client.getBannedReason();
@@ -124,8 +125,8 @@ public class ServerPlayerListener implements Listener {
                     server.getPlayer(player.getName()).addDeath();
                     if(player.getLastDamageCause() != null && player.getLastDamageCause().getEntity() != null &&
                             player.getLastDamageCause().getEntity() instanceof Player) {
-                        ClientPlayer killer = ((ClientPlayer)player.getLastDamageCause().getEntity());
-                        killer.addKill();
+                        Player killer = ((Player)player.getLastDamageCause().getEntity());
+                        server.getPlayer(killer.getName()).addKill();
                     }
                 }
             }
@@ -582,16 +583,20 @@ public class ServerPlayerListener implements Listener {
                     ClientPlayer client = server.getPlayer(player.getName());
                     if(client == null) return;
 
-                    if(client.getPoints() < price)
-                        player.sendMessage("Vous devez posseder "+price+" tokens! /tokens pour voir vos tokens.");
+                    if(client.getPrestige() < prestige-1)
+                        player.sendMessage("Vous devez au moins avoir le prestige "+(prestige-1)+"!");
+                    else if(client.getPrestige() == prestige)
+                        player.sendMessage("Vous ne pouvez pas payer 2x le meme prestige!");
+                    else if(client.getPoints() < price)
+                        player.sendMessage("Vous devez posseder "+price+" tokens! /token pour voir vos tokens.");
                     else {
                         client.setPrestige(prestige);
-                        client.getManager().update(client);
 
                         player.setDisplayName(client.getPrestigeAsString() + player.getDisplayName());
                         client.setPoints(client.getPoints() - price);
                         player.sendMessage("Vous venez d'acheter le prestige "+prestige+" a "+price+" tokens." +
                                 " Il vous reste "+client.getPoints()+" tokens.");
+                        client.getManager().update(client);
                     }
                 }
             }

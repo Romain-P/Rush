@@ -43,6 +43,7 @@ public class ServerStuff {
         this.inventories = new HashMap<>();
         this.pvpItems = new HashMap<>();
         this.bonusItems = new HashMap<>();
+        this.prestigeItems = new HashMap<>();
     }
     
     public void initializeStuffs() {
@@ -83,7 +84,7 @@ public class ServerStuff {
         );
 
         this.prestigeItem = createCustomItem(
-                Material.REDSTONE_LAMP_ON, -1,
+                Material.EMERALD, -1,
                 ChatColor.RED+"Monter de prestige",
                 new String[] {"Cliquez pour voir les prestiges disponibles", VIP_PREFIX}
         );
@@ -180,33 +181,33 @@ public class ServerStuff {
         map.put(Enchantment.FIRE_ASPECT, 1);
 
         this.prestigeItems.put("1", createCustomItem(
-                Material.REDSTONE_LAMP_ON, 1,
+                Material.EMERALD, 1,
                 ChatColor.RED+"Prestige I",
-                new String[] {"Prestige I contre 1200 tokens", VIP_PREFIX}
+                new String[] {"Prestige I contre 1200 tokens"}
         ));
 
         this.prestigeItems.put("2", createCustomItem(
-                Material.REDSTONE_LAMP_ON, 2,
+                Material.EMERALD, 2,
                 ChatColor.RED+"Prestige II",
-                new String[] {"Prestige II contre 3000 tokens", VIP_PREFIX}
+                new String[] {"Prestige II contre 3000 tokens"}
         ));
 
         this.prestigeItems.put("3", createCustomItem(
-                Material.REDSTONE_LAMP_ON, 3,
+                Material.EMERALD, 3,
                 ChatColor.RED+"Prestige III",
-                new String[] {"Prestige III contre 5000 tokens", VIP_PREFIX}
+                new String[] {"Prestige III contre 5000 tokens"}
         ));
 
         this.prestigeItems.put("4", createCustomItem(
-                Material.REDSTONE_LAMP_ON, 4,
+                Material.EMERALD, 4,
                 ChatColor.RED+"Prestige IV",
-                new String[] {"Prestige IV contre 7000 tokens", VIP_PREFIX}
+                new String[] {"Prestige IV contre 7000 tokens"}
         ));
 
         this.prestigeItems.put("5", createCustomItem(
-                Material.REDSTONE_LAMP_ON, 5,
+                Material.EMERALD, 5,
                 ChatColor.RED+"Prestige V",
-                new String[] {"Prestige V contre 9000 tokens", VIP_PREFIX}
+                new String[] {"Prestige V contre 9000 tokens"}
         ));
     }
 

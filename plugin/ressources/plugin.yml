@@ -38,8 +38,12 @@ commands:
    stuff:
       description: To fight some bitches
       usage: /<command>
-   points:
-      description: To see his points
+   token:
+      description: To see his tokens
+      aliases: [points]
+      usage: /<command>
+   prestige:
+      description: To buy prestige
       usage: /<command>
 permissions:
    rushy2.*:

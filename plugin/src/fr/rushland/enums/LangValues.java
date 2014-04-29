@@ -9,7 +9,6 @@ public enum LangValues {
     PLAYER_ONLY(ChatColor.RED + "Vous devez etre un joueur!"),
     MUST_NOT_BE_STARTED(ChatColor.RED + "La partie a deja commence!"),
     PLAYER_NOT_FOUND(ChatColor.RED + "Joueur non trouve!"),
-    VIP_PREFIX(ChatColor.GREEN + "[VIP] " + ChatColor.RESET),
     OP_PREFIX(ChatColor.DARK_RED + "[A] " + ChatColor.RESET),
     M_PREFIX(ChatColor.BLUE + "[M] " + ChatColor.RESET),
     DEV_PREFIX(ChatColor.BLUE + "[DEV] " + ChatColor.RESET),
