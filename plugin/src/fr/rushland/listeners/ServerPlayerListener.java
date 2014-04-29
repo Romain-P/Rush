@@ -125,7 +125,7 @@ public class ServerPlayerListener implements Listener {
                     server.getPlayer(player.getName()).addDeath();
                     if(player.getLastDamageCause() != null && player.getLastDamageCause().getEntity() != null &&
                             player.getLastDamageCause().getEntity() instanceof Player) {
-                        Player killer = ((Player)player.getLastDamageCause().getEntity());
+                        Player killer = player.getKiller();
                         server.getPlayer(killer.getName()).addKill();
                     }
                 }
@@ -590,13 +590,16 @@ public class ServerPlayerListener implements Listener {
                     else if(client.getPoints() < price)
                         player.sendMessage("Vous devez posseder "+price+" tokens! /token pour voir vos tokens.");
                     else {
+                        if(client.getPrestige() > 0)
+                            player.setDisplayName(player.getDisplayName().replace(client.getPrestigeAsString(), ""));
+
                         client.setPrestige(prestige);
 
                         player.setDisplayName(client.getPrestigeAsString() + player.getDisplayName());
                         client.setPoints(client.getPoints() - price);
                         player.sendMessage("Vous venez d'acheter le prestige "+prestige+" a "+price+" tokens." +
                                 " Il vous reste "+client.getPoints()+" tokens.");
-                        client.getManager().update(client);
+                        client.save();
                     }
                 }
             }

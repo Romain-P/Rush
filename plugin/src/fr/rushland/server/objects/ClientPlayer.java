@@ -25,7 +25,7 @@ public class ClientPlayer {
     @Getter @Setter private String bannedReason;
     @Getter @Setter private int banCount;
 
-    @Getter @Inject PlayerManager manager;
+    @Inject PlayerManager manager;
 
     public ClientPlayer(String uuid, String name, int wins, int loses, int kills, int deaths, int points, int prestige, int grade, long gradeTime, int boughtGradesCount,
                         int adminLevel, long bannedTime, String bannedAuthor, String bannedReason, int banCount) {
@@ -115,22 +115,22 @@ public class ClientPlayer {
     }
 
     public String getPrestigeAsString() {
-        String value = ChatColor.YELLOW.toString();
+        String value = ChatColor.YELLOW+"[";
         switch(this.prestige) {
-            case 1: value += "I ";
+            case 1: value += "I";
                 break;
-            case 2: value += "II ";
+            case 2: value += "II";
                 break;
-            case 3: value += "III ";
+            case 3: value += "III";
                 break;
-            case 4: value += "IV ";
+            case 4: value += "IV";
                 break;
-            case 5: value += "V ";
+            case 5: value += "V";
                 break;
             default: value = String.valueOf(this.prestige);
                 break;
         }
-        return value+ChatColor.RESET.toString();
+        return value+"]"+ChatColor.RESET;
     }
 
     public void addWin(int points) {

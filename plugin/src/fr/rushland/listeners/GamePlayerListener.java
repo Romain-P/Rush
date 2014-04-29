@@ -105,7 +105,7 @@ public class GamePlayerListener implements Listener {
 
 		if(game != null) {
 			if (player.getBedSpawnLocation() != null && game.isStarted()) {
-				player.sendMessage(ChatColor.RED + "Vous dormez deja!");
+				player.sendMessage(ChatColor.RED + "Vous deja dormi!");
 				event.setCancelled(true);
 			}
 		}

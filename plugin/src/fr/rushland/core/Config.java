@@ -20,7 +20,7 @@ public class Config {
         this.databaseName = plugin.getConfig().getString("database.name");
         this.databaseUser = plugin.getConfig().getString("database.user");
         this.databasePass = plugin.getConfig().getString("database.pass");
-        this.databaseUrl = "jdbc:mysql://"+databaseHost+"/"+databaseUser;
+        this.databaseUrl = "jdbc:mysql://"+databaseHost+"/"+databaseName;
         this.mainServer = plugin.getConfig().getBoolean("mainServer");
     }
 }

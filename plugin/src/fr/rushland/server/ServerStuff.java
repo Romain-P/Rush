@@ -216,9 +216,9 @@ public class ServerStuff {
         PlayerInventory inventory = player.getInventory();
 
         inventory.addItem(lobbyItem);
-        inventory.addItem(prestigeItem);
         if (config.isMainServer()) {
             inventory.addItem(pvpItem);
+            inventory.addItem(prestigeItem);
         }
 
         player.updateInventory();

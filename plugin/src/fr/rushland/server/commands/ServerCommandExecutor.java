@@ -261,11 +261,13 @@ public class ServerCommandExecutor implements CommandExecutor {
 
         } else if(cmd.getName().equalsIgnoreCase("prestige")) {
             if(sender instanceof Player) {
-                Player player = (Player) sender;
-                if(player.getEquipment().getChestplate() != null)
-                    player.sendMessage("Vous ne pouvez pas en PVP!");
-                else
-                    player.openInventory(serverStuff.getInventories().get("Prestiges"));
+                if(config.isMainServer()) {
+                    Player player = (Player) sender;
+                    if(player.getEquipment().getChestplate() != null)
+                        player.sendMessage("Vous ne pouvez pas en PVP!");
+                    else
+                        player.openInventory(serverStuff.getInventories().get("Prestiges"));
+                }
             } else
                 sender.sendMessage(LangValues.PLAYER_ONLY.getValue());
 
