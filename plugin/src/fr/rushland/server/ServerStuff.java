@@ -261,7 +261,7 @@ public class ServerStuff {
                     player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 10));
                     player.getInventory().addItem(new ItemStack(Material.SANDSTONE, 20));
                     if(grade == 3)
-                        player.openInventory(inventories.get("bonus"));
+                        player.openInventory(inventories.get("Bonus"));
                     break;
             }
         }

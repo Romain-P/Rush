@@ -320,7 +320,7 @@ public class Game {
 		} else
 			msgGame(ChatColor.GREEN + playerName + " a quitte la partie");
         if(player != null) {
-            server.getPlayer(player.getName()).addLose();
+            server.getPlayer(player.getName()).addLose(10);
             serverStuff.giveStartingItems(player);
         }
 	}

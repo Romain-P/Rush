@@ -123,8 +123,7 @@ public class ServerPlayerListener implements Listener {
 				Utils.msgWorld(player, event.getDeathMessage());
                 if(player != null) {
                     server.getPlayer(player.getName()).addDeath();
-                    if(player.getLastDamageCause() != null && player.getLastDamageCause().getEntity() != null &&
-                            player.getLastDamageCause().getEntity() instanceof Player) {
+                    if(player.getKiller() != null && player.getKiller() != player) {
                         Player killer = player.getKiller();
                         server.getPlayer(killer.getName()).addKill();
                     }

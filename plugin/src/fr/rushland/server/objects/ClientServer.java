@@ -54,17 +54,18 @@ public class ClientServer {
         double uptime = (System.currentTimeMillis()/1000 - startedTime);
         double days = 0, hours = 0, minutes = 0;
 
-        final int secondsInDay = 24*60*60*60;
-        final int secondsInHour = 1*60*60;
-        final int secondsInMinute = 60;
+        final double secondsInDay = 24*60*60*60;
+        final double secondsInHour = 1*60*60;
+        final double secondsInMinute = 60;
 
         days = uptime / secondsInDay;
-        uptime %= secondsInDay;
+        uptime -= days*secondsInDay;
         hours = uptime / secondsInHour;
-        uptime %= secondsInHour;
+        uptime -= hours*secondsInHour;
         minutes = uptime / secondsInMinute;
 
-        return (int)days+"j "+(int)hours+"h "+(int)minutes+"min";
+
+        return (int)days+"j "+(int)hours+"h "+minutes+"min";
     }
 
     public void update() {

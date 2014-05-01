@@ -139,8 +139,9 @@ public class ClientPlayer {
         save();
     }
 
-    public void addLose() {
+    public void addLose(int points) {
         this.loses++;
+        this.points -= points;
         save();
     }
 
@@ -152,11 +153,12 @@ public class ClientPlayer {
 
     public void addDeath() {
         this.deaths++;
+        this.points--;
         save();
     }
 
     public int bonus() {
-        return this.grade > 0 ? 2:1;
+        return this.grade > 0 ? this.grade == 5 ? 3:2:1;
     }
 
     public String getVipPrefix() {
