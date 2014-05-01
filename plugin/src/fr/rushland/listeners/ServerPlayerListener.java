@@ -565,15 +565,15 @@ public class ServerPlayerListener implements Listener {
                         && clicked.getItemMeta().getLore() != null) {
                     int prestige, price;
                     switch(clicked.getItemMeta().getDisplayName().substring(ChatColor.RED.toString().length()+9)) {
-                        case "I": prestige = 1; price = 1200;
+                        case "I": prestige = 1; price = 5500;
                             break;
-                        case "II": prestige = 2; price = 3000;
+                        case "II": prestige = 2; price = 1000;
                             break;
-                        case "III": prestige = 3; price = 5000;
+                        case "III": prestige = 3; price = 19000;
                             break;
-                        case "IV": prestige = 4; price = 7000;
+                        case "IV": prestige = 4; price = 30000;
                             break;
-                        case "V": prestige = 5; price = 9000;
+                        case "V": prestige = 5; price = 50000;
                             break;
                         default:
                             player.sendMessage("prestige non disponible");

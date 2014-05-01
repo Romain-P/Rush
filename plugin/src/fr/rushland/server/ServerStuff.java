@@ -183,31 +183,31 @@ public class ServerStuff {
         this.prestigeItems.put("1", createCustomItem(
                 Material.EMERALD, 1,
                 ChatColor.RED+"Prestige I",
-                new String[] {"Prestige I contre 1200 tokens"}
+                new String[] {"Prestige I contre 5500 tokens"}
         ));
 
         this.prestigeItems.put("2", createCustomItem(
                 Material.EMERALD, 2,
                 ChatColor.RED+"Prestige II",
-                new String[] {"Prestige II contre 3000 tokens"}
+                new String[] {"Prestige II contre 1000 tokens"}
         ));
 
         this.prestigeItems.put("3", createCustomItem(
                 Material.EMERALD, 3,
                 ChatColor.RED+"Prestige III",
-                new String[] {"Prestige III contre 5000 tokens"}
+                new String[] {"Prestige III contre 19000 tokens"}
         ));
 
         this.prestigeItems.put("4", createCustomItem(
                 Material.EMERALD, 4,
                 ChatColor.RED+"Prestige IV",
-                new String[] {"Prestige IV contre 7000 tokens"}
+                new String[] {"Prestige IV contre 30000 tokens"}
         ));
 
         this.prestigeItems.put("5", createCustomItem(
                 Material.EMERALD, 5,
                 ChatColor.RED+"Prestige V",
-                new String[] {"Prestige V contre 9000 tokens"}
+                new String[] {"Prestige V contre 50000 tokens"}
         ));
     }
 

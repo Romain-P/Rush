@@ -153,7 +153,7 @@ public class ClientPlayer {
 
     public void addDeath() {
         this.deaths++;
-        this.points--;
+        this.points -= 5;
         save();
     }
 
