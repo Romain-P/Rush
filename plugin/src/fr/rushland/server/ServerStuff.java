@@ -58,16 +58,16 @@ public class ServerStuff {
         this.inventories.put("Prestiges", prestiges);
 
     	intializeIcons();
-    	for(ItemStack item: this.pvpItems.values())
-            kits.addItem(item);
+    	for(int i=0; i< this.pvpItems.size()-1; i++)
+            kits.setItem(i, pvpItems.get(pvpItems.keySet().toArray()[i]));
 
         initializeBonusIcons();
-        for(ItemStack item: this.bonusItems.values())
-            bonus.addItem(item);
+        for(int i=0; i< this.bonusItems.size()-1; i++)
+            kits.setItem(i, bonusItems.get(bonusItems.keySet().toArray()[i]));
 
         initializePrestigeIcons();
-        for(ItemStack item: this.prestigeItems.values())
-            prestiges.addItem(item);
+        for(int i=0; i< this.prestigeItems.size()-1; i++)
+            kits.setItem(i, prestigeItems.get(prestigeItems.keySet().toArray()[i]));
     }
 
     public void initializeSpecialItems() {
@@ -107,10 +107,10 @@ public class ServerStuff {
         Map<Enchantment, Integer> map = new HashMap<>();
         map.put(Enchantment.KNOCKBACK, 2);
 
-        this.pvpItems.put("Archer puissant", createCustomItem(
-                Material.BOW, -1,
-                ChatColor.RED+"Archer puissant",
-                new String[] {"Incarnez l'ame d'un archer puissant!", VIP_PREFIX, "2"},
+        this.pvpItems.put("Ninja", createCustomItem(
+                Material.IRON_HOE, -1,
+                ChatColor.RED+"Ninja",
+                new String[] {"Incarnez la maitrise des techniques ninjas!", VIP_PREFIX, "1"},
                 map
         ));
 
@@ -120,18 +120,18 @@ public class ServerStuff {
                 new String[] {"Incarnez un devoreur puissant!", VIP_PREFIX, "1"},
                 map
         ));
-
-        this.pvpItems.put("Ninja", createCustomItem(
-                Material.IRON_HOE, -1,
-                ChatColor.RED+"Ninja",
-                new String[] {"Incarnez la maitrise des techniques ninjas!", VIP_PREFIX, "1"},
-                map
-        ));
-
         this.pvpItems.put("Mage", createCustomItem(
                 new Potion(PotionType.INSTANT_DAMAGE), 1,
                 ChatColor.RED + "Mage",
                 new String[]{"Incarnez un puissant personnage magique!", VIP_PREFIX, "1"},
+                map
+        ));
+
+
+        this.pvpItems.put("Archer puissant", createCustomItem(
+                Material.BOW, -1,
+                ChatColor.RED+"Archer puissant",
+                new String[] {"Incarnez l'ame d'un archer puissant!", VIP_PREFIX, "2"},
                 map
         ));
 
