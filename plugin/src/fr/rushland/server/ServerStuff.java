@@ -58,16 +58,16 @@ public class ServerStuff {
         this.inventories.put("Prestiges", prestiges);
 
     	intializeIcons();
-    	for(int i=0; i< this.pvpItems.size()-1; i++)
-            kits.setItem(i, pvpItems.get(pvpItems.keySet().toArray()[i]));
+    	for(ItemStack item: this.pvpItems.values())
+            kits.addItem(item);
 
         initializeBonusIcons();
-        for(int i=0; i< this.bonusItems.size()-1; i++)
-            kits.setItem(i, bonusItems.get(bonusItems.keySet().toArray()[i]));
+        for(ItemStack item: this.bonusItems.values())
+            bonus.addItem(item);
 
         initializePrestigeIcons();
-        for(int i=0; i< this.prestigeItems.size()-1; i++)
-            kits.setItem(i, prestigeItems.get(prestigeItems.keySet().toArray()[i]));
+        for(ItemStack item: this.prestigeItems.values())
+            prestiges.addItem(item);
     }
 
     public void initializeSpecialItems() {
@@ -189,7 +189,7 @@ public class ServerStuff {
         this.prestigeItems.put("2", createCustomItem(
                 Material.EMERALD, 2,
                 ChatColor.RED+"Prestige II",
-                new String[] {"Prestige II contre 1000 tokens"}
+                new String[] {"Prestige II contre 10000 tokens"}
         ));
 
         this.prestigeItems.put("3", createCustomItem(

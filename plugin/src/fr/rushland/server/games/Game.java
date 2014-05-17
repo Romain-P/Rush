@@ -64,6 +64,7 @@ public class Game {
 		this.map = map;
 		this.sign = sign;
 		this.gameType = gameType;
+        this.vip = vip;
 
 		this.mapLoc = PluginValues.MAP_LOCS.getValue() + map + "_" + gameType + "_" + name;
 		this.waitMapLoc = PluginValues.MAP_LOCS.getValue() + waitMap + "_" + gameType + "_" + name;
@@ -320,7 +321,7 @@ public class Game {
 		} else
 			msgGame(ChatColor.GREEN + playerName + " a quitte la partie");
         if(player != null) {
-            server.getPlayer(player.getName()).addLose(5);
+            server.getPlayer(player.getName()).addLose(1);
             serverStuff.giveStartingItems(player);
         }
 	}

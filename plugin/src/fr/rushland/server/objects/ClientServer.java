@@ -22,7 +22,7 @@ public class ClientServer {
     @Inject ServerManager manager;
 
     public ClientServer() {
-        this.startedTime = System.currentTimeMillis()/1000;
+        this.startedTime = System.currentTimeMillis();
         this.online = true;
         this.worker = Executors.newSingleThreadScheduledExecutor();
      }
@@ -51,21 +51,21 @@ public class ClientServer {
         if(this.startedTime == -1)
             return "offline";
 
-        double uptime = (System.currentTimeMillis()/1000 - startedTime);
+        double uptime = System.currentTimeMillis() - startedTime;
         double days = 0, hours = 0, minutes = 0;
 
-        final double secondsInDay = 24*60*60*60;
-        final double secondsInHour = 1*60*60;
-        final double secondsInMinute = 60;
+        final double msPerDay = 3600*24*1000;
+        final double msPerHour = 3600*1000;
+        final double msPerMinute = 60*1000;
 
-        days = uptime / secondsInDay;
-        uptime -= days*secondsInDay;
-        hours = uptime / secondsInHour;
-        uptime -= hours*secondsInHour;
-        minutes = uptime / secondsInMinute;
+        days = uptime / msPerDay;
+        uptime %= msPerDay;
+        hours = uptime / msPerHour;
+        uptime %= msPerHour;
+        minutes = uptime / msPerMinute;
 
 
-        return (int)days+"j "+(int)hours+"h "+minutes+"min";
+        return (int)days+"j "+(int)hours+"h "+(int)minutes+"min";
     }
 
     public void update() {
