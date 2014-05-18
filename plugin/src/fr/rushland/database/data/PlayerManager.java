@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 
 public class PlayerManager extends Manager{
     @Inject JavaPlugin plugin;
-    @Inject Server server;
 
 	public void create(ClientPlayer player) {
         try {

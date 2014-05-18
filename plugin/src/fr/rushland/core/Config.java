@@ -2,8 +2,6 @@ package fr.rushland.core;
 
 import com.google.inject.Inject;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Config {

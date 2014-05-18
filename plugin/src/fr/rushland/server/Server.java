@@ -12,6 +12,7 @@ import fr.rushland.server.commands.ServerCommandExecutor;
 import fr.rushland.server.games.Game;
 import fr.rushland.server.games.GameType;
 import fr.rushland.server.objects.ClientPlayer;
+import fr.rushland.server.objects.CustomStuff;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -36,6 +37,7 @@ public class Server {
     @Inject ServerStuff serverStuff;
     @Inject Database database;
     @Inject PlayerManager manager;
+    @Inject CustomStuff customStuff;
 
     public Server() {
         this.gameTypes = new ArrayList<>();
@@ -51,6 +53,7 @@ public class Server {
         if(config.isMainServer())
             serverStuff.initializeStuffs();
         serverStuff.initializeSpecialItems();
+        customStuff.install();
 
         plugin.getLogger().info("loading games..");
         loadGames();

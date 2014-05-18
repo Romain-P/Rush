@@ -47,6 +47,7 @@ public class ServerStuff {
     }
     
     public void initializeStuffs() {
+
     	Inventory kits = Bukkit.createInventory(null, 9, "Kits");
         //on running rush & player vip 3
         Inventory bonus = Bukkit.createInventory(null, 9, "Bonus");

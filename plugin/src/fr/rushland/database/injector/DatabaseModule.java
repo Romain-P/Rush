@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import fr.rushland.database.Database;
 import fr.rushland.database.Manager;
+import fr.rushland.database.data.StuffManager;
 import fr.rushland.database.data.PlayerManager;
 import fr.rushland.database.data.ServerManager;
 
@@ -17,5 +18,6 @@ public class DatabaseModule extends AbstractModule {
         Multibinder<Manager> binder = Multibinder.newSetBinder(binder(), Manager.class);
         binder.addBinding().toInstance(new PlayerManager());
         binder.addBinding().toInstance(new ServerManager());
+        binder.addBinding().toInstance(new StuffManager());
     }
 }

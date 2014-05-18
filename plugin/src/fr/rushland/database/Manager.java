@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.locks.ReentrantLock;
 
-public abstract class Manager {
+public class Manager {
     @Inject Database database;
 	@Inject ReentrantLock locker;
     @Inject JavaPlugin plugin;
