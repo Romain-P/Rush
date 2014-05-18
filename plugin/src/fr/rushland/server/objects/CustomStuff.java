@@ -1,4 +1,6 @@
 package fr.rushland.server.objects;
+import com.google.inject.Inject;
+import fr.rushland.database.data.StuffManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,13 +12,15 @@ public class CustomStuff {
     @Getter private Map<String, Inventory> inventories;
     @Getter @Setter private Map<Integer, Bonus[]> bonus;
 
+    @Inject StuffManager manager;
+
     public CustomStuff() {
         this.items = new HashMap<>();
         this.inventories = new HashMap<>();
     }
 
     public void install() {
-
+        manager.loadData();
     }
 
     public void addItem(Item item) {

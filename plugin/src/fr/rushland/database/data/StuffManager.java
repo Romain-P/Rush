@@ -32,17 +32,25 @@ public class StuffManager extends Manager{
             ResultSet result = getData("SELECT * FROM items;");
 
             while(result.next()) {
-                ArrayList<Enchantment> enchantments = new ArrayList<>();
-                for(String enchantment: result.getString("enchantments").split(";"))
-                    enchantments.add(Enchantment.getByName(enchantment));
+                Map<Enchantment, Integer> enchantments = new HashMap<>();
+                for(String enchantment: result.getString("enchantments").split(";")) {
+                    String[] split = enchantment.split(",");
+                    enchantments.put(Enchantment.getByName(split[0]), Integer.parseInt(split[1]));
+                }
+
+                ArrayList<Item> items = new ArrayList<>();
+                for(String item: result.getString("items").split(";"))
+                    items.add(stuffs.getItems().get(item));
 
                 stuffs.addItem(new Item(
                         result.getString("name"),
                         result.getString("description"),
-                        enchantments.toArray(new Enchantment[0]),
+                        result.getString("material"),
+                        enchantments,
                         result.getInt("quantity"),
                         result.getInt("grade"),
-                        result.getString("command")
+                        result.getString("command"),
+                        items.toArray(new Item[0])
                 ));
             }
             closeResultSet(result);
@@ -56,14 +64,14 @@ public class StuffManager extends Manager{
             ResultSet result = getData("SELECT * FROM inventories;");
 
             while(result.next()) {
-                ArrayList<Item> items = new ArrayList<>();
+                Map<String, Item> items = new HashMap<>();
                 for(String item: result.getString("items").split(";"))
-                    items.add(stuffs.getItems().get(item));
+                    items.put(item, stuffs.getItems().get(item));
 
                 stuffs.addInventory(new Inventory(
                         result.getString("name"),
                         stuffs.getItems().get(result.getString("icon")),
-                        items.toArray(new Item[0]),
+                        items,
                         result.getString("main").equalsIgnoreCase("true") ? true:false,
                         result.getString("lobby").equalsIgnoreCase("true") ? true:false,
                         result.getString("pvp").equalsIgnoreCase("true") ? true:false,

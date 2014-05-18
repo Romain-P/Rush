@@ -12,7 +12,10 @@ import fr.rushland.enums.Constants;
 import fr.rushland.enums.LangValues;
 import fr.rushland.server.ServerStuff;
 import fr.rushland.server.games.Game;
+import fr.rushland.server.objects.Bonus;
 import fr.rushland.server.objects.ClientPlayer;
+import fr.rushland.server.objects.CustomStuff;
+import fr.rushland.server.objects.Item;
 import fr.rushland.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -43,6 +46,7 @@ public class ServerPlayerListener implements Listener {
     @Inject fr.rushland.server.Server server;
     @Inject Database database;
     @Inject ServerStuff serverStuff;
+    @Inject CustomStuff customStuff;
 
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
@@ -185,6 +189,8 @@ public class ServerPlayerListener implements Listener {
                 player.chat("/stuff");
             else if (player.getItemInHand().equals(serverStuff.getPrestigeItem()))
                 player.chat("/prestige");
+            else if(!customStuff.getItems().get(player.getItemInHand().getItemMeta().getDisplayName()).getCommand().isEmpty())
+                player.chat(customStuff.getItems().get(player.getItemInHand().getItemMeta().getDisplayName()).getCommand());
         }
     }
 
@@ -601,6 +607,38 @@ public class ServerPlayerListener implements Listener {
                         client.save();
                     }
                 }
+            } else if(customStuff.getInventories().containsKey(inventory.getName()) && clicked != null && clicked.getItemMeta() != null
+                    && clicked.getItemMeta().getLore() != null) {
+                event.setCancelled(true);
+                for(Item item: customStuff.getInventories().get(inventory.getName()).getItems().get(clicked.getItemMeta().getDisplayName()).getGivenItems()) {
+                    String type = item.toObject().getType().name().toLowerCase().split("_")[1];
+
+                    switch(type) {
+                        case "chestplate":
+                            player.getInventory().setChestplate(item.toObject());
+                            break;
+                        case "helmet":
+                            player.getInventory().setHelmet(item.toObject());
+                            break;
+                        case "leggings":
+                            player.getInventory().setLeggings(item.toObject());
+                            break;
+                        case "boots":
+                            player.getInventory().setBoots(item.toObject());
+                            break;
+                        default:
+                            player.getInventory().addItem(item.toObject());
+                            break;
+                    }
+                }
+            }
+            if(player.getInventory().getChestplate() != null) {
+                ClientPlayer client = server.getPlayer(player.getName());
+
+                for(Bonus[] bonus: customStuff.getBonus().values())
+                    for(Bonus b: bonus)
+                        if(b.getGrade() <= client.getGrade() && b.isPvp())
+                            b.giveBonus(client);
             }
 		}
 	}

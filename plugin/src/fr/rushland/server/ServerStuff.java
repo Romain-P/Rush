@@ -8,6 +8,9 @@ import java.util.Map;
 import com.google.inject.Inject;
 import fr.rushland.core.Config;
 import fr.rushland.enums.Constants;
+import fr.rushland.server.objects.Bonus;
+import fr.rushland.server.objects.ClientPlayer;
+import fr.rushland.server.objects.CustomStuff;
 import fr.rushland.utils.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -38,6 +41,7 @@ public class ServerStuff {
 
     @Inject Config config;
     @Inject Server server;
+    @Inject CustomStuff customStuff;
 
     public ServerStuff() {
         this.inventories = new HashMap<>();
@@ -47,7 +51,6 @@ public class ServerStuff {
     }
     
     public void initializeStuffs() {
-
     	Inventory kits = Bukkit.createInventory(null, 9, "Kits");
         //on running rush & player vip 3
         Inventory bonus = Bukkit.createInventory(null, 9, "Bonus");
@@ -222,6 +225,11 @@ public class ServerStuff {
             inventory.addItem(prestigeItem);
         }
 
+        for(fr.rushland.server.objects.Inventory inv: customStuff.getInventories().values())
+            if(inv.isMain() && config.isMainServer() || inv.isLobby() && !config.isMainServer())
+                if(inv.getIcon() != null)
+                    inventory.addItem(inv.getIcon().toObject());
+
         player.updateInventory();
     }
 
@@ -265,6 +273,12 @@ public class ServerStuff {
                         player.openInventory(inventories.get("Bonus"));
                     break;
             }
+            ClientPlayer client = server.getPlayer(player.getName());
+
+            for(Bonus[] bonus: customStuff.getBonus().values())
+                for(Bonus b: bonus)
+                    if(b.getGrade() <= client.getGrade() && b.isRush())
+                        b.giveBonus(client);
         }
     }
 
