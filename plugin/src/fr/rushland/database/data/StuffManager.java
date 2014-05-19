@@ -1,6 +1,7 @@
 package fr.rushland.database.data;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import fr.rushland.database.Manager;
 import fr.rushland.server.objects.Bonus;
 import fr.rushland.server.objects.CustomStuff;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class StuffManager extends Manager{
     @Inject JavaPlugin plugin;
     @Inject CustomStuff stuffs;
+    @Inject Injector injector;
 
     public void loadData() {
         loadItems();
@@ -42,7 +44,7 @@ public class StuffManager extends Manager{
                 for(String item: result.getString("items").split(";"))
                     items.add(stuffs.getItems().get(item));
 
-                stuffs.addItem(new Item(
+                Item item = new Item(
                         result.getString("name"),
                         result.getString("description"),
                         result.getString("material"),
@@ -51,7 +53,9 @@ public class StuffManager extends Manager{
                         result.getInt("grade"),
                         result.getString("command"),
                         items.toArray(new Item[0])
-                ));
+                );
+                injector.injectMembers(item);
+                stuffs.addItem(item);
             }
             closeResultSet(result);
         } catch(Exception e) {
@@ -68,7 +72,7 @@ public class StuffManager extends Manager{
                 for(String item: result.getString("items").split(";"))
                     items.put(item, stuffs.getItems().get(item));
 
-                stuffs.addInventory(new Inventory(
+                Inventory inventory = new Inventory(
                         result.getString("name"),
                         stuffs.getItems().get(result.getString("icon")),
                         items,
@@ -76,7 +80,9 @@ public class StuffManager extends Manager{
                         result.getString("lobby").equalsIgnoreCase("true") ? true:false,
                         result.getString("pvp").equalsIgnoreCase("true") ? true:false,
                         result.getString("rush").equalsIgnoreCase("true") ? true:false
-                ));
+                );
+                injector.injectMembers(inventory);
+                stuffs.addInventory(inventory);
             }
             closeResultSet(result);
         } catch(Exception e) {
@@ -112,6 +118,7 @@ public class StuffManager extends Manager{
                         result.getString("pvp").equalsIgnoreCase("true") ? true:false,
                         result.getString("rush").equalsIgnoreCase("true") ? true:false
                 );
+                injector.injectMembers(b);
 
                 if(bonus.get(b.getGrade()) != null)
                     bonus.get(b.getGrade()).add(b);

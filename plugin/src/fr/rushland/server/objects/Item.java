@@ -36,7 +36,7 @@ public class Item {
     public ItemStack toObject() {
         ItemStack item = this.object;
         if(item == null) {
-            item = serverStuff.createCustomItem(
+            this.object = serverStuff.createCustomItem(
                     Material.getMaterial(this.name),
                     this.quantity,
                     this.name,

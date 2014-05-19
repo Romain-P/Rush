@@ -610,8 +610,14 @@ public class ServerPlayerListener implements Listener {
             } else if(customStuff.getInventories().containsKey(inventory.getName()) && clicked != null && clicked.getItemMeta() != null
                     && clicked.getItemMeta().getLore() != null) {
                 event.setCancelled(true);
+                ClientPlayer client = server.getPlayer(player.getName());
+
                 for(Item item: customStuff.getInventories().get(inventory.getName()).getItems().get(clicked.getItemMeta().getDisplayName()).getGivenItems()) {
                     String type = item.toObject().getType().name().toLowerCase().split("_")[1];
+                    if(client.getGrade() < item.getGrade()) {
+                        player.sendMessage("Impossible! VIP "+item.getGrade()+" necessaire.");
+                        return;
+                    }
 
                     switch(type) {
                         case "chestplate":

@@ -11,9 +11,6 @@ public class ServerModule extends AbstractModule {
         bind(Server.class).asEagerSingleton();
         bind(ServerStuff.class).asEagerSingleton();
         bind(ClientServer.class).asEagerSingleton();
-        bind(Bonus.class).asEagerSingleton();
         bind(CustomStuff.class).asEagerSingleton();
-        bind(Inventory.class).asEagerSingleton();
-        bind(Item.class).asEagerSingleton();
     }
 }
