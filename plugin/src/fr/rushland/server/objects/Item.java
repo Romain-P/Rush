@@ -3,10 +3,12 @@ package fr.rushland.server.objects;
 import com.google.inject.Inject;
 import fr.rushland.server.ServerStuff;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Item {
@@ -17,12 +19,12 @@ public class Item {
     @Getter private int quantity;
     @Getter private int grade;
     @Getter private String command;
-    @Getter private Item[] givenItems;
+    @Getter @Setter private Item[] givenItems;
     @Getter private ItemStack object;
 
     @Inject ServerStuff serverStuff;
 
-    public Item(String name, String description, String material, Map<Enchantment, Integer> enchantments, int quantity, int grade, String command, Item[] givenItems) {
+    public Item(String name, String description, String material, Map<Enchantment, Integer> enchantments, int quantity, int grade, String command) {
         this.name = name;
         this.description = description;
         this.material = material;
@@ -30,7 +32,16 @@ public class Item {
         this.quantity = quantity;
         this.grade = grade;
         this.command = command;
-        this.givenItems = givenItems;
+    }
+
+    public Item(String name, String description, String material, int quantity, int grade, String command) {
+        this.name = name;
+        this.description = description;
+        this.material = material;
+        this.enchantments = new HashMap<>();
+        this.quantity = quantity;
+        this.grade = grade;
+        this.command = command;
     }
 
     public ItemStack toObject() {

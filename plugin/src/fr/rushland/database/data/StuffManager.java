@@ -30,36 +30,43 @@ public class StuffManager extends Manager{
     }
 
     private void loadItems() {
+        Map<Item, String> temp = new HashMap<>();
         try {
             ResultSet result = getData("SELECT * FROM items;");
 
             while(result.next()) {
-                Map<Enchantment, Integer> enchantments = new HashMap<>();
-                for(String enchantment: result.getString("enchantments").split(";")) {
-                    String[] split = enchantment.split(",");
-                    enchantments.put(Enchantment.getByName(split[0]), Integer.parseInt(split[1]));
-                }
 
-                ArrayList<Item> items = new ArrayList<>();
-                for(String item: result.getString("items").split(";"))
-                    items.add(stuffs.getItems().get(item));
+                if(result.getString("enchantments").contains(";")) {
+                    Map<Enchantment, Integer> enchantments = new HashMap<>();
+                    for(String enchantment: result.getString("enchantments").split(";")) {
+                        String[] split = enchantment.split(",");
+                        enchantments.put(Enchantment.getByName(split[0]), Integer.parseInt(split[1]));
+                    }
+                }
 
                 Item item = new Item(
                         result.getString("name"),
                         result.getString("description"),
                         result.getString("material"),
-                        enchantments,
                         result.getInt("quantity"),
                         result.getInt("grade"),
-                        result.getString("command"),
-                        items.toArray(new Item[0])
+                        result.getString("command")
                 );
+                if(!result.getString("givenItems").isEmpty())
+                    temp.put(item, result.getString("givenItems"));
                 injector.injectMembers(item);
                 stuffs.addItem(item);
             }
             closeResultSet(result);
         } catch(Exception e) {
             plugin.getLogger().warning("(sql error) : "+e.getMessage());
+        }
+
+        for(Map.Entry<Item, String> e: temp.entrySet()) {
+            ArrayList<Item> items = new ArrayList<>();
+            for(String s: e.getValue().split(";"))
+                items.add(stuffs.getItems().get(s));
+            e.getKey().setGivenItems(items.toArray(new Item[0]));
         }
     }
 

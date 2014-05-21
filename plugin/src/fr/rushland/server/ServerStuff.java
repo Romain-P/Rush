@@ -226,9 +226,13 @@ public class ServerStuff {
         }
 
         for(fr.rushland.server.objects.Inventory inv: customStuff.getInventories().values())
-            if(inv.isMain() && config.isMainServer() || inv.isLobby() && !config.isMainServer())
-                if(inv.getIcon() != null)
+            if((inv.isMain() && config.isMainServer()) || (inv.isLobby() && !config.isMainServer())) {
+                System.out.println("TEST 1 OK: "+inv.getName());
+                if(inv.getIcon() != null) {
+                    System.out.println("TEST 2 OK: "+inv.getIcon().getName());
                     inventory.addItem(inv.getIcon().toObject());
+                }
+            }
 
         player.updateInventory();
     }

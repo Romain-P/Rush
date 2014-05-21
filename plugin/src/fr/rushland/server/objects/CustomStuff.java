@@ -24,6 +24,7 @@ public class CustomStuff {
     }
 
     public void addItem(Item item) {
+        System.out.println("Added ITEM "+item.getName());
         this.items.put(item.getName(), item);
     }
 

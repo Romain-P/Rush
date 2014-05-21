@@ -189,7 +189,7 @@ public class ServerPlayerListener implements Listener {
                 player.chat("/stuff");
             else if (player.getItemInHand().equals(serverStuff.getPrestigeItem()))
                 player.chat("/prestige");
-            else if(!customStuff.getItems().get(player.getItemInHand().getItemMeta().getDisplayName()).getCommand().isEmpty())
+            else if(customStuff.getItems().containsKey(player.getItemInHand().getItemMeta().getDisplayName())  && customStuff.getItems().get(player.getItemInHand().getItemMeta().getDisplayName()).getCommand().isEmpty())
                 player.chat(customStuff.getItems().get(player.getItemInHand().getItemMeta().getDisplayName()).getCommand());
         }
     }
