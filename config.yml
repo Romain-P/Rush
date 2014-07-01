@@ -1,6 +1,0 @@
-mainServer: false
-database:
-   host: localhost
-   name: database
-   user: root
-   pass: password
