@@ -1,4 +1,0 @@
-Rush
-====
-
-Minecraft plugin
